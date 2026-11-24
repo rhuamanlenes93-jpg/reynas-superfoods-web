@@ -353,3 +353,23 @@ create policy invoices_admin_all on public.invoices for all to authenticated
 insert into public.settings (key, value) values
   ('billing', '{"ruc":"","razon_social":"","direccion":"","serie_boleta":"B002","serie_factura":"F002","igv_type":"gravado","ambiente":"pruebas"}'::jsonb)
 on conflict (key) do nothing;
+
+-- =========================================================
+-- 8. Estadísticas del carrito (dashboard del panel)
+--    Cada vez que un visitante agrega un producto al carrito se guarda
+--    solo el producto y la cantidad (ningún dato del cliente).
+-- =========================================================
+create table if not exists public.cart_events (
+  id bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  product_id text not null check (char_length(product_id) between 1 and 80),
+  product_name text not null check (char_length(product_name) between 1 and 160),
+  qty integer not null default 1 check (qty between 1 and 50)
+);
+create index if not exists cart_events_created_idx on public.cart_events (created_at desc);
+alter table public.cart_events enable row level security;
+grant insert on public.cart_events to anon, authenticated;
+grant select, delete on public.cart_events to authenticated;
+create policy cart_events_public_insert on public.cart_events for insert to anon, authenticated with check (true);
+create policy cart_events_admin_read on public.cart_events for select to authenticated using ((select private.is_admin()));
+create policy cart_events_admin_delete on public.cart_events for delete to authenticated using ((select private.is_admin()));

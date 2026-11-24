@@ -5,6 +5,8 @@
    Usuario de Supabase Auth que figure en la tabla admins. */
 
 const ICON = {
+  eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff: '<path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
   home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
   prod: '<path d="M4 7l8-4 8 4-8 4z"/><path d="M4 7v10l8 4 8-4V7"/><path d="M12 11v10"/>',
   txt: '<path d="M4 6h16M4 12h10M4 18h13"/>',
@@ -30,7 +32,8 @@ document.body.insertAdjacentHTML('beforeend', `
       <h2>Panel de Reyna's</h2>
       <p>Entra con tu correo y contraseña.</p>
       <label class="af">Correo<input class="a-in" id="aEmail" type="email" autocomplete="username" required></label>
-      <label class="af">Contraseña<input class="a-in" id="aPass" type="password" autocomplete="current-password" required></label>
+      <label class="af" for="aPass">Contraseña</label>
+      <div class="pw"><input class="a-in" id="aPass" type="password" autocomplete="current-password" required><button class="pw-eye" type="button" id="aEye" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">${ico('eye')}</button></div>
       <p class="a-err" id="aErr" role="alert"></p>
       <button class="btn pri big" type="submit">Entrar</button>
       <button class="btn ghost" type="button" data-aclose>Volver a la tienda</button>
@@ -64,8 +67,22 @@ document.body.insertAdjacentHTML('beforeend', `
       <section id="vHome" data-v="home">
         <div class="stats">
           <button class="stat" type="button" data-go="prod"><span>Productos en la tienda</span><b id="sVis">–</b><small id="sHid"></small></button>
-          <button class="stat" type="button" data-go="ord"><span>Pedidos por cobrar</span><b id="sNew">–</b><small id="sOrdAll"></small></button>
+          <button class="stat" type="button" data-go="ord"><span>Pedidos este mes</span><b id="sNew">–</b><small id="sOrdAll"></small></button>
           <button class="stat" type="button" data-go="bill"><span>Boletas y facturas</span><b id="sInv">–</b><small id="sApi"></small></button>
+        </div>
+        <div class="box dash">
+          <div class="box-h"><div><h3>¿Qué piden más tus clientes?</h3><p class="hint">Se arma solo con los pedidos que llegan por WhatsApp y con lo que la gente agrega al carrito en la página.</p></div>
+            <div class="dseg" id="dRange" role="group" aria-label="Periodo"><button type="button" data-r="7">7 días</button><button type="button" data-r="30" class="on">30 días</button><button type="button" data-r="0">Todo</button></div></div>
+          <div class="kpis" id="dKpis"></div>
+          <div class="dgrid">
+            <div class="dcol"><h4>Más pedidos por WhatsApp</h4><p class="hint">Unidades pedidas de cada producto.</p><ol class="rank" id="dTopOrd"></ol></div>
+            <div class="dcol"><h4>Más agregados al carrito</h4><p class="hint">Veces que lo pusieron en el carrito, aunque no hayan enviado el pedido.</p><ol class="rank" id="dTopCart"></ol></div>
+          </div>
+          <div class="dgrid">
+            <div class="dcol"><h4>Pedidos por día</h4><div class="days" id="dDays" role="img"></div></div>
+            <div class="dcol"><h4>Categorías más pedidas</h4><ol class="rank cats" id="dCats"></ol></div>
+          </div>
+          <div class="dcol miss" id="dMissWrap" hidden><h4>Los ponen en el carrito pero casi no los piden</h4><p class="hint">Puede que el precio o la presentación no los convenza. Vale la pena preguntar.</p><ol class="rank" id="dMiss"></ol></div>
         </div>
         <div class="box switch">
           <div><h3>Mostrar precios en la tienda</h3><p>Si está <b>apagado</b>, los clientes ven “Precio por confirmar”. Enciéndelo cuando tus precios estén listos.</p></div>
@@ -76,8 +93,8 @@ document.body.insertAdjacentHTML('beforeend', `
           <div class="guide">
             <button type="button" data-go="prod">${ico('prod')}<b>Productos</b><span>Agrega productos, cambia fotos, nombres y precios, o esconde lo que no tengas.</span></button>
             <button type="button" data-go="txt">${ico('txt')}<b>Textos de la página</b><span>Cambia lo que dice la página: títulos, misión, pasos para comprar…</span></button>
-            <button type="button" data-go="ord">${ico('ord')}<b>Pedidos</b><span>La lista de todo lo que los clientes te enviaron por WhatsApp.</span></button>
-            <button type="button" data-go="bill">${ico('bill')}<b>Facturación</b><span>Emite boletas y facturas de los pedidos que ya te pagaron.</span></button>
+            <button type="button" data-go="ord">${ico('ord')}<b>Pedidos</b><span>El historial de todo lo que los clientes te enviaron por WhatsApp. Solo para mirar.</span></button>
+            <button type="button" data-go="bill">${ico('bill')}<b>Facturación</b><span>Emite boletas y facturas. Puedes llenarlas con un pedido del historial.</span></button>
           </div>
         </div>
       </section>
@@ -110,11 +127,11 @@ document.body.insertAdjacentHTML('beforeend', `
 
       <!-- PEDIDOS -->
       <section id="vOrd" data-v="ord" hidden>
-        <div class="anote">${ico('wa')}<p>Cada vez que un cliente toca <b>“Enviar pedido por WhatsApp”</b>, el mensaje llega a tu WhatsApp y aquí se guarda una copia. Cada pedido tiene un <b>código</b> (por ejemplo R-7K2Q) que también aparece en el mensaje, para que sepas qué chat es de qué pedido.</p></div>
+        <div class="anote">${ico('wa')}<p>Cada vez que un cliente toca <b>“Enviar pedido por WhatsApp”</b>, el mensaje llega a tu WhatsApp y aquí se guarda una copia. Cada pedido tiene un <b>código</b> (por ejemplo R-7K2Q) que también aparece en el mensaje, para que sepas qué chat es de qué pedido. Esta sección es solo un historial para revisar: los pagos se conversan por WhatsApp.</p></div>
         <div class="bar">
           <label class="srch">${ico('search')}<input id="oQ" type="search" placeholder="Buscar por nombre o código…" aria-label="Buscar pedido"></label>
         </div>
-        <div class="chips" id="oFil" role="group" aria-label="Estado del pedido"></div>
+        <div class="chips" id="oFil" role="group" aria-label="Fecha del pedido"></div>
         <div id="oList"></div>
       </section>
 
@@ -125,12 +142,12 @@ document.body.insertAdjacentHTML('beforeend', `
           <h3>Así se emite una boleta</h3>
           <ol class="steps3">
             <li><b>1</b><span>El cliente te escribe por WhatsApp y te paga.</span></li>
-            <li><b>2</b><span>En <b>Pedidos</b>, toca <b>“Ya me pagó”</b>.</span></li>
-            <li><b>3</b><span>Toca <b>“Emitir boleta”</b>, revisa los datos y listo. Aparece aquí con su PDF.</span></li>
+            <li><b>2</b><span>Aquí toca <b>“Nueva boleta”</b> y elige su pedido por el código (R-…) para llenarla sola.</span></li>
+            <li><b>3</b><span>Revisa los datos y toca <b>“Emitir boleta”</b>. Aparece aquí con su PDF.</span></li>
           </ol>
         </div>
         <div class="box">
-          <div class="box-h"><h3>Comprobantes emitidos</h3><button class="btn sec" type="button" id="bNew">${ico('plus')}Nueva boleta sin pedido</button></div>
+          <div class="box-h"><h3>Comprobantes emitidos</h3><button class="btn sec" type="button" id="bNew">${ico('plus')}Nueva boleta</button></div>
           <div id="bList"></div>
         </div>
         <form class="box" id="bCfg">
@@ -189,6 +206,7 @@ document.body.insertAdjacentHTML('beforeend', `
           <label><input type="radio" name="bType" value="boleta" checked><span>Boleta<small>Para personas</small></span></label>
           <label><input type="radio" name="bType" value="factura"><span>Factura<small>Para empresas con RUC</small></span></label>
         </div>
+        <label class="af">Llenar con un pedido del historial<select class="a-in" id="bFrom"></select><small>Opcional. Copia los productos y el nombre del pedido que elijas.</small></label>
         <h3 class="sub">Datos del cliente</h3>
         <div class="grid2">
           <label class="af">Documento<select class="a-in" id="bDocT"></select></label>
@@ -211,7 +229,7 @@ document.body.insertAdjacentHTML('beforeend', `
 const admin = $('#admin'), aLogin = $('#aLogin'), aApp = $('#aApp'), aForm = $('#aForm'), bModal = $('#bModal');
 const aList = $('#aList'), aQ = $('#aQ');
 let editing = null, formImg = '', aProducts = [], aOrders = [], aInvoices = [], billing = {}, apiReady = null;
-let view = 'home', catSel = 'Todas', ordSel = 'todos', txtSel = null;
+let view = 'home', catSel = 'Todas', ordSel = 'todos', txtSel = null, aCart = [], dRange = 30;
 const aById = id => aProducts.find(p => p.id === id);
 const CAT_C = { [G.andinos]:'#D39F78', [G.granos]:'#E8B85C', [G.raices]:'#E58EA4', [G.hierbas]:'#7FBF6E', [G.extractos]:'#A98BD0', [G.packs]:'#6DBFB8' };
 const catColor = g => CAT_C[g] || '#B9B1A0';
@@ -237,6 +255,12 @@ function adminClose(){
   if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search);
   loadCatalog().then(renderAll).catch(() => {});
 }
+function setEye(show){
+  const i = $('#aPass'), b = $('#aEye'); i.type = show ? 'text' : 'password';
+  b.innerHTML = ico(show ? 'eyeoff' : 'eye'); b.setAttribute('aria-pressed', String(show));
+  b.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña'); b.title = b.getAttribute('aria-label');
+}
+$('#aEye').addEventListener('click', () => { setEye($('#aPass').type === 'password'); $('#aPass').focus(); });
 $('#aLoginForm').addEventListener('submit', async e => {
   e.preventDefault(); $('#aErr').textContent = 'Entrando…';
   try {
@@ -245,7 +269,7 @@ $('#aLoginForm').addEventListener('submit', async e => {
     const s = await r.json(); keepSession(s);
     if (!(await isAdminUser())){ dropSession(); $('#aErr').textContent = 'Esta cuenta no tiene permiso para administrar la tienda.'; return; }
     try { localStorage.setItem('reynas.adminEmail', s.user?.email || ''); } catch {}
-    $('#aErr').textContent = ''; $('#aPass').value = '';
+    $('#aErr').textContent = ''; $('#aPass').value = ''; setEye(false);
     aLogin.hidden = true; aApp.hidden = false; renderAdmin();
   } catch { $('#aErr').textContent = 'Correo o contraseña incorrectos.'; $('#aPass').select(); }
 });
@@ -281,13 +305,14 @@ async function renderAdmin(){
   try { const em = localStorage.getItem('reynas.adminEmail'); if (em) $('#aUser').textContent = em; } catch {}
   aGo(view);
   try {
-    const [rows, os, st, inv] = await Promise.all([
+    const [rows, os, st, inv, ce] = await Promise.all([
       sb('/rest/v1/products?select=*&order=sort.asc,name.asc', { auth:true }),
       sb('/rest/v1/orders?select=*&order=created_at.desc&limit=500', { auth:true }),
       sb('/rest/v1/settings?select=key,value'),
-      sb('/rest/v1/invoices?select=*&order=created_at.desc&limit=500', { auth:true }).catch(() => [])
+      sb('/rest/v1/invoices?select=*&order=created_at.desc&limit=500', { auth:true }).catch(() => []),
+      sb('/rest/v1/cart_events?select=created_at,product_name,qty&order=created_at.desc&limit=5000', { auth:true }).catch(() => [])
     ]);
-    aProducts = rows.map(r => fromRow(r, true)); aOrders = os; aInvoices = inv;
+    aProducts = rows.map(r => fromRow(r, true)); aOrders = os; aInvoices = inv; aCart = ce;
     $('#aPrices').checked = !!(st.find(s => s.key === 'show_prices') || {}).value;
     billing = (st.find(s => s.key === 'billing') || {}).value || {};
   } catch (err) { aMsg('No se pudo cargar el panel: ' + err.message, 'err'); }
@@ -297,15 +322,57 @@ async function renderAdmin(){
 function renderAll_(){ renderHome(); aRenderCats(); renderProducts(); renderOrders(); if (view === 'bill') renderBilling(); if (view === 'txt') renderTexts(); }
 
 /* ---------- inicio ---------- */
+const DAY = 864e5;
+const startOfDay = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+const inRange = (iso, days) => !days || new Date(iso) >= new Date(startOfDay(Date.now()) - (days - 1) * DAY);
+const groupOfName = name => { const n = norm(name); const p = aProducts.find(x => norm(fullName(x)) === n || norm(x.name) === n); return p ? p.group : null; };
+function tally(rows){ const m = new Map(); rows.forEach(([k, q]) => m.set(k, (m.get(k) || 0) + q)); return [...m].sort((a, b) => b[1] - a[1]); }
+const rankHTML = (list, unit, empty, max = 8) => {
+  if (!list.length) return `<li class="none">${empty}</li>`;
+  const top = list[0][1];
+  return list.slice(0, max).map(([k, v], i) => `<li><span class="rk">${i + 1}</span><div><p><b>${esc(k)}</b><em>${v} ${v === 1 ? unit[0] : unit[1]}</em></p><i style="--w:${Math.max(4, Math.round(v / top * 100))}%"></i></div></li>`).join('');
+};
+function renderDash(){
+  const os = aOrders.filter(o => o.status !== 'anulado' && inRange(o.created_at, dRange));
+  const ce = aCart.filter(c => inRange(c.created_at, dRange));
+  const ordRows = os.flatMap(o => (o.items || []).map(i => [i.name, Number(i.qty) || 1]));
+  const topOrd = tally(ordRows), topCart = tally(ce.map(c => [c.product_name, c.qty || 1]));
+  const units = ordRows.reduce((s, r) => s + r[1], 0), adds = ce.reduce((s, c) => s + (c.qty || 1), 0);
+  const cats = tally(ordRows.map(([n, q]) => [groupOfName(n) || 'Otros', q]));
+  const lbl = dRange ? `en los últimos ${dRange} días` : 'desde el inicio';
+  $('#dKpis').innerHTML = [
+    ['Pedidos recibidos', os.length, lbl],
+    ['Productos pedidos', units, 'unidades en esos pedidos'],
+    ['Agregados al carrito', adds, 'veces que tocaron “Agregar”'],
+    ['Más pedido', topOrd[0] ? topOrd[0][0] : '—', topOrd[0] ? `${topOrd[0][1]} unidades` : 'Aún sin pedidos', 'txt']
+  ].map(([l, v, s, c]) => `<div class="kpi${c ? ' t' : ''}"><span>${l}</span><b>${esc(v)}</b><small>${esc(s)}</small></div>`).join('');
+  $('#dTopOrd').innerHTML = rankHTML(topOrd, ['unidad', 'unidades'], 'Todavía no llegan pedidos en este periodo.');
+  $('#dTopCart').innerHTML = rankHTML(topCart, ['vez', 'veces'], 'Todavía no hay productos agregados al carrito en este periodo. Se empieza a contar desde hoy.');
+  $('#dCats').innerHTML = rankHTML(cats, ['unidad', 'unidades'], 'Sin pedidos en este periodo.', 6);
+  // pedidos por día (máx. 30 barras)
+  const n = Math.min(dRange || 30, 30), today = startOfDay(Date.now());
+  const days = Array.from({ length: n }, (_, i) => { const d = new Date(today - (n - 1 - i) * DAY); return { d, c: aOrders.filter(o => o.status !== 'anulado' && startOfDay(o.created_at).getTime() === d.getTime()).length }; });
+  const mx = Math.max(1, ...days.map(x => x.c)), fmtD = new Intl.DateTimeFormat('es-PE', { day:'numeric', month:'short' });
+  $('#dDays').setAttribute('aria-label', `Pedidos por día en los últimos ${n} días`);
+  $('#dDays').innerHTML = `<div class="bars">${days.map(x => `<span title="${fmtD.format(x.d)}: ${x.c} ${x.c === 1 ? 'pedido' : 'pedidos'}" style="--h:${x.c ? Math.max(6, Math.round(x.c / mx * 100)) : 0}%"><i></i>${x.c ? `<b>${x.c}</b>` : ''}</span>`).join('')}</div><div class="ax"><span>${fmtD.format(days[0].d)}</span><span>Hoy</span></div>`;
+  // en carrito pero poco pedidos
+  const ordMap = new Map(topOrd), miss = topCart.filter(([k, v]) => v >= 3 && (ordMap.get(k) || 0) < v / 3).map(([k, v]) => [k, v]);
+  $('#dMissWrap').hidden = !miss.length;
+  $('#dMiss').innerHTML = rankHTML(miss, ['vez en carrito', 'veces en carrito'], '', 5);
+}
+$('#dRange').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b) return; dRange = Number(b.dataset.r); $('#dRange').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); renderDash(); });
 function renderHome(){
   const vis = aProducts.filter(p => !p.hidden).length, hid = aProducts.length - vis;
-  const nuevos = aOrders.filter(o => o.status === 'nuevo').length;
+  const mes = aOrders.filter(o => { const d = new Date(o.created_at), n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); }).length;
+  const hoy = aOrders.filter(o => inRange(o.created_at, 1)).length;
   $('#sVis').textContent = vis; $('#sHid').textContent = hid ? `${hid} escondidos` : 'Ninguno escondido';
-  $('#sNew').textContent = nuevos; $('#sOrdAll').textContent = `de ${aOrders.length} pedidos en total`;
+  $('#sNew').textContent = mes; $('#sOrdAll').textContent = `${hoy ? hoy + ' hoy · ' : ''}${aOrders.length} en total`;
   $('#sInv').textContent = aInvoices.filter(i => i.status === 'aceptado').length;
   $('#sApi').textContent = apiReady ? 'Facturación conectada' : 'Esperando el acceso a la API';
   $('#cProd').textContent = aProducts.length || '';
-  $('#cOrd').textContent = nuevos || '';
+  $('#cOrd').textContent = hoy || '';
+  $('#cOrd').title = hoy ? `${hoy} pedidos hoy` : '';
+  renderDash();
 }
 $('#aPrices').addEventListener('change', async e => {
   try { await sb('/rest/v1/settings?key=eq.show_prices', { method:'PATCH', auth:true, body:{ value: e.target.checked } }); aMsg(e.target.checked ? 'Listo: ahora los precios se ven en la tienda.' : 'Listo: los precios quedaron escondidos en la tienda.'); }
@@ -498,37 +565,30 @@ $('#tSave').addEventListener('click', async () => {
 });
 
 /* ---------- pedidos (historial de WhatsApp) ---------- */
-const ST = { nuevo:['Por cobrar','amber'], pagado:['Pagado','green'], facturado:['Con boleta','blue'], anulado:['Anulado','grey'] };
-const FIL = [['todos','Todos'], ['nuevo','Por cobrar'], ['pagado','Pagados'], ['facturado','Con boleta'], ['anulado','Anulados']];
+const FIL = [['todos','Todos', 0], ['hoy','Hoy', 1], ['sem','Últimos 7 días', 7], ['mes','Últimos 30 días', 30]];
+const filDays = k => (FIL.find(f => f[0] === k) || FIL[0])[2];
 const orderTotal = o => { const it = o.items || []; return it.length && it.every(i => i.price !== '' && i.price != null) ? it.reduce((s, i) => s + Number(i.price) * (i.qty || 1), 0) : null; };
 const oCode = o => o.code || ('#' + o.id);
 const orderMsg = o => [`Pedido ${oCode(o)}`, ...(o.items || []).map(i => `• ${i.qty || 1} × ${i.name}${i.size ? ' (' + i.size + ')' : ''}`), o.customer_name ? `Nombre: ${o.customer_name}` : '', o.customer_city ? `Envío a: ${o.customer_city}` : '', o.customer_note ? `Nota: ${o.customer_note}` : ''].filter(Boolean).join('\n');
 function renderOrders(){
-  $('#oFil').innerHTML = FIL.map(([k, l]) => `<button type="button" class="chip-a${ordSel === k ? ' on' : ''}" data-of="${k}">${l} <small>${k === 'todos' ? aOrders.length : aOrders.filter(o => o.status === k).length}</small></button>`).join('');
+  $('#oFil').innerHTML = FIL.map(([k, l, d]) => `<button type="button" class="chip-a${ordSel === k ? ' on' : ''}" data-of="${k}">${l} <small>${aOrders.filter(o => inRange(o.created_at, d)).length}</small></button>`).join('');
   const q = norm($('#oQ').value.trim());
-  const list = aOrders.filter(o => (ordSel === 'todos' || o.status === ordSel) && (!q || norm(`${o.customer_name || ''} ${oCode(o)} ${o.customer_city || ''}`).includes(q)));
+  const list = aOrders.filter(o => inRange(o.created_at, filDays(ordSel)) && (!q || norm(`${o.customer_name || ''} ${oCode(o)} ${o.customer_city || ''}`).includes(q)));
   const box = $('#oList');
   if (!aOrders.length){ box.innerHTML = '<div class="box empty-box"><h3>Todavía no hay pedidos</h3><p>Cuando un cliente envíe su pedido por WhatsApp desde la tienda, aparecerá aquí.</p></div>'; return; }
-  if (!list.length){ box.innerHTML = '<p class="aempty">No hay pedidos con ese filtro.</p>'; return; }
+  if (!list.length){ box.innerHTML = '<p class="aempty">No hay pedidos en esas fechas.</p>'; return; }
   box.innerHTML = list.map(o => {
-    const [lab, col] = ST[o.status] || [o.status, 'grey'], t = orderTotal(o);
-    const pend = aInvoices.find(i => i.order_id === o.id && i.status !== 'aceptado' && i.status !== 'anulado');
-    const acts = [];
-    if (o.status === 'nuevo') acts.push(`<button class="btn pri sm" type="button" data-oact="paid">Ya me pagó</button>`);
-    if (o.status === 'pagado') acts.push(`<button class="btn pri sm" type="button" data-oact="bill">${pend ? 'Ver boleta pendiente' : 'Emitir boleta'}</button>`, `<button class="btn ghost sm" type="button" data-oact="unpaid">Aún no me paga</button>`);
-    if (o.status === 'facturado' && o.invoice_pdf_url) acts.push(`<a class="btn sec sm" href="${esc(o.invoice_pdf_url)}" target="_blank" rel="noopener">Ver boleta ${esc((o.invoice_series || '') + '-' + (o.invoice_number || ''))}</a>`);
-    if (o.status === 'anulado') acts.push(`<button class="btn sec sm" type="button" data-oact="reopen">Reactivar</button>`);
-    else if (o.status !== 'facturado') acts.push(`<button class="btn ghost sm" type="button" data-oact="cancel">Anular</button>`);
-    return `<article class="oc st-${col}" data-id="${o.id}">
+    const t = orderTotal(o), inv = aInvoices.find(i => i.order_id === o.id && i.status === 'aceptado');
+    return `<article class="oc" data-id="${o.id}">
       <header>
         <div><span class="code">${esc(oCode(o))}</span><b>${o.customer_name ? esc(o.customer_name) : 'Cliente sin nombre'}</b><span class="meta">${fmtDate.format(new Date(o.created_at))}${o.customer_city ? ' · ' + esc(o.customer_city) : ''}</span></div>
-        <span class="pill ${col}">${lab}</span>
+        <span class="oitems">${(o.items || []).reduce((s, i) => s + (Number(i.qty) || 1), 0)} productos</span>
       </header>
       <ul>${(o.items || []).map(i => `<li><span>${i.qty || 1} ×</span> ${esc(i.name)}${i.size ? ` <em>(${esc(i.size)})</em>` : ''}${i.price !== '' && i.price != null ? `<b>${money(i.price * (i.qty || 1))}</b>` : ''}</li>`).join('')}</ul>
       ${o.customer_note ? `<p class="onote">Nota del cliente: ${esc(o.customer_note)}</p>` : ''}
       <footer>
         <span class="otot">${t !== null ? `Total de productos: <b>${money(t)}</b>` : 'Precios por confirmar por WhatsApp'}</span>
-        <div class="aacts">${acts.join('')}<button class="btn icon" type="button" data-oact="copy" title="Copiar el pedido" aria-label="Copiar el pedido">${ico('txt')}</button><button class="btn icon dan" type="button" data-oact="del" title="Eliminar del historial" aria-label="Eliminar del historial">${ico('trash')}</button></div>
+        <div class="aacts">${inv && inv.pdf_url ? `<a class="btn sec sm" href="${esc(inv.pdf_url)}" target="_blank" rel="noopener">Ver boleta ${esc((inv.series || '') + '-' + (inv.number || ''))}</a>` : ''}<button class="btn icon" type="button" data-oact="copy" title="Copiar el pedido" aria-label="Copiar el pedido">${ico('txt')}</button><button class="btn icon dan" type="button" data-oact="del" title="Eliminar del historial" aria-label="Eliminar del historial">${ico('trash')}</button></div>
       </footer>
     </article>`;
   }).join('');
@@ -538,18 +598,13 @@ $('#oQ').addEventListener('input', renderOrders);
 $('#oList').addEventListener('click', async e => {
   const b = e.target.closest('[data-oact]'); if (!b) return;
   const o = aOrders.find(x => String(x.id) === b.closest('[data-id]').dataset.id); if (!o) return;
-  const setSt = async s => { await sb(`/rest/v1/orders?id=eq.${o.id}`, { method:'PATCH', auth:true, body:{ status: s } }); o.status = s; renderOrders(); renderHome(); };
   try {
     switch (b.dataset.oact){
-      case 'paid': await setSt('pagado'); aMsg(`Pedido ${oCode(o)} marcado como pagado. Ya puedes emitir su boleta.`); break;
-      case 'unpaid': case 'reopen': await setSt('nuevo'); break;
-      case 'cancel': if (confirm(`¿Anular el pedido ${oCode(o)}?\nQueda en el historial como anulado.`)) await setSt('anulado'); break;
-      case 'bill': openBill(o); break;
       case 'copy': await navigator.clipboard.writeText(orderMsg(o)); aMsg('Pedido copiado. Puedes pegarlo en WhatsApp.'); break;
       case 'del':
         if (confirm(`¿Eliminar el pedido ${oCode(o)} del historial?\nSe borra para siempre.`)){
           await sb(`/rest/v1/orders?id=eq.${o.id}`, { method:'DELETE', auth:true });
-          aOrders = aOrders.filter(x => x !== o); renderOrders(); renderHome();
+          aOrders = aOrders.filter(x => x !== o); renderOrders(); renderHome(); renderBillFrom();
         }
     }
   } catch (err) { aMsg('No se pudo guardar: ' + err.message, 'err'); }
@@ -623,15 +678,30 @@ function calcTotals(){
     : `<div><span>Valor de venta (sin IGV)</span><b>${money(subtotal)}</b></div><div><span>IGV 18 %</span><b>${money(igv)}</b></div><div class="big"><span>Total a pagar</span><b>${money(total)}</b></div>`;
   return { ls, total, subtotal, igv };
 }
+function renderBillFrom(sel){
+  const s = $('#bFrom'); if (!s) return;
+  s.innerHTML = '<option value="">Sin pedido (la lleno yo)</option>' + aOrders.slice(0, 200).map(o => `<option value="${o.id}"${sel && sel.id === o.id ? ' selected' : ''}>${esc(oCode(o))} · ${esc(o.customer_name || 'Cliente sin nombre')} · ${fmtDate.format(new Date(o.created_at))}</option>`).join('');
+}
+function fillFromOrder(o){
+  billOrder = o || null;
+  $('#bName').value = o?.customer_name || '';
+  const items = o ? (o.items || []).map(i => ({ name: i.name + (i.size ? ` (${i.size})` : ''), qty: i.qty || 1, price: i.price !== '' && i.price != null ? i.price : '' })) : [{ name:'', qty:1, price:'' }];
+  $('#bLines').innerHTML = `<div class="ln lh"><span>Producto</span><span>Cant.</span><span>Precio c/u</span><span>Importe</span><span></span></div>` + items.map(lineRow).join('');
+  setDocOptions(); calcTotals();
+}
+$('#bFrom').addEventListener('change', e => {
+  const o = aOrders.find(x => String(x.id) === e.target.value) || null;
+  const pend = o && aInvoices.find(i => i.order_id === o.id && ['pendiente','rechazado','error'].includes(i.status));
+  if (pend){ e.target.value = billOrder ? billOrder.id : ''; $('#bErr').textContent = `El pedido ${oCode(o)} ya tiene una boleta preparada en la lista. Emítela desde ahí.`; return; }
+  $('#bErr').textContent = ''; fillFromOrder(o);
+});
 function openBill(o){
   billOrder = o || null;
   const pend = o && aInvoices.find(i => i.order_id === o.id && ['pendiente','rechazado','error'].includes(i.status));
   if (pend){ aGo('bill'); aMsg('Este pedido ya tiene una boleta preparada. Tócala en la lista para emitirla.'); return; }
   $('#bForm').reset(); $('#bForm').querySelector('[value="boleta"]').checked = true; setDocOptions();
-  $('#bName').value = o?.customer_name || ''; $('#bDoc').value = ''; $('#bAddr').value = ''; $('#bErr').textContent = '';
-  const items = o ? (o.items || []).map(i => ({ name: i.name + (i.size ? ` (${i.size})` : ''), qty: i.qty || 1, price: i.price !== '' && i.price != null ? i.price : '' })) : [{ name:'', qty:1, price:'' }];
-  $('#bLines').innerHTML = `<div class="ln lh"><span>Producto</span><span>Cant.</span><span>Precio c/u</span><span>Importe</span><span></span></div>` + items.map(lineRow).join('');
-  calcTotals(); bModal.hidden = false; setTimeout(() => $('#bDoc').focus(), 30);
+  $('#bDoc').value = ''; $('#bAddr').value = ''; $('#bErr').textContent = '';
+  renderBillFrom(o); fillFromOrder(o); bModal.hidden = false; setTimeout(() => $('#bDoc').focus(), 30);
 }
 $('#bNew').addEventListener('click', () => openBill(null));
 bModal.querySelectorAll('[data-bclose]').forEach(b => b.addEventListener('click', () => { bModal.hidden = true; }));

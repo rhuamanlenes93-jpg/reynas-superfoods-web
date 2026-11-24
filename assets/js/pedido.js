@@ -8,6 +8,12 @@ function toast(msg){
   $('#toastT').textContent = msg; $('#toast').classList.add('show');
   clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('show'), 2600);
 }
+// estadística anónima para el panel: qué productos se agregan al carrito (sin datos del cliente)
+function trackCart(p, q){
+  if (session) return; // no contar las pruebas del administrador
+  sb('/rest/v1/cart_events', { method:'POST', prefer:'return=minimal', keepalive:true,
+    body:{ product_id: String(p.id).slice(0, 80), product_name: fullName(p).slice(0, 160), qty: Math.min(Math.max(1, q), 50) } }).catch(() => {});
+}
 function setQty(id, n, opts = {}){
   const p = byId(id); if (!p) return;
   const before = cart[id] || 0;
@@ -16,6 +22,7 @@ function setQty(id, n, opts = {}){
   document.querySelectorAll(`[data-ctl="${id}"]`).forEach(el => el.innerHTML = controlFor(p));
   renderOrder();
   if (n > before){
+    trackCart(p, n - before);
     fly(opts.img);
     if (!opts.silent) toast((before ? 'Sumaste otro: ' : 'Agregado: ') + fullName(p));
   }

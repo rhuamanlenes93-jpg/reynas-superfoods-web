@@ -69,12 +69,19 @@ El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segu
   - Solo los usuarios de la tabla `admins` pueden editar, ver pedidos y subir fotos.
 - **Nunca** subir al repositorio la clave `service_role`, contraseñas ni el token de facturación. El token de facturación irá como secreto de una Supabase Edge Function.
 
+## Panel de administración
+
+- **Inicio:** resumen y dashboard (pedidos recibidos, productos más pedidos por WhatsApp, más agregados al carrito, pedidos por día, categorías y productos que se agregan al carrito pero casi no se piden). Periodos: 7 días, 30 días y todo.
+- **Pedidos:** historial de solo lectura de los pedidos enviados por WhatsApp, con filtro por fecha, búsqueda, copiar y borrar.
+- **Facturación:** “Nueva boleta” se puede llenar con un pedido del historial eligiendo su código.
+- Las visitas del carrito se guardan en `cart_events` (solo producto y cantidad, sin datos personales). No se cuentan las pruebas hechas con la sesión de administración abierta.
+
 ## Pendiente
 
-- Conexión con la facturación (Factus / Complexless vía Phuyusoft): Edge Function que emite la boleta con serie propia (por ejemplo B002) cuando la clienta marca el pedido como pagado.
-- Mantener activo el plan gratis de Supabase: un Cloudflare Worker con cron que consulte la API cada pocos días.
-- Dominio, Google Search Console y Perfil de Negocio de Google.
-
+- Token y URL de la API de facturación (Factus): ver la sección siguiente.
+- Fotos de los doypacks cuando lleguen.
+- Dominio propio: luego actualizar `canonical`, `og:url`, `sitemap.xml`, `robots.txt`, el link y QR del catálogo PDF; después Google Search Console y Perfil de Negocio de Google.
+- Encender **Mostrar precios en la tienda** cuando la clienta confirme sus precios.
 
 ## Facturación electrónica (Factus)
 
