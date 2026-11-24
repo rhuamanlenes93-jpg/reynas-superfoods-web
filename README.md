@@ -79,7 +79,7 @@ El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segu
 ## Pendiente
 
 - Token y URL de la API de facturación (Factus): ver la sección siguiente.
-- Fotos de los doypacks cuando lleguen.
+- Catálogo/fotos de los packs y doypacks cuando la clienta los envíe.
 - Dominio propio: luego actualizar `canonical`, `og:url`, `sitemap.xml`, `robots.txt`, el link y QR del catálogo PDF; después Google Search Console y Perfil de Negocio de Google.
 
 ## Facturación electrónica (Factus)
