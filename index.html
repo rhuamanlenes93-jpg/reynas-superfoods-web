@@ -15,9 +15,14 @@
 <meta property="og:image" content="https://reynasuperfoods.pages.dev/assets/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo de Reyna's Superfoods S.A.C.">
+<meta name="twitter:image" content="https://reynasuperfoods.pages.dev/assets/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#D39F78">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#FBF6EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cauphvgvqtcvmcsvbyry.supabase.co" crossorigin>
@@ -30,7 +35,7 @@
   "@type": "Organization",
   "name": "Reyna's Superfoods S.A.C.",
   "url": "https://reynasuperfoods.pages.dev/",
-  "logo": "https://reynasuperfoods.pages.dev/favicon.svg",
+  "logo": "https://reynasuperfoods.pages.dev/assets/img/logo-512.png",
   "slogan": "Lo mejor de la naturaleza para ti",
   "sameAs": ["https://www.instagram.com/reynassuperfoods", "https://www.tiktok.com/@reynas.superfoods"],
   "contactPoint": { "@type": "ContactPoint", "telephone": "+51-918-515-262", "contactType": "sales", "areaServed": "PE", "availableLanguage": "es" }
@@ -44,7 +49,7 @@
   <div class="stage" id="stage" aria-live="polite"></div>
   <div class="hui">
     <header class="hhead">
-      <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio">Reyna's</a>
+      <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></a>
       <nav class="htabs rise" id="tabs" aria-label="Productos destacados"><span class="hbar" id="bar"></span></nav>
       <div class="hacct rise">
         <a href="#tienda">Tienda</a>
@@ -53,7 +58,7 @@
       </div>
     </header>
     <button class="harrow hprev rise" type="button" aria-label="Producto anterior"><svg viewBox="0 0 28 28"><path d="M24 14H4M12 6l-8 8 8 8"/></svg></button>
-    <a class="hcta rise" id="cta" href="#tienda">COMPRAR AHORA</a>
+    <a class="hcta rise" id="cta" href="#tienda" data-edit="hero.boton">COMPRAR AHORA</a>
     <button class="harrow hnext rise" type="button" aria-label="Producto siguiente"><svg viewBox="0 0 28 28"><path d="M4 14h20M16 6l8 8-8 8"/></svg></button>
   </div>
 </section>
@@ -62,10 +67,10 @@
 <header class="topbar" id="topbar">
   <div class="tb-in">
     <button class="burger" type="button" id="burger" aria-label="Abrir menú de productos" aria-expanded="false" aria-controls="mega"><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
-    <a class="tb-logo" href="#inicio">Reyna's</a>
+    <a class="tb-logo" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></a>
     <nav class="tb-links" aria-label="Secciones">
       <button class="megabtn" type="button" id="megaBtn" aria-expanded="false" aria-controls="mega">Tienda <svg viewBox="0 0 14 14"><path d="M3 5l4 4 4-4"/></svg></button>
-      <a href="#packs">Packs y combos</a><a href="#como-comprar">Cómo comprar</a><a href="#contacto">Contacto</a>
+      <a href="#packs">Packs y combos</a><a href="#mision">Nosotros</a><a href="#como-comprar">Cómo comprar</a><a href="#contacto">Contacto</a>
     </nav>
     <button class="cartpill" type="button" data-cart aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
   </div>
@@ -73,7 +78,7 @@
 <div class="mega" id="mega" role="region" aria-label="Menú de productos"><div class="mega-in" id="megaIn"></div></div>
 
 <main>
-<div class="marquee" data-speed="0.6" aria-hidden="true"><div class="mq-track"><span>Maca</span><i></i><span class="o">Lúcuma</span><i></i><span>Maíz morado</span><i></i><span class="o">Camu camu</span><i></i><span>Quinua</span><i></i><span class="o">Cacao</span><i></i><span>Kiwicha</span><i></i><span class="o">Açaí</span><i></i><span>Cañihua</span><i></i><span class="o">Aguaje</span><i></i></div></div>
+<div class="marquee" data-speed="0.6" aria-hidden="true"><div class="mq-track"><span data-edit="cinta1.1">Maca</span><i></i><span class="o" data-edit="cinta1.2">Lúcuma</span><i></i><span data-edit="cinta1.3">Maíz morado</span><i></i><span class="o" data-edit="cinta1.4">Camu camu</span><i></i><span data-edit="cinta1.5">Quinua</span><i></i><span class="o" data-edit="cinta1.6">Cacao</span><i></i><span data-edit="cinta1.7">Kiwicha</span><i></i><span class="o" data-edit="cinta1.8">Açaí</span><i></i><span data-edit="cinta1.9">Cañihua</span><i></i><span class="o" data-edit="cinta1.10">Aguaje</span><i></i></div></div>
 <!-- =================== TIENDA =================== -->
 <section class="sec" id="tienda">
   <div class="wrap">
@@ -81,9 +86,9 @@
       <nav class="crumbs" id="shopCrumbs" aria-label="Estás en"></nav>
       <div class="s-head rv" style="margin-bottom:0">
         <div>
-          <p class="eyebrow">Catálogo 2026</p>
-          <h2 class="h2">Harinas y superalimentos andinos</h2>
-          <p class="lead">Elige lo que necesitas y lo agregamos a tu pedido. Venta al por mayor y menor, con envíos a todo Lima y provincias.</p>
+          <p class="eyebrow" data-edit="tienda.etiqueta">Catálogo 2026</p>
+          <h2 class="h2" data-edit="tienda.titulo">Harinas y superalimentos andinos</h2>
+          <p class="lead" data-edit="tienda.texto">Elige lo que necesitas y lo agregamos a tu pedido. Venta al por mayor y menor, con envíos a todo Lima y provincias.</p>
         </div>
       </div>
     </div>
@@ -105,15 +110,15 @@
   <div class="wrap">
     <div class="s-head rv">
       <div>
-        <p class="eyebrow">Packs y combos</p>
-        <h2 class="h2">Combinaciones listas para tu semana</h2>
-        <p class="lead">Productos que se usan juntos, en un solo pedido. Ideales para regalar o para empezar.</p>
+        <p class="eyebrow" data-edit="packs.etiqueta">Packs y combos</p>
+        <h2 class="h2" data-edit="packs.titulo">Combinaciones listas para tu semana</h2>
+        <p class="lead" data-edit="packs.texto">Productos que se usan juntos, en un solo pedido. Ideales para regalar o para empezar.</p>
       </div>
     </div>
     <div class="pgrid" id="pgrid"></div>
     <div class="custom rv">
-      <p>¿Necesitas otra combinación? La armamos contigo.</p>
-      <a class="bt bt-ink" id="customLink" href="#" target="_blank" rel="noopener">Armar mi pack por WhatsApp</a>
+      <p data-edit="packs.extra">¿Necesitas otra combinación? La armamos contigo.</p>
+      <a class="bt bt-ink" id="customLink" href="#" target="_blank" rel="noopener" data-edit="packs.boton">Armar mi pack por WhatsApp</a>
     </div>
   </div>
 </section>
@@ -121,17 +126,17 @@
 <!-- =================== DESTACADO =================== -->
 <section class="sec feat" id="destacado">
   <div class="wrap feat-in">
-    <div class="vis rv" aria-hidden="true"><span class="big">Maca</span><div class="obj"><img id="featImg" alt=""></div></div>
+    <div class="vis rv" aria-hidden="true"><span class="big" data-edit="dest.palabra">Maca</span><div class="obj"><img id="featImg" alt=""></div></div>
     <div class="rv">
-      <p class="eyebrow">Producto destacado</p>
-      <h2 class="h2">Maca negra gelatinizada</h2>
+      <p class="eyebrow" data-edit="dest.etiqueta">Producto destacado</p>
+      <h2 class="h2" data-edit="dest.titulo">Maca negra gelatinizada</h2>
       <div class="bens">
-        <div class="ben"><h3>Energía natural</h3><p>Ayuda a mejorar el rendimiento físico y mental.</p></div>
-        <div class="ben"><h3>Fortalece el organismo</h3><p>Aporta nutrientes que apoyan el sistema inmunológico.</p></div>
-        <div class="ben"><h3>Equilibrio hormonal</h3><p>Contribuye al bienestar hormonal y la vitalidad.</p></div>
-        <div class="ben"><h3>100% natural</h3><p>Sin aditivos, sin conservantes.</p></div>
+        <div class="ben"><h3 data-edit="dest.b1_t">Energía natural</h3><p data-edit="dest.b1">Ayuda a mejorar el rendimiento físico y mental.</p></div>
+        <div class="ben"><h3 data-edit="dest.b2_t">Fortalece el organismo</h3><p data-edit="dest.b2">Aporta nutrientes que apoyan el sistema inmunológico.</p></div>
+        <div class="ben"><h3 data-edit="dest.b3_t">Equilibrio hormonal</h3><p data-edit="dest.b3">Contribuye al bienestar hormonal y la vitalidad.</p></div>
+        <div class="ben"><h3 data-edit="dest.b4_t">100% natural</h3><p data-edit="dest.b4">Sin aditivos, sin conservantes.</p></div>
       </div>
-      <p class="ideal"><b>Ideal para:</b> batidos, recetas, yogures y panadería.</p>
+      <p class="ideal"><b data-edit="dest.ideal_t">Ideal para:</b> <span data-edit="dest.ideal">batidos, recetas, yogures y panadería.</span></p>
       <div style="display:flex;gap:14px;flex-wrap:wrap">
         <button class="bt bt-lime" type="button" id="featAdd">Agregar a mi pedido</button>
         <button class="bt bt-white" type="button" id="featSee">Ver producto</button>
@@ -145,16 +150,27 @@
   <div class="wrap">
     <div class="s-head rv">
       <div>
-        <p class="eyebrow">Alimentación saludable</p>
-        <h2 class="h2">Lo mejor de la naturaleza para ti</h2>
+        <p class="eyebrow" data-edit="val.etiqueta">Alimentación saludable</p>
+        <h2 class="h2" data-edit="val.titulo">Lo mejor de la naturaleza para ti</h2>
       </div>
-      <p class="lead">Productos reales, resultados reales. Insumos en polvo, listos para tu cocina o tu negocio.</p>
+      <p class="lead" data-edit="val.texto">Productos reales, resultados reales. Insumos en polvo, listos para tu cocina o tu negocio.</p>
     </div>
     <div class="vals">
-      <div class="val card" style="--c:var(--green-v);--i:0"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/></svg></div><h3>Natural</h3><p>Harinas y extractos de frutas, granos, raíces y plantas.</p></div>
-      <div class="val card" style="--c:var(--pink);--i:1"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><h3>Saludable</h3><p>Para batidos, desayunos, recetas, yogures y panadería.</p></div>
-      <div class="val card" style="--c:var(--yellow);--i:2"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.3 6L12 16.4 6.6 19.4l1.3-6L3.4 9.3l6-.7z"/></svg></div><h3>Nutritivo</h3><p>Superalimentos andinos y amazónicos como maca, quinua, camu camu y cacao.</p></div>
-      <div class="val card" style="--c:var(--cyan);--i:3"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></div><h3>Sostenible</h3><p>Productos del campo peruano, para consumo diario o a gran escala.</p></div>
+      <div class="val card" style="--c:var(--green-v);--i:0"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/></svg></div><h3 data-edit="val.1_t">Natural</h3><p data-edit="val.1">Harinas y extractos de frutas, granos, raíces y plantas.</p></div>
+      <div class="val card" style="--c:var(--pink);--i:1"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><h3 data-edit="val.2_t">Saludable</h3><p data-edit="val.2">Para batidos, desayunos, recetas, yogures y panadería.</p></div>
+      <div class="val card" style="--c:var(--yellow);--i:2"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.3 6L12 16.4 6.6 19.4l1.3-6L3.4 9.3l6-.7z"/></svg></div><h3 data-edit="val.3_t">Nutritivo</h3><p data-edit="val.3">Superalimentos andinos y amazónicos como maca, quinua, camu camu y cacao.</p></div>
+      <div class="val card" style="--c:var(--cyan);--i:3"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></div><h3 data-edit="val.4_t">Sostenible</h3><p data-edit="val.4">Productos del campo peruano, para consumo diario o a gran escala.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== MISIÓN Y VISIÓN =================== -->
+<section class="sec" style="padding-top:0" id="mision">
+  <div class="wrap">
+    <div class="s-head rv"><div><p class="eyebrow" data-edit="mv.etiqueta">Quiénes somos</p><h2 class="h2" data-edit="mv.titulo">Nuestra misión y visión</h2></div></div>
+    <div class="mv">
+      <article class="mv-card card" style="--c:var(--green-v);--i:0"><h3 data-edit="mv.mision_t">Misión</h3><p data-edit="mv.mision">Llevar a cada hogar y negocio del Perú harinas y superalimentos andinos y amazónicos naturales, de calidad y a buen precio, para que comer sano sea fácil todos los días.</p></article>
+      <article class="mv-card card" style="--c:var(--lucuma, var(--yellow));--i:1"><h3 data-edit="mv.vision_t">Visión</h3><p data-edit="mv.vision">Ser la marca peruana de superalimentos en polvo de referencia, reconocida por su calidad, su trato cercano y por llevar lo mejor del campo peruano al país y al mundo.</p></article>
     </div>
   </div>
 </section>
@@ -164,10 +180,10 @@
   <div class="wrap">
     <div class="whole rv">
       <div>
-        <h2 class="h2">Venta al por mayor y menor</h2>
-        <p>Insumos para la industria alimentaria: panaderías, juguerías, restaurantes y emprendimientos. Cuéntanos qué necesitas y en qué cantidad.</p>
+        <h2 class="h2" data-edit="may.titulo">Venta al por mayor y menor</h2>
+        <p data-edit="may.texto">Insumos para la industria alimentaria: panaderías, juguerías, restaurantes y emprendimientos. Cuéntanos qué necesitas y en qué cantidad.</p>
       </div>
-      <div class="acts"><a class="bt bt-lime" id="wholeLink" href="#" target="_blank" rel="noopener">Cotizar por mayor</a></div>
+      <div class="acts"><a class="bt bt-lime" id="wholeLink" href="#" target="_blank" rel="noopener" data-edit="may.boton">Cotizar por mayor</a></div>
     </div>
   </div>
 </section>
@@ -175,11 +191,11 @@
 <!-- =================== CÓMO COMPRAR =================== -->
 <section class="sec" style="padding-top:0" id="como-comprar">
   <div class="wrap">
-    <div class="s-head rv"><div><p class="eyebrow">Cómo comprar</p><h2 class="h2">Tu pedido en tres pasos</h2></div></div>
+    <div class="s-head rv"><div><p class="eyebrow" data-edit="pasos.etiqueta">Cómo comprar</p><h2 class="h2" data-edit="pasos.titulo">Tu pedido en tres pasos</h2></div></div>
     <div class="steps">
-      <div class="stp card" style="--i:0"><div class="bd"><span class="n">1</span><h3>Arma tu pedido</h3><p>Agrega productos y packs desde la tienda. Puedes cambiar las cantidades cuando quieras.</p></div></div>
-      <div class="stp card" style="--i:1"><div class="bd"><span class="n">2</span><h3>Envíalo por WhatsApp</h3><p>Escribe tu nombre y distrito. El mensaje se arma solo y llega directo a nuestro WhatsApp.</p></div></div>
-      <div class="stp card" style="--i:2"><div class="bd"><span class="n">3</span><h3>Coordina pago y envío</h3><p>Te confirmamos precios, presentaciones y el costo de envío. Enviamos a todo Lima y provincias.</p></div></div>
+      <div class="stp card" style="--i:0"><div class="bd"><span class="n">1</span><h3 data-edit="pasos.1_t">Arma tu pedido</h3><p data-edit="pasos.1">Agrega productos y packs desde la tienda. Puedes cambiar las cantidades cuando quieras.</p></div></div>
+      <div class="stp card" style="--i:1"><div class="bd"><span class="n">2</span><h3 data-edit="pasos.2_t">Envíalo por WhatsApp</h3><p data-edit="pasos.2">Escribe tu nombre y distrito. El mensaje se arma solo y llega directo a nuestro WhatsApp.</p></div></div>
+      <div class="stp card" style="--i:2"><div class="bd"><span class="n">3</span><h3 data-edit="pasos.3_t">Coordina pago y envío</h3><p data-edit="pasos.3">Te confirmamos precios, presentaciones y el costo de envío. Enviamos a todo Lima y provincias.</p></div></div>
     </div>
   </div>
 </section>
@@ -187,7 +203,7 @@
 <!-- =================== PEDIDO =================== -->
 <section class="sec order-sec" id="pedido">
   <div class="wrap">
-    <div class="s-head rv"><div><p class="eyebrow">Mi pedido</p><h2 class="h2">Revisa y envía tu pedido</h2></div></div>
+    <div class="s-head rv"><div><p class="eyebrow" data-edit="pedido.etiqueta">Mi pedido</p><h2 class="h2" data-edit="pedido.titulo">Revisa y envía tu pedido</h2></div></div>
     <div class="ord">
       <div class="box rv">
         <h3>Productos</h3>
@@ -202,28 +218,28 @@
         <p class="fld" style="margin-bottom:6px">Así llegará tu mensaje</p>
         <div class="preview" id="preview" aria-live="polite"></div>
         <button class="bt bt-lime full" id="send" type="submit" disabled>Enviar pedido por WhatsApp</button>
-        <p class="note">No se cobra nada aquí. Reyna's te responde para coordinar el pago, la boleta y el envío.</p>
+        <p class="note" data-edit="pedido.nota">No se cobra nada aquí. Reyna's te responde para coordinar el pago, la boleta y el envío.</p>
       </form>
     </div>
   </div>
 </section>
 </main>
 
-<div class="marquee alt" data-speed="-0.45" aria-hidden="true"><div class="mq-track"><span>Envíos a todo Lima y provincias</span><i></i><span>Venta por mayor y menor</span><i></i><span>Productos reales, resultados reales</span><i></i><span>Lo mejor de la naturaleza para ti</span><i></i></div></div>
+<div class="marquee alt" data-speed="-0.45" aria-hidden="true"><div class="mq-track"><span data-edit="cinta2.1">Envíos a todo Lima y provincias</span><i></i><span data-edit="cinta2.2">Venta por mayor y menor</span><i></i><span data-edit="cinta2.3">Productos reales, resultados reales</span><i></i><span data-edit="cinta2.4">Lo mejor de la naturaleza para ti</span><i></i></div></div>
 <!-- =================== PIE =================== -->
 <footer class="foot" id="contacto">
   <div class="wrap">
     <div class="f-in">
       <div>
-        <div class="f-logo">Reyna's</div>
-        <p>Reyna's Superfoods S.A.C. Harinas, superalimentos y extractos en polvo. Lo mejor de la naturaleza para ti.</p>
+        <div class="f-logo"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></div>
+        <p data-edit="pie.texto">Reyna's Superfoods S.A.C. Harinas, superalimentos y extractos en polvo. Lo mejor de la naturaleza para ti.</p>
       </div>
       <div>
         <h3>Contacto</h3>
         <ul>
           <li><a href="https://wa.me/51918515262" target="_blank" rel="noopener">WhatsApp 918 515 262</a></li>
           <li><a href="https://wa.me/51992595837" target="_blank" rel="noopener">WhatsApp 992 595 837</a></li>
-          <li>Lima, Perú. Envíos a todo Lima y provincias.</li>
+          <li data-edit="pie.lugar">Lima, Perú. Envíos a todo Lima y provincias.</li>
         </ul>
       </div>
       <div>
@@ -236,7 +252,7 @@
       </div>
     </div>
     <div class="f-bot">
-      <span>© 2026 Reyna's Superfoods S.A.C.</span>
+      <span data-edit="pie.derechos">© 2026 Reyna's Superfoods S.A.C.</span>
     </div>
   </div>
 </footer>
@@ -246,7 +262,7 @@
   <div class="pdp-top">
     <div class="tb-in">
       <button class="back" type="button" id="pdpBack"><svg viewBox="0 0 20 20"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>Volver</button>
-      <a class="tb-logo" href="#inicio" id="pdpLogo">Reyna's</a>
+      <a class="tb-logo" href="#inicio" id="pdpLogo" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></a>
       <button class="cartpill" type="button" data-cart id="pdpCart" aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
     </div>
   </div>
@@ -317,6 +333,7 @@
     </div>
     <div class="a-tabs" role="tablist">
       <button type="button" role="tab" aria-selected="true" data-view="prod" id="tProd">Productos</button>
+      <button type="button" role="tab" aria-selected="false" data-view="txt" id="tTxt">Textos de la página</button>
       <button type="button" role="tab" aria-selected="false" data-view="ord" id="tOrd">Pedidos</button>
     </div>
 
@@ -339,8 +356,9 @@
         </div>
         <label id="pNewWrap" hidden>Nombre de la nueva categoría<input class="a-in" id="pNew" placeholder="Ej.: Condimentos en polvo"></label>
         <div class="a-photo"><img id="pImgPrev" alt="Vista previa de la foto"><label>Foto del producto<input class="a-in" id="pImg" type="file" accept="image/*" style="padding-top:9px"></label><button class="btn sec sm" type="button" id="pImgClear">Quitar foto</button></div>
-        <label>Descripción (para packs y combos)<textarea class="a-in" id="pDesc" placeholder="Qué incluye, para qué sirve…"></textarea></label>
+        <label>Descripción (se ve en la ficha del producto y en packs y combos)<textarea class="a-in" id="pDesc" placeholder="Qué incluye, para qué sirve…"></textarea></label>
         <label class="a-check"><input type="checkbox" id="pVis" checked> Visible en la tienda</label>
+        <label class="a-check"><input type="checkbox" id="pShowPrice" checked> Mostrar el precio de este producto (cuando los precios estén activados)</label>
         <p class="a-err" id="pErr" role="alert"></p>
         <div class="a-actions">
           <button class="btn pri" type="submit">Guardar</button>
@@ -350,6 +368,13 @@
 
       <div class="a-list" id="aList"></div>
       <p class="a-note">Los cambios se guardan en la base de datos y se ven en la tienda al instante. Si un producto no tiene precio, la tienda muestra “Precio por confirmar”.</p>
+    </section>
+
+    <section id="vTxt" hidden>
+      <p class="a-note" style="margin:0 0 14px">Aquí cambias lo que dice la página: títulos, frases, misión y visión, pasos y el pie. El diseño no cambia. Escribe, presiona <b>Guardar cambios</b> y se ve en la tienda al instante. <b>Restaurar</b> vuelve al texto original.</p>
+      <div class="a-bar"><input class="a-in" id="tQ" type="search" placeholder="Buscar texto" aria-label="Buscar texto"><button class="btn pri" type="button" id="tSave" disabled>Guardar cambios</button></div>
+      <p class="a-err" id="tMsg" role="status" aria-live="polite"></p>
+      <div id="tList"></div>
     </section>
 
     <section id="vOrd" hidden>

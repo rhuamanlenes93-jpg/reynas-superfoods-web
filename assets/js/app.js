@@ -254,7 +254,8 @@ const saveC = () => save(KEY_C, cart);
 // fila de Supabase -> producto de la tienda (el precio solo se muestra si está activado en el panel)
 function fromRow(r, adminView){
   return { id: r.id, name: r.name, group: r.category, img: r.image_url || '', size: r.unit || '',
-    price: (adminView || showPrices) && r.price != null ? String(Number(r.price)) : '',
+    price: (adminView || (showPrices && r.show_price !== false)) && r.price != null ? String(Number(r.price)) : '',
+    showPrice: r.show_price !== false,
     desc: r.description || '', hidden: !r.active, example: !!r.is_example };
 }
 async function loadCatalog(){
@@ -285,19 +286,50 @@ const priceHTML = p => `<span class="pr${p.price === '' ? ' tbd' : ''}">${p.pric
 /* =========================================================
    ANIMACIONES 3D
    ========================================================= */
-// títulos: cada palabra gira en 3D al entrar
+/* =========================================================
+   TEXTOS EDITABLES desde el panel (tabla site_texts)
+   Cada elemento con data-edit="clave" guarda su texto original
+   y se reemplaza por el que la dueña escriba en el panel.
+   ========================================================= */
+document.querySelectorAll('[data-edit]').forEach(el => { el.dataset.def = el.textContent.trim(); });
+let siteTexts = {};
+const TXT_GROUPS = { hero:'Portada', cinta1:'Cinta de arriba', tienda:'Tienda', packs:'Packs y combos', dest:'Producto destacado', val:'Valores', mv:'Misión y visión', may:'Venta por mayor', pasos:'Cómo comprar', pedido:'Mi pedido', cinta2:'Cinta de abajo', pie:'Pie de página' };
+const TXT_NAMES = { boton:'Botón', etiqueta:'Texto pequeño sobre el título', titulo:'Título', texto:'Texto', extra:'Frase', palabra:'Palabra grande de fondo', nota:'Nota debajo del botón', ideal_t:'“Ideal para” (título)', ideal:'“Ideal para” (texto)', mision_t:'Título de la misión', mision:'Misión', vision_t:'Título de la visión', vision:'Visión', lugar:'Ubicación', derechos:'Derechos' };
+const TXT_ITEM = { val:'Valor', pasos:'Paso', dest:'Beneficio' };
+function txtLabel(key){
+  const [g, s] = key.split('.');
+  if (TXT_NAMES[s]) return TXT_NAMES[s];
+  let m = s.match(/^b?(\d+)_t$/); if (m) return `${TXT_ITEM[g] || 'Elemento'} ${m[1]}: título`;
+  m = s.match(/^b?(\d+)$/); if (m) return g.startsWith('cinta') ? `Frase ${m[1]}` : `${TXT_ITEM[g] || 'Elemento'} ${m[1]}: texto`;
+  return s;
+}
+function setTxt(el, value){
+  if (el.classList.contains('h2')) splitH2(el, value); else el.textContent = value;
+}
+function applyTexts(){
+  document.querySelectorAll('[data-edit]').forEach(el => {
+    const v = siteTexts[el.dataset.edit] ?? el.dataset.def;
+    const cur = el.classList.contains('h2') ? el.getAttribute('aria-label') : el.textContent.trim();
+    if (v !== cur) setTxt(el, v);
+  });
+}
+async function loadTexts(){
+  try { (await sb('/rest/v1/site_texts?select=key,value')).forEach(r => { siteTexts[r.key] = r.value; }); applyTexts(); }
+  catch { /* si falla se quedan los textos originales */ }
+}
+
 // títulos: cada letra sube girando; la última palabra se subraya
-document.querySelectorAll('.h2').forEach(h => {
-  const text = h.textContent.trim(), words = text.split(/\s+/);
+function splitH2(h, text){
+  text = text.trim(); const words = text.split(/\s+/);
   h.setAttribute('aria-label', text);
   let k = 0;
   h.innerHTML = words.map((w, wi) => {
     const chars = [...w].map(c => `<span class="ch" style="--k:${k++}">${esc(c)}</span>`).join('');
     return `<span class="w${wi === words.length - 1 ? ' mk' : ''}" style="--n:${k}" aria-hidden="true">${chars}</span>`;
   }).join(' ');
-});
-// logo del pie: letras sueltas para que salten
-document.querySelectorAll('.f-logo').forEach(l => { const t = l.textContent; l.setAttribute('aria-label', t); l.innerHTML = [...t].map((c,k) => `<span aria-hidden="true" style="--k:${k}">${esc(c)}</span>`).join(''); });
+}
+document.querySelectorAll('.h2').forEach(h => splitH2(h, h.textContent));
+loadTexts();
 
 // cintas de texto: se mueven solas y aceleran (y cambian de sentido) con el scroll
 const marquees = [...document.querySelectorAll('.marquee')].map(m => {
@@ -730,6 +762,7 @@ loadCatalog().then(() => { renderAll(); route(); }).catch(() => {
 
 /* =========================================================
    PANEL DE ADMINISTRACIÓN (oculto)
+   Pestañas: Productos (incluye packs y combos), Textos de la página y Pedidos.
    Acceso oculto: mantener presionado el logo "Reyna's" 5 segundos o tocarlo
    5 veces seguidas (arriba, en la ficha o en el pie). También Ctrl + Shift + A o #admin.
    Usuario de Supabase Auth que figure en la tabla admins.
@@ -798,6 +831,8 @@ admin.querySelectorAll('[data-view]').forEach(t => t.addEventListener('click', (
   admin.querySelectorAll('[data-view]').forEach(x => x.setAttribute('aria-selected', x === t));
   $('#vProd').hidden = t.dataset.view !== 'prod';
   $('#vOrd').hidden = t.dataset.view !== 'ord';
+  $('#vTxt').hidden = t.dataset.view !== 'txt';
+  if (t.dataset.view === 'txt') renderTexts();
 }));
 
 const aGroups = () => [...new Set([...BASE_GROUPS, ...aProducts.map(p => p.group)])];
@@ -837,7 +872,7 @@ function renderProducts(){
       <div class="a-pn"><img class="a-thumb" src="${imgSrc(p)}" alt="" loading="lazy"><div><div class="a-name">${esc(p.name)}</div>${p.desc ? `<div class="a-sub">${esc(p.desc)}</div>` : ''}</div></div>
       <span class="c-cat">${esc(p.group)}</span>
       <span class="c-size">${p.size ? esc(p.size) : '<span class="a-muted">Sin definir</span>'}</span>
-      <span class="c-price">${p.price !== '' ? money(p.price) : '<span class="a-muted">Por confirmar</span>'}</span>
+      <span class="c-price">${p.price !== '' ? money(p.price) + (p.showPrice ? '' : ' <span class="a-muted">(oculto)</span>') : '<span class="a-muted">Por confirmar</span>'}</span>
       <div class="a-actions">
         <button class="btn sec sm" type="button" data-act="edit">Editar</button>
         <button class="btn sec sm" type="button" data-act="hide">${p.hidden ? 'Mostrar' : 'Ocultar'}</button>
@@ -873,6 +908,7 @@ function openForm(p){
   $('#pPrice').value = p ? p.price : '';
   $('#pDesc').value = p ? p.desc : '';
   $('#pVis').checked = p ? !p.hidden : true;
+  $('#pShowPrice').checked = p ? p.showPrice : true;
   $('#pImg').value = ''; setFormImg(p ? p.img : '');
   $('#pNew').value = ''; $('#pNewWrap').hidden = true; $('#pErr').textContent = '';
   aForm.hidden = false; aForm.scrollIntoView({block:'nearest'}); $('#pName').focus();
@@ -913,12 +949,60 @@ aForm.addEventListener('submit', async e => {
       await sb(`/storage/v1/object/productos/${path}`, { method:'POST', auth:true, raw:true, body: blob, headers:{ 'Content-Type': blob.type, 'x-upsert':'true' } });
       img = `${SB.supabaseUrl}/storage/v1/object/public/productos/${path}`;
     }
-    const row = { name, category: group, image_url: img || null, unit: $('#pSize').value.trim() || null, price: priceRaw === '' ? null : Number(priceRaw), description: $('#pDesc').value.trim() || null, active: $('#pVis').checked };
+    const row = { name, category: group, image_url: img || null, unit: $('#pSize').value.trim() || null, price: priceRaw === '' ? null : Number(priceRaw), description: $('#pDesc').value.trim() || null, active: $('#pVis').checked, show_price: $('#pShowPrice').checked };
     if (editing) await sb(`/rest/v1/products?id=eq.${editing.id}`, { method:'PATCH', auth:true, body: row });
     else await sb('/rest/v1/products', { method:'POST', auth:true, prefer:'return=minimal', body: { ...row, sort: 999 } });
     $('#pErr').textContent = ''; aForm.hidden = true; editing = null; await renderAdmin(); aMsg(`“${name}” se guardó.`);
   } catch (err) { $('#pErr').textContent = 'No se pudo guardar: ' + err.message; }
   finally { btn.disabled = false; }
+});
+
+/* ---------- Textos de la página ---------- */
+const tList = $('#tList'), tDraft = {};
+const tKeys = () => [...new Set([...document.querySelectorAll('main [data-edit], body > [data-edit], .hero [data-edit], .marquee [data-edit], .foot [data-edit]')].map(el => el.dataset.edit))];
+const tDef = k => document.querySelector(`[data-edit="${k}"]`).dataset.def;
+const tCur = k => k in tDraft ? tDraft[k] : (siteTexts[k] ?? tDef(k));
+const tMsg = s => { $('#tMsg').textContent = s; };
+function renderTexts(){
+  const q = norm($('#tQ').value.trim()); const byG = {};
+  tKeys().forEach(k => {
+    const g = k.split('.')[0], lab = txtLabel(k), v = tCur(k);
+    if (q && !norm(lab + ' ' + v + ' ' + (TXT_GROUPS[g] || '')).includes(q)) return;
+    (byG[g] = byG[g] || []).push(k);
+  });
+  const gs = Object.keys(TXT_GROUPS).filter(g => byG[g]);
+  tList.innerHTML = gs.length ? gs.map(g => `<fieldset class="t-group"><legend>${esc(TXT_GROUPS[g])}</legend>${byG[g].map(k => {
+    const v = tCur(k), long = tDef(k).length > 60, changed = (siteTexts[k] ?? tDef(k)) !== tDef(k) || k in tDraft;
+    return `<label class="t-row" data-k="${k}"><span class="t-lab">${esc(txtLabel(k))}${changed ? ' <span class="a-muted">(editado)</span>' : ''}</span>
+      ${long ? `<textarea class="a-in" rows="3" maxlength="2000">${esc(v)}</textarea>` : `<input class="a-in" maxlength="300" value="${esc(v)}">`}
+      ${(siteTexts[k] != null || k in tDraft) ? '<button class="btn sec sm" type="button" data-trestore>Restaurar</button>' : ''}</label>`;
+  }).join('')}</fieldset>`).join('') : '<p class="a-empty">No hay textos con esa búsqueda.</p>';
+}
+tList.addEventListener('input', e => {
+  const row = e.target.closest('[data-k]'); if (!row) return;
+  tDraft[row.dataset.k] = e.target.value; $('#tSave').disabled = false; tMsg('Tienes cambios sin guardar.');
+});
+tList.addEventListener('click', e => {
+  if (!e.target.closest('[data-trestore]')) return;
+  e.preventDefault(); const k = e.target.closest('[data-k]').dataset.k;
+  tDraft[k] = tDef(k); $('#tSave').disabled = false; renderTexts(); tMsg('Tienes cambios sin guardar.');
+});
+$('#tQ').addEventListener('input', renderTexts);
+$('#tSave').addEventListener('click', async () => {
+  const keys = Object.keys(tDraft); if (!keys.length) return;
+  const up = [], del = [];
+  for (const k of keys){
+    const v = tDraft[k].trim();
+    if (!v || v === tDef(k)) del.push(k); else up.push({ key: k, value: v });
+  }
+  $('#tSave').disabled = true; tMsg('Guardando…');
+  try {
+    if (up.length) await sb('/rest/v1/site_texts?on_conflict=key', { method:'POST', auth:true, prefer:'resolution=merge-duplicates,return=minimal', body: up });
+    if (del.length) await sb(`/rest/v1/site_texts?key=in.${encodeURIComponent('(' + del.map(k => `"${k}"`).join(',') + ')')}`, { method:'DELETE', auth:true });
+    up.forEach(r => { siteTexts[r.key] = r.value; }); del.forEach(k => { delete siteTexts[k]; });
+    keys.forEach(k => delete tDraft[k]);
+    applyTexts(); renderTexts(); tMsg(`Listo: ${keys.length === 1 ? 'se guardó 1 texto' : `se guardaron ${keys.length} textos`}. Ya se ve en la tienda.`);
+  } catch (err) { $('#tSave').disabled = false; tMsg('No se pudo guardar: ' + err.message); }
 });
 
 const ST = { nuevo:'Por cobrar', pagado:'Pagado', facturado:'Facturado', anulado:'Anulado' };
