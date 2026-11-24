@@ -184,7 +184,7 @@ function renderDrawer(animate){
   $('#dTitle').textContent = n ? `Tu pedido (${n})` : 'Tu pedido';
   const list = $('#dlist');
   list.innerHTML = items.length ? items.map(lineHTML).join('') : '<p class="empty">Todavía no agregas productos. Explora la tienda y toca “Agregar”.</p>';
-  if (!animate) list.querySelectorAll('.line').forEach(l => l.style.animation = 'none');
+  list.classList.toggle('static', !animate); // al quitar o cambiar cantidades, sin animación de entrada
   const t = totals(items); $('#dtot').hidden = !t; if (t) $('#dtotV').textContent = t;
   $('#send').disabled = !items.length;
   $('#send').textContent = items.length ? 'Enviar pedido por WhatsApp' : 'Agrega productos para enviar';

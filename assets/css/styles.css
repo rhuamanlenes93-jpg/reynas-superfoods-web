@@ -585,3 +585,4 @@ main>.sec,.foot{content-visibility:auto;contain-intrinsic-size:auto 900px}
 .dnote{font-size:12px;color:var(--muted);text-align:center;margin:-2px 0 0}
 @media (max-width:420px){.dfields{grid-template-columns:minmax(0,1fr)}}
 body:has(.drawer.open) .toast{opacity:0;pointer-events:none}
+.dlist.static .line{animation:none;opacity:1;translate:none}
