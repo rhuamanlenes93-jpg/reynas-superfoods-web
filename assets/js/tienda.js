@@ -104,10 +104,10 @@ function faqLd(){
 async function loadEmpresa(){
   try {
     const r = await sb('/rest/v1/settings?select=value&key=eq.empresa'); const e = (r[0] || {}).value || {};
-    const line = [e.ruc ? 'RUC ' + e.ruc : '', e.direccion || ''].filter(Boolean).join(' · ');
+    const line = e.ruc || '';
     const el = document.getElementById('empLine'); if (el) el.textContent = line;
     const fb = document.getElementById('fbLi');
-    if (fb && /^https:\/\//.test(e.facebook_url || '')){ fb.innerHTML = `<a href="${esc(e.facebook_url)}" target="_blank" rel="noopener">Facebook: Reyna's Superfoods</a>`; }
+    if (fb && /^https:\/\//.test(e.facebook_url || '')) fb.href = e.facebook_url;
   } catch {}
 }
 loadEmpresa();
