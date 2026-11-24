@@ -23,7 +23,8 @@ assets/hero/               imágenes de la portada (maca, lúcuma, maíz morado,
 assets/products/           fotos de los productos del catálogo PDF (la clave va en products.image_url)
 assets/img/                logo, imagen al compartir el enlace (og.jpg)
 favicon.ico, favicon-32.png, apple-touch-icon.png   ícono de la pestaña
-reynas-superfoods-web.sql  toda la base de datos en un solo archivo (tablas, seguridad, textos y catálogo inicial)
+reynas-superfoods-web.sql  toda la base de datos en un solo archivo (tablas, seguridad, textos, facturación y catálogo inicial)
+emitir-comprobante.ts      Edge Function de Supabase que emite boletas y facturas con Factus (ya publicada)
 _headers                   caché y cabeceras de seguridad para Cloudflare Pages
 robots.txt, sitemap.xml    para Google
 ```
@@ -73,3 +74,17 @@ El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segu
 - Conexión con la facturación (Factus / Complexless vía Phuyusoft): Edge Function que emite la boleta con serie propia (por ejemplo B002) cuando la clienta marca el pedido como pagado.
 - Mantener activo el plan gratis de Supabase: un Cloudflare Worker con cron que consulte la API cada pocos días.
 - Dominio, Google Search Console y Perfil de Negocio de Google.
+
+
+## Facturación electrónica (Factus)
+
+Todo está listo y publicado; solo falta el acceso a la API.
+
+1. Cuando el proveedor entregue el token y la URL del endpoint, en Supabase → Edge Functions → Secrets agrega:
+   - `FACTUS_TOKEN` = el token
+   - `FACTUS_URL` = la URL para emitir comprobantes
+   (Nunca en el código ni en el repositorio.)
+2. Con la documentación de Factus, ajusta los nombres de campos en `buildFactusPayload` y `readFactusResponse`
+   de `emitir-comprobante.ts` y vuelve a publicar la función.
+3. En el panel → Facturación, completa RUC, razón social, dirección y series (por defecto B002 y F002).
+4. Las boletas preparadas antes de tener la API quedan como "Pendiente": se emiten con el botón "Emitir ahora".

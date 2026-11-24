@@ -141,9 +141,19 @@ $('#featSee').addEventListener('click', () => { const p = products.find(x => x.i
    ========================================================= */
 const fName = $('#fName'), fDist = $('#fDist'), fNote = $('#fNote');
 const cartItems = () => Object.entries(cart).map(([id, n]) => ({ p: byId(id), n })).filter(x => x.p && !x.p.hidden);
+// código corto del pedido: va en el mensaje de WhatsApp y en el historial del panel
+const CODE_ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function orderCode(){
+  let c = null; try { c = sessionStorage.getItem('reynas.code'); } catch {}
+  if (!c || !/^R-[A-Z0-9]{4}$/.test(c)){
+    c = 'R-' + Array.from(crypto.getRandomValues(new Uint8Array(4)), b => CODE_ABC[b % CODE_ABC.length]).join('');
+    try { sessionStorage.setItem('reynas.code', c); } catch {}
+  }
+  return c;
+}
 function buildMsg(items){
   const nm = fName.value.trim(), ds = fDist.value.trim(), nt = fNote.value.trim();
-  let m = "Hola Reyna's Superfoods, quiero hacer un pedido:\n";
+  let m = `Hola Reyna's Superfoods, quiero hacer un pedido (${orderCode()}):\n`;
   m += items.length ? items.map(({p, n}) => `• ${n} × ${fullName(p)}${p.size ? ` (${p.size})` : ''}${p.price !== '' ? ` – ${money(p.price * n)}` : ''}`).join('\n') : '• (elige productos en la tienda)';
   if (nm) m += `\n\nNombre: ${nm}`;
   if (ds) m += `${nm ? '\n' : '\n\n'}Envío a: ${ds}`;
@@ -189,9 +199,10 @@ $('#oform').addEventListener('submit', e => {
   const items = cartItems(); if (!items.length) return;
   const msg = buildMsg(items);
   sb('/rest/v1/orders', { method:'POST', prefer:'return=minimal', keepalive:true, body:{
-    customer_name: fName.value.trim() || null, customer_city: fDist.value.trim() || null, customer_note: fNote.value.trim() || null,
+    code: orderCode(), customer_name: fName.value.trim() || null, customer_city: fDist.value.trim() || null, customer_note: fNote.value.trim() || null,
     items: items.map(({p, n}) => ({ name: fullName(p), size: p.size, price: p.price, qty: n })) } }).catch(() => {});
   window.open(waLink(msg), '_blank', 'noopener');
+  try { sessionStorage.removeItem('reynas.code'); } catch {}
   cart = {}; saveC(); renderAll();
   toast('Pedido enviado. Te responderemos por WhatsApp.');
 });

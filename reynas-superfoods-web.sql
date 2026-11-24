@@ -312,3 +312,44 @@ insert into public.products (name, category, image_url, description, is_example,
 ('Pack Desayuno andino','Packs y combos','p_desayuno','Quinua, kiwicha, cañihua y avena. Para papillas, panqueques y bowls.',true,80),
 ('Combo Antioxidante','Packs y combos','p_antioxidante','Extractos en polvo de camu camu, arándano azul, açaí y maracuyá. Para jugos y smoothies.',true,81),
 ('Pack Repostería natural','Packs y combos','p_reposteria','Lúcuma, cacao, almendras y plátano. Para queques, galletas y helados.',true,82);
+
+-- ------------------------------------------------------------
+-- 7. Facturación electrónica y código de pedido
+-- ------------------------------------------------------------
+-- código corto del pedido (va en el mensaje de WhatsApp)
+alter table public.orders add column if not exists code text check (code is null or code ~ '^R-[A-Z0-9]{4,8}$');
+
+-- comprobantes electrónicos (boletas y facturas)
+create table if not exists public.invoices (
+  id bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  order_id bigint references public.orders(id) on delete set null,
+  doc_type text not null check (doc_type in ('boleta','factura')),
+  series text check (series is null or series ~ '^[BF][A-Z0-9]{3}$'),
+  number text,
+  customer_doc_type text not null default 'dni' check (customer_doc_type in ('dni','ruc','ce','ninguno')),
+  customer_doc text check (customer_doc is null or char_length(customer_doc) <= 15),
+  customer_name text check (customer_name is null or char_length(customer_name) <= 200),
+  customer_address text check (customer_address is null or char_length(customer_address) <= 300),
+  items jsonb not null default '[]'::jsonb,
+  igv_type text not null default 'gravado' check (igv_type in ('gravado','exonerado')),
+  subtotal numeric(12,2) not null default 0,
+  igv numeric(12,2) not null default 0,
+  total numeric(12,2) not null default 0,
+  status text not null default 'pendiente' check (status in ('pendiente','aceptado','rechazado','anulado','error')),
+  message text,
+  pdf_url text, xml_url text,
+  pse_response jsonb,
+  issued_at timestamptz
+);
+create index if not exists invoices_order_idx on public.invoices(order_id);
+alter table public.invoices enable row level security;
+grant select, insert, update, delete on public.invoices to authenticated;
+grant usage on sequence public.invoices_id_seq to authenticated;
+create policy invoices_admin_all on public.invoices for all to authenticated
+  using ((select private.is_admin())) with check ((select private.is_admin()));
+
+-- ajustes de facturación (sin secretos: el token va como secreto de la Edge Function)
+insert into public.settings (key, value) values
+  ('billing', '{"ruc":"","razon_social":"","direccion":"","serie_boleta":"B002","serie_factura":"F002","igv_type":"gravado","ambiente":"pruebas"}'::jsonb)
+on conflict (key) do nothing;
