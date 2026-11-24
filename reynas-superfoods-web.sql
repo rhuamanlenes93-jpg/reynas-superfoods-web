@@ -130,8 +130,7 @@ create policy "pack_items_admin_delete" on public.pack_items for delete to authe
   using ((select public.is_admin()));
 
 -- orders: la web solo puede crear pedidos nuevos, sin datos de boleta
-create policy "orders_public_insert" on public.orders for insert to anon, authenticated
-  with check (status = 'nuevo' and invoice_series is null and invoice_number is null and invoice_pdf_url is null and invoiced_at is null);
+-- (sin INSERT público: los pedidos se guardan con public.create_order, sección 10)
 create policy "orders_admin_read" on public.orders for select to authenticated
   using ((select public.is_admin()));
 create policy "orders_admin_update" on public.orders for update to authenticated
@@ -142,7 +141,7 @@ create policy "orders_admin_delete" on public.orders for delete to authenticated
 -- permisos de tabla (RLS decide qué filas)
 grant select on public.products, public.packs, public.pack_items to anon, authenticated;
 grant insert, update, delete on public.products, public.packs, public.pack_items to authenticated;
-grant insert on public.orders to anon, authenticated;
+-- (los visitantes no tienen INSERT directo en orders)
 grant select, update, delete on public.orders to authenticated;
 grant select on public.admins to authenticated;
 revoke execute on function public.is_admin() from public;
@@ -368,9 +367,8 @@ create table if not exists public.cart_events (
 );
 create index if not exists cart_events_created_idx on public.cart_events (created_at desc);
 alter table public.cart_events enable row level security;
-grant insert on public.cart_events to anon, authenticated;
 grant select, delete on public.cart_events to authenticated;
-create policy cart_events_public_insert on public.cart_events for insert to anon, authenticated with check (true);
+-- (sin INSERT público: los visitantes registran el carrito con public.track_cart, sección 10)
 create policy cart_events_admin_read on public.cart_events for select to authenticated using ((select private.is_admin()));
 create policy cart_events_admin_delete on public.cart_events for delete to authenticated using ((select private.is_admin()));
 
@@ -382,3 +380,71 @@ create policy cart_events_admin_delete on public.cart_events for delete to authe
 insert into public.settings (key, value) values
   ('empresa', '{"razon_social":"Reyna''s Superfoods S.A.C.","zona":"Lima y provincias"}'::jsonb)
 on conflict (key) do nothing;
+
+-- =========================================================
+-- 10. Seguridad: escrituras públicas solo por funciones que validan
+--     (los visitantes ya no pueden insertar directo en orders ni cart_events)
+--     Nota: el asesor de Supabase avisa que anon puede ejecutar estas dos
+--     funciones SECURITY DEFINER. Es intencional: los clientes no inician sesión
+--     para pedir. Las funciones validan todo y limitan la cantidad por minuto.
+-- =========================================================
+create or replace function private.product_full_name(p public.products)
+returns text language sql immutable set search_path = '' as $$
+  select case
+    when p.category in ('Superalimentos andinos','Granos, semillas y menestras','Raíces, frutas y verduras','Hierbas e infusiones')
+      then 'Harina de ' || lower(left(p.name, 1)) || substr(p.name, 2)
+    when p.category = 'Extractos en polvo' then 'Extracto en polvo de ' || lower(left(p.name, 1)) || substr(p.name, 2)
+    when p.category = 'Doypacks' then p.name || ' en doypack'
+    else p.name end;
+$$;
+
+create or replace function public.track_cart(p_product uuid, p_qty integer default 1)
+returns void language plpgsql security definer set search_path = '' as $$
+declare v public.products%rowtype;
+begin
+  if p_qty is null or p_qty < 1 or p_qty > 50 then return; end if;
+  select * into v from public.products where id = p_product and active;
+  if not found then return; end if;
+  if (select count(*) from public.cart_events where created_at > now() - interval '1 minute') >= 300 then return; end if;
+  insert into public.cart_events (product_id, product_name, qty) values (v.id::text, private.product_full_name(v), p_qty);
+end; $$;
+
+create or replace function public.create_order(p_code text, p_name text, p_city text, p_items jsonb)
+returns void language plpgsql security definer set search_path = '' as $$
+declare it jsonb; clean jsonb := '[]'::jsonb; q integer;
+begin
+  if p_code is null or p_code !~ '^R-[A-Z0-9]{4}$' then raise exception 'pedido_invalido'; end if;
+  if char_length(coalesce(p_name, '')) > 120 or char_length(coalesce(p_city, '')) > 120 then raise exception 'pedido_invalido'; end if;
+  if p_items is null or jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) not between 1 and 100 then raise exception 'pedido_invalido'; end if;
+  if (select count(*) from public.orders where created_at > now() - interval '10 minutes') >= 30 then raise exception 'demasiados_pedidos'; end if;
+  for it in select * from jsonb_array_elements(p_items) loop
+    if jsonb_typeof(it) <> 'object' or jsonb_typeof(it->'name') <> 'string' or char_length(it->>'name') not between 1 and 160 then raise exception 'pedido_invalido'; end if;
+    q := case when (it->>'qty') ~ '^\d{1,3}$' then (it->>'qty')::int else 0 end;
+    if q < 1 then raise exception 'pedido_invalido'; end if;
+    clean := clean || jsonb_build_array(jsonb_build_object(
+      'name', it->>'name',
+      'size', left(coalesce(it->>'size', ''), 40),
+      'price', case when (it->>'price') ~ '^\d{1,6}(\.\d{1,2})?$' then it->>'price' else '' end,
+      'qty', q));
+  end loop;
+  insert into public.orders (code, customer_name, customer_city, items)
+  values (p_code, nullif(btrim(p_name), ''), nullif(btrim(p_city), ''), clean);
+end; $$;
+
+revoke all on function public.track_cart(uuid, integer) from public;
+revoke all on function public.create_order(text, text, text, jsonb) from public;
+grant execute on function public.track_cart(uuid, integer) to anon, authenticated;
+grant execute on function public.create_order(text, text, text, jsonb) to anon, authenticated;
+revoke all on function private.product_full_name(public.products) from public, anon, authenticated;
+
+drop policy if exists cart_events_public_insert on public.cart_events;
+drop policy if exists orders_public_insert on public.orders;
+revoke insert on public.cart_events from anon, authenticated;
+revoke insert on public.orders from anon, authenticated;
+
+-- =========================================================
+-- 11. Seguridad: los roles de la API no necesitan TRUNCATE, TRIGGER ni REFERENCES
+-- =========================================================
+revoke truncate, trigger, references on all tables in schema public from anon, authenticated;
+alter default privileges in schema public revoke truncate, trigger, references on tables from anon, authenticated;
+revoke all on public.admins, public.invoices, public.orders, public.cart_events from anon;

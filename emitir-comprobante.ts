@@ -11,16 +11,25 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 
-const cors = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+// Solo la página de la tienda puede llamar a esta función desde el navegador.
+// Cuando tengan dominio propio, agrégalo en el secreto SITE_ORIGINS (separado por comas), p. ej. https://reynassuperfoods.pe
+const allowed = (origin: string) =>
+  /^https:\/\/([a-z0-9-]+\.)?reynasuperfoods\.pages\.dev$/.test(origin) ||
+  (Deno.env.get('SITE_ORIGINS') || '').split(',').map((s) => s.trim()).filter(Boolean).includes(origin);
+let cors: Record<string, string> = {};
 const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
+  new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff' } });
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get('Origin') || '';
+  cors = {
+    'Access-Control-Allow-Origin': allowed(origin) ? origin : 'https://reynasuperfoods.pages.dev',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Vary': 'Origin',
+  };
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
+  if (origin && !allowed(origin)) return json({ ok: false, message: 'Origen no permitido' }, 403);
   if (req.method !== 'POST') return json({ ok: false, message: 'Método no permitido' }, 405);
 
   const url = Deno.env.get('SUPABASE_URL')!;

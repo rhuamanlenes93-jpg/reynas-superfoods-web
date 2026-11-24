@@ -8,6 +8,16 @@ const SB_URL = 'https://cauphvgvqtcvmcsvbyry.supabase.co';
 const SB_KEY = 'sb_publishable_gpHao0azXWKB31UoQrRt-w_pFBnE3bY'; // clave publicable (la misma de config.js)
 const WA = '51918515262';
 const SITE = "Reyna's Superfoods";
+// mismas cabeceras de seguridad que _headers (las páginas generadas aquí no las reciben de ese archivo)
+export const SECURITY = {
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cauphvgvqtcvmcsvbyry.supabase.co; connect-src 'self' https://cloudflareinsights.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'X-Frame-Options': 'DENY',
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
+};
 
 const G = { andinos:'Superalimentos andinos', granos:'Granos, semillas y menestras', raices:'Raíces, frutas y verduras', hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', doypacks:'Doypacks', packs:'Packs y combos' };
 const HARINA = [G.andinos, G.granos, G.raices, G.hierbas];
@@ -108,7 +118,7 @@ ${jsonld.map(j => `<script type="application/ld+json">${JSON.stringify(j).replac
 </div></footer>
 </body>
 </html>`;
-  return new Response(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300, s-maxage=600' } });
+  return new Response(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300, s-maxage=600', ...SECURITY } });
 }
 
 const crumbs = (origin, items) => ({
@@ -184,5 +194,5 @@ export function sitemap({ origin, data }){
   const today = new Date().toISOString().slice(0, 10);
   const urls = ['/', ...categories(data.products).map(c => '/categoria/' + urlSlug(c)), ...data.products.map(p => '/producto/' + p.slug), '/libro-de-reclamaciones', '/privacidad', '/terminos'];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].map(u => `  <url><loc>${esc(origin + u)}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`;
-  return new Response(xml, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+  return new Response(xml, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' } });
 }

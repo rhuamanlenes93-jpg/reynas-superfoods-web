@@ -57,7 +57,9 @@ const money = v => v === '' || v == null ? '' : 'S/ ' + Number(v).toFixed(2);
 const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F4EFE2"/><text x="200" y="160" font-family="Poppins,sans-serif" font-size="22" fill="#9A9F94" text-anchor="middle">Foto por subir</text></svg>');
 const imgCard = p => /^[a-z0-9_]+$/.test(p.img || '') ? `src="${withV(`/assets/products/sm/${p.img}.webp`)}" srcset="${withV(`/assets/products/sm/${p.img}.webp`)} 360w, ${photoUrl(p.img)} 640w" sizes="(max-width: 700px) 46vw, 300px"` : `src="${imgSrc(p)}"`;
 const imgSrc = p => !p.img ? PLACEHOLDER : /^(data:|https?:|\/)/.test(p.img) ? p.img : (/^[a-z0-9_]+$/.test(p.img) ? photoUrl(p.img) : PLACEHOLDER);
-const byId = id => products.find(p => p.id === id);
+// índice por id (se rehace solo cuando cambia la lista de productos)
+let prodMap = new Map(), prodMapSrc = null;
+const byId = id => { if (prodMapSrc !== products || prodMap.size !== products.length){ prodMap = new Map(products.map(p => [p.id, p])); prodMapSrc = products; } return prodMap.get(id); };
 const visible = () => products.filter(p => !p.hidden);
 const priceHTML = p => `<span class="pr">${money(p.price)}</span>`;
 

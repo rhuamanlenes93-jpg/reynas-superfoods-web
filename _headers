@@ -20,8 +20,14 @@
 /assets/docs/*
   Cache-Control: public, max-age=86400
 
+# Seguridad para todas las páginas.
+# OJO: si cambias el <script> pequeño del <head> de index.html (modo liviano), cambia también su sha256 en script-src.
 /*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-iHA4jocJdqCKF0S7LetiLIaJCgFIFqUs5xg1+hMUY1M=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://cauphvgvqtcvmcsvbyry.supabase.co; connect-src 'self' https://cauphvgvqtcvmcsvbyry.supabase.co https://cloudflareinsights.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-site
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()

@@ -11,8 +11,7 @@ function toast(msg){
 // estadística anónima para el panel: qué productos se agregan al carrito (sin datos del cliente)
 function trackCart(p, q){
   if (session) return; // no contar las pruebas del administrador
-  sb('/rest/v1/cart_events', { method:'POST', prefer:'return=minimal', keepalive:true,
-    body:{ product_id: String(p.id).slice(0, 80), product_name: fullName(p).slice(0, 160), qty: Math.min(Math.max(1, q), 50) } }).catch(() => {});
+  sb('/rest/v1/rpc/track_cart', { method:'POST', keepalive:true, body:{ p_product: p.id, p_qty: Math.min(Math.max(1, q), 50) } }).catch(() => {});
 }
 function setQty(id, n, opts = {}){
   const p = byId(id); if (!p) return;
@@ -200,9 +199,10 @@ $('#oform').addEventListener('submit', e => {
   e.preventDefault();
   const items = cartItems(); if (!items.length) return;
   const msg = buildMsg(items);
-  sb('/rest/v1/orders', { method:'POST', prefer:'return=minimal', keepalive:true, body:{
-    code: orderCode(), customer_name: fName.value.trim() || null, customer_city: fDist.value.trim() || null, customer_note: null,
-    items: items.map(({p, n}) => ({ name: fullName(p), size: p.size, price: p.price, qty: n })) } }).catch(() => {});
+  // se guarda con una función que valida los datos en la base (no hay escritura directa a la tabla)
+  sb('/rest/v1/rpc/create_order', { method:'POST', keepalive:true, body:{
+    p_code: orderCode(), p_name: fName.value.trim(), p_city: fDist.value.trim(),
+    p_items: items.map(({p, n}) => ({ name: fullName(p), size: p.size || '', price: p.price === '' ? '' : String(p.price), qty: n })) } }).catch(() => {});
   window.open(waLink(msg), '_blank', 'noopener');
   try { sessionStorage.removeItem('reynas.code'); } catch {}
   cart = {}; saveC(); renderAll(); closeDrawer();

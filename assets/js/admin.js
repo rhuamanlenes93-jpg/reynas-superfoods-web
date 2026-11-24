@@ -278,7 +278,7 @@ $('#aLoginForm').addEventListener('submit', async e => {
   try {
     const r = await fetch(SB.supabaseUrl + '/auth/v1/token?grant_type=password', { method:'POST', headers:{ apikey: SB.supabaseKey, 'Content-Type':'application/json' }, body: JSON.stringify({ email: $('#aEmail').value.trim(), password: $('#aPass').value }) });
     if (!r.ok) throw new Error('auth');
-    const s = await r.json(); keepSession(s);
+    const s = await r.json(); if (!s || !s.access_token) throw new Error('auth'); keepSession(s);
     if (!(await isAdminUser())){ dropSession(); $('#aErr').textContent = 'Esta cuenta no tiene permiso para administrar la tienda.'; return; }
     try { localStorage.setItem('reynas.adminEmail', s.user?.email || ''); } catch {}
     $('#aErr').textContent = ''; $('#aPass').value = ''; setEye(false);
@@ -333,11 +333,23 @@ async function renderAdmin(){
 }
 function renderAll_(){ renderHome(); aRenderCats(); renderProducts(); renderOrders(); if (view === 'bill') renderBilling(); if (view === 'txt') renderTexts(); }
 
+// convierte la foto ya reducida (data:...) en archivo sin hacer peticiones de red
+function dataUrlToBlob(d){
+  const [head, b64] = d.split(','), type = (head.match(/^data:([^;]+)/) || [])[1] || 'image/jpeg';
+  if (!/^image\/(webp|jpeg|png)$/.test(type)) throw new Error('Formato de imagen no permitido');
+  const bin = atob(b64), arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type });
+}
 /* ---------- inicio ---------- */
 const DAY = 864e5;
 const startOfDay = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
 const inRange = (iso, days) => !days || new Date(iso) >= new Date(startOfDay(Date.now()) - (days - 1) * DAY);
-const groupOfName = name => { const n = norm(name); const p = aProducts.find(x => norm(fullName(x)) === n || norm(x.name) === n); return p ? p.group : null; };
+// índice nombre → categoría para el dashboard (se arma una vez por render)
+let groupIdx = null;
+const buildGroupIdx = () => { groupIdx = new Map(); aProducts.forEach(x => { groupIdx.set(norm(fullName(x)), x.group); if (!groupIdx.has(norm(x.name))) groupIdx.set(norm(x.name), x.group); }); };
+const groupOfName = name => groupIdx.get(norm(name)) || null;
+const FMT_DAY = new Intl.DateTimeFormat('es-PE', { day:'numeric', month:'short' });
 function tally(rows){ const m = new Map(); rows.forEach(([k, q]) => m.set(k, (m.get(k) || 0) + q)); return [...m].sort((a, b) => b[1] - a[1]); }
 const rankHTML = (list, unit, empty, max = 8) => {
   if (!list.length) return `<li class="none">${empty}</li>`;
@@ -350,6 +362,7 @@ function renderDash(){
   const ordRows = os.flatMap(o => (o.items || []).map(i => [i.name, Number(i.qty) || 1]));
   const topOrd = tally(ordRows), topCart = tally(ce.map(c => [c.product_name, c.qty || 1]));
   const units = ordRows.reduce((s, r) => s + r[1], 0), adds = ce.reduce((s, c) => s + (c.qty || 1), 0);
+  buildGroupIdx();
   const cats = tally(ordRows.map(([n, q]) => [groupOfName(n) || 'Otros', q]));
   const lbl = dRange ? `en los últimos ${dRange} días` : 'desde el inicio';
   $('#dKpis').innerHTML = [
@@ -363,8 +376,9 @@ function renderDash(){
   $('#dCats').innerHTML = rankHTML(cats, ['unidad', 'unidades'], 'Sin pedidos en este periodo.', 6);
   // pedidos por día (máx. 30 barras)
   const n = Math.min(dRange || 30, 30), today = startOfDay(Date.now());
-  const days = Array.from({ length: n }, (_, i) => { const d = new Date(today - (n - 1 - i) * DAY); return { d, c: aOrders.filter(o => o.status !== 'anulado' && startOfDay(o.created_at).getTime() === d.getTime()).length }; });
-  const mx = Math.max(1, ...days.map(x => x.c)), fmtD = new Intl.DateTimeFormat('es-PE', { day:'numeric', month:'short' });
+  const perDay = new Map(); aOrders.forEach(o => { if (o.status === 'anulado') return; const k = startOfDay(o.created_at).getTime(); perDay.set(k, (perDay.get(k) || 0) + 1); });
+  const days = Array.from({ length: n }, (_, i) => { const d = new Date(today - (n - 1 - i) * DAY); return { d, c: perDay.get(d.getTime()) || 0 }; });
+  const mx = Math.max(1, ...days.map(x => x.c)), fmtD = FMT_DAY;
   $('#dDays').setAttribute('aria-label', `Pedidos por día en los últimos ${n} días`);
   $('#dDays').innerHTML = `<div class="bars">${days.map(x => `<span title="${fmtD.format(x.d)}: ${x.c} ${x.c === 1 ? 'pedido' : 'pedidos'}" style="--h:${x.c ? Math.max(6, Math.round(x.c / mx * 100)) : 0}%"><i></i>${x.c ? `<b>${x.c}</b>` : ''}</span>`).join('')}</div><div class="ax"><span>${fmtD.format(days[0].d)}</span><span>Hoy</span></div>`;
   // en carrito pero poco pedidos
@@ -502,7 +516,7 @@ $('#pForm').addEventListener('submit', async e => {
   try {
     let img = formImg;
     if (img.startsWith('data:')){
-      const blob = await (await fetch(img)).blob();
+      const blob = dataUrlToBlob(img);
       const path = `${uid()}.${blob.type === 'image/webp' ? 'webp' : 'jpg'}`;
       await sb(`/storage/v1/object/productos/${path}`, { method:'POST', auth:true, raw:true, body: blob, headers:{ 'Content-Type': blob.type, 'x-upsert':'true' } });
       img = `${SB.supabaseUrl}/storage/v1/object/public/productos/${path}`;
@@ -603,8 +617,9 @@ function renderOrders(){
   const box = $('#oList');
   if (!aOrders.length){ box.innerHTML = '<div class="box empty-box"><h3>Todavía no hay pedidos</h3><p>Cuando un cliente envíe su pedido por WhatsApp desde la tienda, aparecerá aquí.</p></div>'; return; }
   if (!list.length){ box.innerHTML = '<p class="aempty">No hay pedidos en esas fechas.</p>'; return; }
+  const invByOrder = new Map(aInvoices.filter(i => i.status === 'aceptado').map(i => [i.order_id, i]));
   box.innerHTML = list.map(o => {
-    const t = orderTotal(o), inv = aInvoices.find(i => i.order_id === o.id && i.status === 'aceptado');
+    const t = orderTotal(o), inv = invByOrder.get(o.id);
     return `<article class="oc" data-id="${o.id}">
       <header>
         <div><span class="code">${esc(oCode(o))}</span><b>${o.customer_name ? esc(o.customer_name) : 'Cliente sin nombre'}</b><span class="meta">${fmtDate.format(new Date(o.created_at))}${o.customer_city ? ' · ' + esc(o.customer_city) : ''}</span></div>

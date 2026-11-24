@@ -89,11 +89,37 @@ se llenan en el panel → Inicio → **Datos de tu empresa**.
 - **Facturación:** “Nueva boleta” se puede llenar con un pedido del historial eligiendo su código.
 - Las visitas del carrito se guardan en `cart_events` (solo producto y cantidad, sin datos personales). No se cuentan las pruebas hechas con la sesión de administración abierta.
 
+## Seguridad
+
+- **Base de datos:** todas las tablas tienen RLS. Los visitantes solo pueden **leer** productos, textos y ajustes.
+  Los pedidos y el registro del carrito se guardan con las funciones `create_order` y `track_cart` (sección 10 del SQL),
+  que validan cada dato y limitan cuántos se aceptan por minuto. No hay INSERT directo desde la API.
+- **Panel:** solo usuarios de la tabla `admins`. La función de facturación revisa el usuario y solo acepta llamadas desde la página.
+- **Claves:** en el código solo está la clave publicable de Supabase (hecha para el navegador). El token de Factus y la clave
+  `service_role` van solo como secretos de Supabase.
+- **Cabeceras:** `_headers` (y `functions/_lib/seo.js` para las páginas generadas) activan CSP, HSTS, anti-iframe y más.
+  Si cambias el `<script>` pequeño del `<head>` de `index.html`, actualiza su hash `sha256` en la CSP.
+- **Pendiente en el panel de Supabase:** Authentication → Sign In / Providers → Email → activar
+  *Leaked password protection* (puede requerir plan Pro) y usar una contraseña larga y única para la cuenta de la clienta.
+- Cuando tengan dominio: agregarlo en el secreto `SITE_ORIGINS` de Edge Functions (p. ej. `https://reynassuperfoods.pe`).
+
 ## Pendiente
 
-- Token y URL de la API de facturación (Factus): ver la sección siguiente.
-- Catálogo/fotos de los packs y doypacks cuando la clienta los envíe.
-- Dominio propio: luego actualizar `canonical`, `og:url`, `sitemap.xml`, `robots.txt`, el link y QR del catálogo PDF; después Google Search Console y Perfil de Negocio de Google.
+**Datos de la clienta**
+- Correo de contacto, Gmail de la empresa y enlace de su Libro de Reclamaciones (Indecopi): se pegan en el panel → Inicio → Datos de tu empresa.
+
+**Facturación**
+- Token y documentación de Factus (Carlos) y confirmar series de boleta y factura (B002 / F002). Ver la sección siguiente.
+
+**Prueba**
+- La clienta prueba la web; se hacen los cambios que pida.
+
+**Publicación en Google (cuando apruebe la web)**
+1. Comprar el dominio y conectarlo en Cloudflare Pages (Custom domains); redirigir reynasuperfoods.pages.dev al dominio.
+2. Cambiar el dominio en index.html (canonical, og:url, og:image, datos de empresa), robots.txt y el catálogo PDF (link y QR).
+3. Google Search Console con el Gmail de la empresa: propiedad de dominio (verificación por DNS en Cloudflare) y enviar /sitemap.xml.
+4. Cloudflare Web Analytics: Pages → proyecto → Metrics → Web Analytics → Enable (gratis, sin cookies).
+5. Perfil de Negocio de Google con el Gmail de la empresa, como negocio de zona de servicio (solo envíos, sin dirección).
 
 ## Facturación electrónica (Factus)
 

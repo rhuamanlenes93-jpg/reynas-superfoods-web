@@ -23,7 +23,8 @@ function dropSession(){ session = null; try { sessionStorage.removeItem('reynas.
 async function refreshSession(){
   if (!session || Date.now() / 1000 < session.expires_at - 60) return;
   const r = await fetch(SB.supabaseUrl + '/auth/v1/token?grant_type=refresh_token', { method:'POST', headers:{ apikey: SB.supabaseKey, 'Content-Type':'application/json' }, body: JSON.stringify({ refresh_token: session.refresh_token }) });
-  if (r.ok) keepSession(await r.json()); else dropSession();
+  if (!r.ok){ dropSession(); return; }
+  try { keepSession(await r.json()); } catch { dropSession(); }
 }
 async function sb(path, o = {}){
   if (o.auth) await refreshSession();
@@ -33,5 +34,6 @@ async function sb(path, o = {}){
   if (o.prefer) h.Prefer = o.prefer;
   const res = await fetch(SB.supabaseUrl + path, { method: o.method || 'GET', headers: h, body: o.body === undefined ? undefined : (o.raw ? o.body : JSON.stringify(o.body)), keepalive: !!o.keepalive });
   if (!res.ok){ let m = 'Error ' + res.status; try { const j = await res.json(); m = j.message || j.msg || j.error_description || j.error || m; } catch {} throw new Error(m); }
-  const t = await res.text(); return t ? JSON.parse(t) : null;
+  const t = await res.text(); if (!t) return null;
+  try { return JSON.parse(t); } catch { throw new Error('Respuesta no válida del servidor'); }
 }
