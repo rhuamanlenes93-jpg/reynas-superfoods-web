@@ -1,17 +1,21 @@
-/assets/hero/*
-  Cache-Control: public, max-age=2592000
-
-/assets/products/*
-  Cache-Control: public, max-age=604800
-
-/assets/img/*
-  Cache-Control: public, max-age=604800
-
+# CSS y JS: el navegador pregunta siempre si hay versión nueva (responde 304 si no cambió).
+# Así un cambio de diseño se ve al instante sin tocar números de versión.
 /assets/css/*
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
 
 /assets/js/*
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Imágenes: se guardan 1 día. Para que una foto cambiada se vea al instante,
+# sube "version" en assets/js/config.js (y el ?v= de index.html).
+/assets/hero/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/assets/products/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/assets/img/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
 /*
   X-Content-Type-Options: nosniff

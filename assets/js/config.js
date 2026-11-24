@@ -5,7 +5,7 @@ window.REYNAS = {
   supabaseUrl: 'https://cauphvgvqtcvmcsvbyry.supabase.co',
   supabaseKey: 'sb_publishable_gpHao0azXWKB31UoQrRt-w_pFBnE3bY',
   whatsapp: '51918515262',
-  // Súbelo (2, 3, 4…) cada vez que cambies fotos, CSS o JS: obliga a los navegadores a bajar la versión nueva.
+  // Súbelo (5, 6, 7…) cuando reemplaces fotos con el mismo nombre: obliga a los navegadores a bajarlas de nuevo.
   // Cambia también el mismo número en index.html (preload, styles.css y los scripts).
-  version: '3'
+  version: '5'
 };
