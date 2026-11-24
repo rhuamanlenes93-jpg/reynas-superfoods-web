@@ -79,9 +79,9 @@ function openPDP(id){
   $('#pdpChip').textContent = p.group; $('#pdpChip').style.setProperty('--c', col);
   $('#pdpName').textContent = name; $('#satcName').textContent = name;
   $('#pdpPrice').innerHTML = priceHTML(p);
-  $('#satcPrice').textContent = p.price === '' ? 'Precio por confirmar' : money(p.price);
+  $('#satcPrice').textContent = money(p.price);
   $('#pdpDesc').textContent = p.desc || `Producto de Reyna's Superfoods, listo para usar. ${USES[p.group] || ''}`.trim();
-  $('#pdpFacts').innerHTML = [['Presentación', p.size || 'Por confirmar'], ['Precio', p.price === '' ? 'Por confirmar' : money(p.price)], ['Venta', 'Por mayor y menor'], ['Envíos', 'Lima y provincias']]
+  $('#pdpFacts').innerHTML = [['Presentación', p.size], ['Precio', money(p.price)], ['Venta', 'Por mayor y menor'], ['Envíos', 'Lima y provincias']].filter(([, v]) => v)
     .map(([k,v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
   const crumbs = [{label:'Inicio', href:'#inicio'}, {label:'Tienda', cat:'Todos'}];
   if (p.group !== G.packs) crumbs.push({label:p.group, cat:p.group}); else crumbs.push({label:'Packs y combos', href:'#packs'});
@@ -165,14 +165,14 @@ function buildMsg(items){
   if (nm) m += `\n\nNombre: ${nm}`;
   if (ds) m += `${nm ? '\n' : '\n\n'}Envío a: ${ds}`;
   if (nt) m += `\nNota: ${nt}`;
-  m += items.some(({p}) => p.price === '') ? '\n\n¿Me indican precios, presentaciones y el costo de envío?' : '\n\n¿Me confirman el total con el envío?';
+  m += items.some(({p}) => p.price === '') ? '\n\n¿Me indican el total y el costo de envío?' : '\n\n¿Me confirman el total con el envío?';
   return m;
 }
 const lineHTML = ({p, n}, i) => `
   <div class="line" style="--i:${i}">
     <img src="${/^[a-z0-9_]+$/.test(p.img || '') ? withV(`/assets/products/sm/${p.img}.webp`) : imgSrc(p)}" alt="" loading="lazy" decoding="async">
     <div><div class="nm">${esc(fullName(p))}</div>
-      <div class="sb">${p.size ? esc(p.size) + ' · ' : ''}${p.price !== '' ? money(p.price) + ' c/u' : 'Precio por confirmar'}</div>
+      <div class="sb">${[p.size ? esc(p.size) : '', p.price !== '' ? money(p.price) + ' c/u' : ''].filter(Boolean).join(' · ')}</div>
       <button class="rm" type="button" data-rm="${p.id}">Quitar</button></div>
     <span data-ctl="${p.id}">${controlFor(p)}</span>
   </div>`;

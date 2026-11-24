@@ -26,22 +26,17 @@ const USES = {
   [G.hierbas]:'Ideal para infusiones, aderezos y mezclas naturales.',
   [G.extractos]:'Ideal para jugos, smoothies, helados y repostería.'
 };
-let products = [], showPrices = false, catalogLoaded = false;
+let products = [], catalogLoaded = false;
 let cart = load(KEY_C) || {};
 const saveC = () => save(KEY_C, cart);
-// fila de Supabase -> producto de la tienda (el precio solo se muestra si está activado en el panel)
+// fila de Supabase -> producto de la tienda (si tiene precio, se muestra; si no, no se muestra nada)
 function fromRow(r, adminView){
   return { id: r.id, name: r.name, group: r.category, img: r.image_url || '', size: r.unit || '',
-    price: (adminView || (showPrices && r.show_price !== false)) && r.price != null ? String(Number(r.price)) : '',
-    showPrice: r.show_price !== false,
+    price: r.price != null ? String(Number(r.price)) : '',
     desc: r.description || '', hidden: !r.active, example: !!r.is_example };
 }
 async function loadCatalog(){
-  const [rows, st] = await Promise.all([
-    sb('/rest/v1/products?select=*&active=is.true&order=sort.asc,name.asc'),
-    sb('/rest/v1/settings?select=key,value')
-  ]);
-  showPrices = !!(st.find(s => s.key === 'show_prices') || {}).value;
+  const rows = await sb('/rest/v1/products?select=*&active=is.true&order=sort.asc,name.asc');
   products = rows.map(r => fromRow(r));
   catalogLoaded = true;
   Object.keys(cart).forEach(id => { if (!products.some(p => p.id === id)) delete cart[id]; });
@@ -60,7 +55,7 @@ const imgCard = p => /^[a-z0-9_]+$/.test(p.img || '') ? `src="${withV(`/assets/p
 const imgSrc = p => !p.img ? PLACEHOLDER : /^(data:|https?:|\/)/.test(p.img) ? p.img : (/^[a-z0-9_]+$/.test(p.img) ? photoUrl(p.img) : PLACEHOLDER);
 const byId = id => products.find(p => p.id === id);
 const visible = () => products.filter(p => !p.hidden);
-const priceHTML = p => `<span class="pr${p.price === '' ? ' tbd' : ''}">${p.price === '' ? 'Precio por confirmar' : money(p.price)}</span>`;
+const priceHTML = p => `<span class="pr">${money(p.price)}</span>`;
 
 /* =========================================================
    ANIMACIONES 3D
@@ -279,7 +274,7 @@ function cardHTML(p, i){
     <div class="bd">
       <span class="chip">${esc(p.group)}</span>
       <h3><button type="button" data-open="${p.id}">${esc(fullName(p))}</button></h3>
-      <span class="mt">${p.size ? esc(p.size) : 'Presentación por confirmar'}</span>
+      ${p.size ? `<span class="mt">${esc(p.size)}</span>` : ''}
       <div class="ft">${priceHTML(p)}<span data-ctl="${p.id}">${controlFor(p)}</span></div>
     </div></article>`;
 }

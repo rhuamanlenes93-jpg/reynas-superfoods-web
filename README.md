@@ -63,7 +63,7 @@ El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segu
 
 ## Seguridad
 
-- Los precios se guardan desde el panel y solo se muestran en la tienda si se activa **Mostrar precios en la tienda**. Mientras tanto la tienda dice “Precio por confirmar”.
+- Los precios y las fotos se cambian desde el panel y se ven en la tienda al instante. Si un producto no tiene precio o presentación, simplemente no se muestra ese dato.
 - `config.js` solo tiene la **clave publicable**: está hecha para ir en el navegador. Los permisos los controla la seguridad por filas (RLS):
   - Cualquiera puede leer los productos activos y los ajustes, y crear pedidos nuevos (sin datos de boleta).
   - Solo los usuarios de la tabla `admins` pueden editar, ver pedidos y subir fotos.
@@ -81,7 +81,6 @@ El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segu
 - Token y URL de la API de facturación (Factus): ver la sección siguiente.
 - Fotos de los doypacks cuando lleguen.
 - Dominio propio: luego actualizar `canonical`, `og:url`, `sitemap.xml`, `robots.txt`, el link y QR del catálogo PDF; después Google Search Console y Perfil de Negocio de Google.
-- Encender **Mostrar precios en la tienda** cuando la clienta confirme sus precios.
 
 ## Facturación electrónica (Factus)
 

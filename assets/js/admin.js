@@ -84,10 +84,6 @@ document.body.insertAdjacentHTML('beforeend', `
           </div>
           <div class="dcol miss" id="dMissWrap" hidden><h4>Los ponen en el carrito pero casi no los piden</h4><p class="hint">Puede que el precio o la presentación no los convenza. Vale la pena preguntar.</p><ol class="rank" id="dMiss"></ol></div>
         </div>
-        <div class="box switch">
-          <div><h3>Mostrar precios en la tienda</h3><p>Si está <b>apagado</b>, los clientes ven “Precio por confirmar”. Enciéndelo cuando tus precios estén listos.</p></div>
-          <label class="tgl"><input type="checkbox" id="aPrices" aria-label="Mostrar precios en la tienda"><span></span></label>
-        </div>
         <div class="box">
           <h3>¿Qué hago en cada sección?</h3>
           <div class="guide">
@@ -185,11 +181,10 @@ document.body.insertAdjacentHTML('beforeend', `
         <label class="af" id="pNewWrap" hidden>Nombre de la nueva categoría<input class="a-in" id="pNew" placeholder="Ej.: Condimentos en polvo"></label>
         <div class="grid2">
           <label class="af">Presentación<input class="a-in" id="pSize" placeholder="Ej.: Saco de 25 kg"><small>Cómo se vende.</small></label>
-          <label class="af">Precio (S/)<input class="a-in" id="pPrice" inputmode="decimal" placeholder="Ej.: 18.50"><small>Déjalo vacío si aún no tiene.</small></label>
+          <label class="af">Precio (S/)<input class="a-in" id="pPrice" inputmode="decimal" placeholder="Ej.: 18.50"><small>Apenas lo escribas, se ve en la tienda. Vacío = no se muestra precio.</small></label>
         </div>
         <label class="af">Descripción<textarea class="a-in" id="pDesc" rows="3" placeholder="Qué incluye, para qué sirve…"></textarea><small>Se ve en la ficha del producto y en los packs.</small></label>
         <label class="chk"><input type="checkbox" id="pVis" checked><span>Que se vea en la tienda</span></label>
-        <label class="chk"><input type="checkbox" id="pShowPrice" checked><span>Mostrar su precio (cuando los precios estén encendidos)</span></label>
         <p class="a-err" id="pErr" role="alert"></p>
       </div>
       <div class="panel-f"><button class="btn ghost" type="button" data-fclose>Cancelar</button><button class="btn pri" type="submit">Guardar producto</button></div>
@@ -313,7 +308,6 @@ async function renderAdmin(){
       sb('/rest/v1/cart_events?select=created_at,product_name,qty&order=created_at.desc&limit=5000', { auth:true }).catch(() => [])
     ]);
     aProducts = rows.map(r => fromRow(r, true)); aOrders = os; aInvoices = inv; aCart = ce;
-    $('#aPrices').checked = !!(st.find(s => s.key === 'show_prices') || {}).value;
     billing = (st.find(s => s.key === 'billing') || {}).value || {};
   } catch (err) { aMsg('No se pudo cargar el panel: ' + err.message, 'err'); }
   renderAll_();
@@ -374,10 +368,6 @@ function renderHome(){
   $('#cOrd').title = hoy ? `${hoy} pedidos hoy` : '';
   renderDash();
 }
-$('#aPrices').addEventListener('change', async e => {
-  try { await sb('/rest/v1/settings?key=eq.show_prices', { method:'PATCH', auth:true, body:{ value: e.target.checked } }); aMsg(e.target.checked ? 'Listo: ahora los precios se ven en la tienda.' : 'Listo: los precios quedaron escondidos en la tienda.'); }
-  catch (err) { e.target.checked = !e.target.checked; aMsg('No se pudo guardar: ' + err.message, 'err'); }
-});
 
 /* ---------- productos ---------- */
 const aGroups = () => [...new Set([...BASE_GROUPS, ...aProducts.map(p => p.group)])];
@@ -393,7 +383,7 @@ const aCardHTML = p => `<article class="pc${p.hidden ? ' off' : ''}" data-id="${
     <span class="pcat" style="--c:${catColor(p.group)}"><i></i>${esc(p.group)}</span>
     <h3>${esc(p.name)}</h3>
     <dl><div><dt>Presentación</dt><dd>${p.size ? esc(p.size) : '<span class="muted">Sin definir</span>'}</dd></div>
-    <div><dt>Precio</dt><dd>${p.price !== '' ? money(p.price) + (p.showPrice ? '' : ' <span class="muted">(no se muestra)</span>') : '<span class="muted">Sin precio</span>'}</dd></div></dl>
+    <div><dt>Precio</dt><dd>${p.price !== '' ? money(p.price) : '<span class="muted">Sin precio (no se muestra)</span>'}</dd></div></dl>
   </div>
   <div class="pc-act">
     <button class="btn pri sm" type="button" data-act="edit">Editar</button>
@@ -441,7 +431,6 @@ function openForm(p){
   $('#pPrice').value = p ? p.price : '';
   $('#pDesc').value = p ? p.desc : '';
   $('#pVis').checked = p ? !p.hidden : true;
-  $('#pShowPrice').checked = p ? p.showPrice : true;
   $('#pImg').value = ''; setFormImg(p ? p.img : '');
   $('#pNew').value = ''; $('#pNewWrap').hidden = true; $('#pErr').textContent = '';
   aForm.hidden = false; setTimeout(() => $('#pName').focus(), 30);
@@ -482,7 +471,7 @@ $('#pForm').addEventListener('submit', async e => {
       await sb(`/storage/v1/object/productos/${path}`, { method:'POST', auth:true, raw:true, body: blob, headers:{ 'Content-Type': blob.type, 'x-upsert':'true' } });
       img = `${SB.supabaseUrl}/storage/v1/object/public/productos/${path}`;
     }
-    const row = { name, category: group, image_url: img || null, unit: $('#pSize').value.trim() || null, price: priceRaw === '' ? null : Number(priceRaw), description: $('#pDesc').value.trim() || null, active: $('#pVis').checked, show_price: $('#pShowPrice').checked };
+    const row = { name, category: group, image_url: img || null, unit: $('#pSize').value.trim() || null, price: priceRaw === '' ? null : Number(priceRaw), description: $('#pDesc').value.trim() || null, active: $('#pVis').checked, show_price: true };
     if (editing) await sb(`/rest/v1/products?id=eq.${editing.id}`, { method:'PATCH', auth:true, body: row });
     else await sb('/rest/v1/products', { method:'POST', auth:true, prefer:'return=minimal', body: { ...row, sort: 999 } });
     $('#pErr').textContent = ''; aForm.hidden = true; editing = null;
@@ -587,7 +576,7 @@ function renderOrders(){
       <ul>${(o.items || []).map(i => `<li><span>${i.qty || 1} ×</span> ${esc(i.name)}${i.size ? ` <em>(${esc(i.size)})</em>` : ''}${i.price !== '' && i.price != null ? `<b>${money(i.price * (i.qty || 1))}</b>` : ''}</li>`).join('')}</ul>
       ${o.customer_note ? `<p class="onote">Nota del cliente: ${esc(o.customer_note)}</p>` : ''}
       <footer>
-        <span class="otot">${t !== null ? `Total de productos: <b>${money(t)}</b>` : 'Precios por confirmar por WhatsApp'}</span>
+        <span class="otot">${t !== null ? `Total de productos: <b>${money(t)}</b>` : ''}</span>
         <div class="aacts">${inv && inv.pdf_url ? `<a class="btn sec sm" href="${esc(inv.pdf_url)}" target="_blank" rel="noopener">Ver boleta ${esc((inv.series || '') + '-' + (inv.number || ''))}</a>` : ''}<button class="btn icon" type="button" data-oact="copy" title="Copiar el pedido" aria-label="Copiar el pedido">${ico('txt')}</button><button class="btn icon dan" type="button" data-oact="del" title="Eliminar del historial" aria-label="Eliminar del historial">${ico('trash')}</button></div>
       </footer>
     </article>`;
