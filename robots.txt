@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://reynas-superfoods-web.pages.dev/sitemap.xml

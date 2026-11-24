@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reyna's Superfoods: harinas y superalimentos andinos</title>
+<meta name="description" content="Tienda de Reyna's Superfoods: harinas, superalimentos y extractos en polvo. Arma tu pedido y envíalo por WhatsApp. Venta por mayor y menor, envíos a todo Lima y provincias.">
+<link rel="canonical" href="https://reynas-superfoods-web.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PE">
+<meta property="og:site_name" content="Reyna's Superfoods">
+<meta property="og:title" content="Reyna's Superfoods: harinas y superalimentos andinos">
+<meta property="og:description" content="Arma tu pedido y envíalo por WhatsApp. Envíos a todo Lima y provincias.">
+<meta property="og:url" content="https://reynas-superfoods-web.pages.dev/">
+<meta property="og:image" content="https://reynas-superfoods-web.pages.dev/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#D39F78">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cauphvgvqtcvmcsvbyry.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="/assets/hero/maca_main.webp">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Reyna's Superfoods S.A.C.",
+  "url": "https://reynas-superfoods-web.pages.dev/",
+  "logo": "https://reynas-superfoods-web.pages.dev/favicon.svg",
+  "slogan": "Lo mejor de la naturaleza para ti",
+  "sameAs": ["https://www.instagram.com/reynassuperfoods", "https://www.tiktok.com/@reynas.superfoods"],
+  "contactPoint": { "@type": "ContactPoint", "telephone": "+51-918-515-262", "contactType": "sales", "areaServed": "PE", "availableLanguage": "es" }
+}
+</script>
+</head>
+<body class="pre">
+
+<!-- =================== PORTADA =================== -->
+<section class="hero" id="inicio" aria-label="Productos destacados">
+  <div class="stage" id="stage" aria-live="polite"></div>
+  <div class="hui">
+    <header class="hhead">
+      <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio">Reyna's</a>
+      <nav class="htabs rise" id="tabs" aria-label="Productos destacados"><span class="hbar" id="bar"></span></nav>
+      <div class="hacct rise">
+        <a href="#tienda">Tienda</a>
+        <span class="sep" aria-hidden="true">|</span>
+        <button type="button" data-cart>Mi pedido<span class="hcount" data-count hidden>0</span></button>
+      </div>
+    </header>
+    <button class="harrow hprev rise" type="button" aria-label="Producto anterior"><svg viewBox="0 0 28 28"><path d="M24 14H4M12 6l-8 8 8 8"/></svg></button>
+    <a class="hcta rise" id="cta" href="#tienda">COMPRAR AHORA</a>
+    <button class="harrow hnext rise" type="button" aria-label="Producto siguiente"><svg viewBox="0 0 28 28"><path d="M4 14h20M16 6l8 8-8 8"/></svg></button>
+  </div>
+</section>
+
+<!-- =================== BARRA FIJA + MEGA MENÚ =================== -->
+<header class="topbar" id="topbar">
+  <div class="tb-in">
+    <button class="burger" type="button" id="burger" aria-label="Abrir menú de productos" aria-expanded="false" aria-controls="mega"><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
+    <a class="tb-logo" href="#inicio">Reyna's</a>
+    <nav class="tb-links" aria-label="Secciones">
+      <button class="megabtn" type="button" id="megaBtn" aria-expanded="false" aria-controls="mega">Tienda <svg viewBox="0 0 14 14"><path d="M3 5l4 4 4-4"/></svg></button>
+      <a href="#packs">Packs y combos</a><a href="#como-comprar">Cómo comprar</a><a href="#contacto">Contacto</a>
+    </nav>
+    <button class="cartpill" type="button" data-cart aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
+  </div>
+</header>
+<div class="mega" id="mega" role="region" aria-label="Menú de productos"><div class="mega-in" id="megaIn"></div></div>
+
+<main>
+<div class="marquee" data-speed="0.6" aria-hidden="true"><div class="mq-track"><span>Maca</span><i></i><span class="o">Lúcuma</span><i></i><span>Maíz morado</span><i></i><span class="o">Camu camu</span><i></i><span>Quinua</span><i></i><span class="o">Cacao</span><i></i><span>Kiwicha</span><i></i><span class="o">Açaí</span><i></i><span>Cañihua</span><i></i><span class="o">Aguaje</span><i></i></div></div>
+<!-- =================== TIENDA =================== -->
+<section class="sec" id="tienda">
+  <div class="wrap">
+    <div class="shop-head">
+      <nav class="crumbs" id="shopCrumbs" aria-label="Estás en"></nav>
+      <div class="s-head rv" style="margin-bottom:0">
+        <div>
+          <p class="eyebrow">Catálogo 2026</p>
+          <h2 class="h2">Harinas y superalimentos andinos</h2>
+          <p class="lead">Elige lo que necesitas y lo agregamos a tu pedido. Venta al por mayor y menor, con envíos a todo Lima y provincias.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tools rv">
+      <div class="cats" id="cats" role="group" aria-label="Categorías"></div>
+      <label class="search">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+        <input id="q" type="search" placeholder="Buscar: maca, cacao, quinua…" aria-label="Buscar producto" autocomplete="off">
+      </label>
+    </div>
+    <div class="grid" id="grid"><p class="none" style="grid-column:1/-1">Cargando el catálogo…</p></div>
+    <p class="none" id="none" hidden>No encontramos ese producto. <a class="ulink" id="askLink" href="#" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a>.</p>
+    <div class="more" hidden><button class="bt bt-white" type="button" id="more">Ver más productos</button></div>
+  </div>
+</section>
+
+<!-- =================== PACKS =================== -->
+<section class="sec packs" id="packs">
+  <div class="wrap">
+    <div class="s-head rv">
+      <div>
+        <p class="eyebrow">Packs y combos</p>
+        <h2 class="h2">Combinaciones listas para tu semana</h2>
+        <p class="lead">Productos que se usan juntos, en un solo pedido. Ideales para regalar o para empezar.</p>
+      </div>
+    </div>
+    <div class="pgrid" id="pgrid"></div>
+    <div class="custom rv">
+      <p>¿Necesitas otra combinación? La armamos contigo.</p>
+      <a class="bt bt-ink" id="customLink" href="#" target="_blank" rel="noopener">Armar mi pack por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== DESTACADO =================== -->
+<section class="sec feat" id="destacado">
+  <div class="wrap feat-in">
+    <div class="vis rv" aria-hidden="true"><span class="big">Maca</span><div class="obj"><img id="featImg" alt=""></div></div>
+    <div class="rv">
+      <p class="eyebrow">Producto destacado</p>
+      <h2 class="h2">Maca negra gelatinizada</h2>
+      <div class="bens">
+        <div class="ben"><h3>Energía natural</h3><p>Ayuda a mejorar el rendimiento físico y mental.</p></div>
+        <div class="ben"><h3>Fortalece el organismo</h3><p>Aporta nutrientes que apoyan el sistema inmunológico.</p></div>
+        <div class="ben"><h3>Equilibrio hormonal</h3><p>Contribuye al bienestar hormonal y la vitalidad.</p></div>
+        <div class="ben"><h3>100% natural</h3><p>Sin aditivos, sin conservantes.</p></div>
+      </div>
+      <p class="ideal"><b>Ideal para:</b> batidos, recetas, yogures y panadería.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <button class="bt bt-lime" type="button" id="featAdd">Agregar a mi pedido</button>
+        <button class="bt bt-white" type="button" id="featSee">Ver producto</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== VALORES =================== -->
+<section class="sec" id="nosotros">
+  <div class="wrap">
+    <div class="s-head rv">
+      <div>
+        <p class="eyebrow">Alimentación saludable</p>
+        <h2 class="h2">Lo mejor de la naturaleza para ti</h2>
+      </div>
+      <p class="lead">Productos reales, resultados reales. Insumos en polvo, listos para tu cocina o tu negocio.</p>
+    </div>
+    <div class="vals">
+      <div class="val card" style="--c:var(--green-v);--i:0"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/></svg></div><h3>Natural</h3><p>Harinas y extractos de frutas, granos, raíces y plantas.</p></div>
+      <div class="val card" style="--c:var(--pink);--i:1"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><h3>Saludable</h3><p>Para batidos, desayunos, recetas, yogures y panadería.</p></div>
+      <div class="val card" style="--c:var(--yellow);--i:2"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.3 6L12 16.4 6.6 19.4l1.3-6L3.4 9.3l6-.7z"/></svg></div><h3>Nutritivo</h3><p>Superalimentos andinos y amazónicos como maca, quinua, camu camu y cacao.</p></div>
+      <div class="val card" style="--c:var(--cyan);--i:3"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></div><h3>Sostenible</h3><p>Productos del campo peruano, para consumo diario o a gran escala.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== MAYORISTAS =================== -->
+<section class="sec" style="padding-top:0" id="mayoristas">
+  <div class="wrap">
+    <div class="whole rv">
+      <div>
+        <h2 class="h2">Venta al por mayor y menor</h2>
+        <p>Insumos para la industria alimentaria: panaderías, juguerías, restaurantes y emprendimientos. Cuéntanos qué necesitas y en qué cantidad.</p>
+      </div>
+      <div class="acts"><a class="bt bt-lime" id="wholeLink" href="#" target="_blank" rel="noopener">Cotizar por mayor</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CÓMO COMPRAR =================== -->
+<section class="sec" style="padding-top:0" id="como-comprar">
+  <div class="wrap">
+    <div class="s-head rv"><div><p class="eyebrow">Cómo comprar</p><h2 class="h2">Tu pedido en tres pasos</h2></div></div>
+    <div class="steps">
+      <div class="stp card" style="--i:0"><div class="bd"><span class="n">1</span><h3>Arma tu pedido</h3><p>Agrega productos y packs desde la tienda. Puedes cambiar las cantidades cuando quieras.</p></div></div>
+      <div class="stp card" style="--i:1"><div class="bd"><span class="n">2</span><h3>Envíalo por WhatsApp</h3><p>Escribe tu nombre y distrito. El mensaje se arma solo y llega directo a nuestro WhatsApp.</p></div></div>
+      <div class="stp card" style="--i:2"><div class="bd"><span class="n">3</span><h3>Coordina pago y envío</h3><p>Te confirmamos precios, presentaciones y el costo de envío. Enviamos a todo Lima y provincias.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PEDIDO =================== -->
+<section class="sec order-sec" id="pedido">
+  <div class="wrap">
+    <div class="s-head rv"><div><p class="eyebrow">Mi pedido</p><h2 class="h2">Revisa y envía tu pedido</h2></div></div>
+    <div class="ord">
+      <div class="box rv">
+        <h3>Productos</h3>
+        <div id="lines"></div>
+        <div class="tot" id="tot" hidden><span>Total de productos</span><span id="totV"></span></div>
+      </div>
+      <form class="box rv" id="oform">
+        <h3>Tus datos</h3>
+        <label class="fld">Nombre<input id="fName" autocomplete="name" placeholder="¿Cómo te llamas?"></label>
+        <label class="fld">Distrito o provincia<input id="fDist" placeholder="Ej.: Surco, Arequipa…"></label>
+        <label class="fld">Nota (opcional)<textarea id="fNote" placeholder="Presentación que prefieres, horario de entrega…"></textarea></label>
+        <p class="fld" style="margin-bottom:6px">Así llegará tu mensaje</p>
+        <div class="preview" id="preview" aria-live="polite"></div>
+        <button class="bt bt-lime full" id="send" type="submit" disabled>Enviar pedido por WhatsApp</button>
+        <p class="note">No se cobra nada aquí. Reyna's te responde para coordinar el pago, la boleta y el envío.</p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="marquee alt" data-speed="-0.45" aria-hidden="true"><div class="mq-track"><span>Envíos a todo Lima y provincias</span><i></i><span>Venta por mayor y menor</span><i></i><span>Productos reales, resultados reales</span><i></i><span>Lo mejor de la naturaleza para ti</span><i></i></div></div>
+<!-- =================== PIE =================== -->
+<footer class="foot" id="contacto">
+  <div class="wrap">
+    <div class="f-in">
+      <div>
+        <div class="f-logo">Reyna's</div>
+        <p>Reyna's Superfoods S.A.C. Harinas, superalimentos y extractos en polvo. Lo mejor de la naturaleza para ti.</p>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <ul>
+          <li><a href="https://wa.me/51918515262" target="_blank" rel="noopener">WhatsApp 918 515 262</a></li>
+          <li><a href="https://wa.me/51992595837" target="_blank" rel="noopener">WhatsApp 992 595 837</a></li>
+          <li>Lima, Perú. Envíos a todo Lima y provincias.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Síguenos</h3>
+        <ul>
+          <li><a href="https://www.instagram.com/reynassuperfoods" target="_blank" rel="noopener">Instagram: reynassuperfoods</a></li>
+          <li><a href="https://www.tiktok.com/@reynas.superfoods" target="_blank" rel="noopener">TikTok: reynas.superfoods</a></li>
+          <li>Facebook: Reyna's Superfoods</li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bot">
+      <span>© 2026 Reyna's Superfoods S.A.C.</span>
+      <button class="adm-link" type="button" id="admLink">Administrar</button>
+    </div>
+  </div>
+</footer>
+
+<!-- =================== FICHA DE PRODUCTO =================== -->
+<div class="pdp" id="pdp" role="dialog" aria-modal="true" aria-labelledby="pdpName" aria-hidden="true">
+  <div class="pdp-top">
+    <div class="tb-in">
+      <button class="back" type="button" id="pdpBack"><svg viewBox="0 0 20 20"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>Volver</button>
+      <a class="tb-logo" href="#inicio" id="pdpLogo">Reyna's</a>
+      <button class="cartpill" type="button" data-cart id="pdpCart" aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
+    </div>
+  </div>
+  <div class="wrap">
+    <nav class="crumbs" id="pdpCrumbs" aria-label="Estás en"></nav>
+    <div class="pdp-main">
+      <div class="pdp-vis" id="pdpVis"><span class="bgw" id="pdpWord"></span><div class="plate"><img id="pdpImg" alt=""></div></div>
+      <div class="pdp-info">
+        <span class="chip" id="pdpChip"></span>
+        <h1 id="pdpName"></h1>
+        <div id="pdpPrice"></div>
+        <div class="buy">
+          <span class="qty" role="group" aria-label="Cantidad"><button type="button" data-q="-1" aria-label="Menos">−</button><output id="pdpQty">1</output><button type="button" data-q="1" aria-label="Más">+</button></span>
+          <button class="bt bt-lime" type="button" id="pdpAdd">Agregar al pedido</button>
+        </div>
+        <p class="desc" id="pdpDesc"></p>
+        <dl class="facts" id="pdpFacts"></dl>
+      </div>
+    </div>
+    <section class="related" id="related">
+      <h2>También te puede interesar</h2>
+      <div class="grid" id="relGrid"></div>
+    </section>
+  </div>
+</div>
+<div class="satc" id="satc" aria-hidden="true">
+  <img id="satcImg" alt="">
+  <div class="t"><b id="satcName"></b><span id="satcPrice"></span></div>
+  <span class="qty" role="group" aria-label="Cantidad"><button type="button" data-q="-1" aria-label="Menos">−</button><output id="satcQty">1</output><button type="button" data-q="1" aria-label="Más">+</button></span>
+  <button class="bt bt-lime" type="button" id="satcAdd">Agregar</button>
+</div>
+
+<!-- =================== CART DRAWER =================== -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="scrim" data-dclose></div>
+  <aside class="dpanel" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+    <div class="dhead"><h2 id="dTitle">Tu pedido</h2><button class="x" type="button" data-dclose aria-label="Cerrar"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button></div>
+    <div class="dlist" id="dlist"></div>
+    <div class="dfoot">
+      <div class="tot" id="dtot" hidden><span>Total de productos</span><span id="dtotV"></span></div>
+      <button class="bt bt-ink full" type="button" id="dgo">Continuar con mi pedido</button>
+      <button class="keep" type="button" data-dclose>Seguir comprando</button>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast" role="status"><span id="toastT"></span><button type="button" data-cart>Ver pedido</button></div>
+
+
+<div class="admin" id="admin" hidden role="dialog" aria-modal="true" aria-labelledby="aTitle">
+  <div class="a-login" id="aLogin">
+    <form class="a-card" id="aLoginForm">
+      <h2 id="aTitle">Panel de Reyna's</h2>
+      <p>Acceso solo para la tienda.</p>
+      <input class="a-in" id="aEmail" type="email" placeholder="Correo" aria-label="Correo" autocomplete="username" required>
+      <input class="a-in" id="aPass" type="password" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password" required>
+      <p class="a-err" id="aErr" role="alert"></p>
+      <button class="btn pri" type="submit">Entrar</button>
+      <button class="btn sec" type="button" data-aclose>Volver a la tienda</button>
+    </form>
+  </div>
+
+  <div class="a-wrap" id="aApp" hidden>
+    <div class="a-top">
+      <h1>Panel de Reyna's</h1>
+      <button class="btn sec" type="button" data-aclose>Ver tienda</button>
+      <button class="btn sec" type="button" id="aOut">Salir</button>
+    </div>
+    <div class="a-tabs" role="tablist">
+      <button type="button" role="tab" aria-selected="true" data-view="prod" id="tProd">Productos</button>
+      <button type="button" role="tab" aria-selected="false" data-view="ord" id="tOrd">Pedidos</button>
+    </div>
+
+    <section id="vProd">
+      <div class="a-bar">
+        <input class="a-in" id="aQ" type="search" placeholder="Buscar producto" aria-label="Buscar producto">
+        <select class="a-in" id="aG" aria-label="Filtrar por categoría"></select>
+        <button class="btn pri" type="button" id="aAdd">Agregar producto</button>
+      </div>
+      <label class="a-check" style="margin:0 0 12px"><input type="checkbox" id="aPrices"> Mostrar precios en la tienda</label>
+      <p class="a-err" id="aMsg" role="status" aria-live="polite"></p>
+
+      <form class="a-form" id="aForm" hidden>
+        <h3 id="aFormT">Nuevo producto</h3>
+        <div class="a-grid">
+          <label>Nombre<input class="a-in" id="pName" required placeholder="Ej.: Maca negra"></label>
+          <label>Categoría<select class="a-in" id="pGroup"></select></label>
+          <label>Presentación<input class="a-in" id="pSize" placeholder="Ej.: 500 g"></label>
+          <label>Precio (S/)<input class="a-in" id="pPrice" inputmode="decimal" placeholder="Opcional"></label>
+        </div>
+        <label id="pNewWrap" hidden>Nombre de la nueva categoría<input class="a-in" id="pNew" placeholder="Ej.: Condimentos en polvo"></label>
+        <div class="a-photo"><img id="pImgPrev" alt="Vista previa de la foto"><label>Foto del producto<input class="a-in" id="pImg" type="file" accept="image/*" style="padding-top:9px"></label><button class="btn sec sm" type="button" id="pImgClear">Quitar foto</button></div>
+        <label>Descripción (para packs y combos)<textarea class="a-in" id="pDesc" placeholder="Qué incluye, para qué sirve…"></textarea></label>
+        <label class="a-check"><input type="checkbox" id="pVis" checked> Visible en la tienda</label>
+        <p class="a-err" id="pErr" role="alert"></p>
+        <div class="a-actions">
+          <button class="btn pri" type="submit">Guardar</button>
+          <button class="btn sec" type="button" id="aCancel">Cancelar</button>
+        </div>
+      </form>
+
+      <div class="a-list" id="aList"></div>
+      <p class="a-note">Los cambios se guardan en la base de datos y se ven en la tienda al instante. Si un producto no tiene precio, la tienda muestra “Precio por confirmar”.</p>
+    </section>
+
+    <section id="vOrd" hidden>
+      <div id="oList"></div>
+      <p class="a-note">Cada pedido que el cliente envía por WhatsApp queda registrado aquí. La boleta se emitirá desde aquí cuando el facturador entregue el acceso a su API, siempre después de confirmar el pago.</p>
+    </section>
+  </div>
+</div>
+
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/app.js"></script>
+</body>
+</html>
