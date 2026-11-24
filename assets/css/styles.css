@@ -489,3 +489,17 @@ body:has(.drawer.open) .wafloat,body:has(.admin:not([hidden])) .wafloat{opacity:
 body:has(#topbar:not(.show)) .wafloat{opacity:0;pointer-events:none;transform:translateY(16px)}
 @media (max-width:640px){.wafloat{width:56px;height:56px;padding:0;justify-content:center;right:14px;bottom:14px}.wafloat span{display:none}}
 @media (prefers-reduced-motion:reduce){.wafloat::before{animation:none}.wafloat:hover{transform:none}}
+
+/* presentaciones por mayor */
+.pres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;perspective:1400px}
+.pres-ph{aspect-ratio:1/1;background:#fff;border-radius:calc(var(--r-card) - 1px) calc(var(--r-card) - 1px) 0 0;overflow:hidden}
+.pres-ph img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.pres-card:hover .pres-ph img{transform:scale(1.05)}
+.pres-bd{padding:20px 22px 24px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;flex:1}
+.pres-tag{background:var(--green);color:#fff;font-weight:700;font-size:13px;padding:4px 12px;border-radius:999px}
+.pres-bd h3{font-size:20px;font-weight:700;line-height:1.2}
+.pres-bd p{color:var(--muted);font-size:15px;flex:1}
+.pres-cta{margin-top:8px}
+@media (max-width:900px){.pres{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.pres{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.pres-card:hover .pres-ph img{transform:none}}

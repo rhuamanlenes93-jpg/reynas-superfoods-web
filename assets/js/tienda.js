@@ -71,13 +71,14 @@ const priceHTML = p => `<span class="pr${p.price === '' ? ' tbd' : ''}">${p.pric
    ========================================================= */
 document.querySelectorAll('[data-edit]').forEach(el => { el.dataset.def = el.textContent.trim(); });
 let siteTexts = {};
-const TXT_GROUPS = { hero:'Portada', cinta1:'Cinta de arriba', tienda:'Tienda', packs:'Packs y combos', dest:'Producto destacado', val:'Valores', mv:'Misión y visión', may:'Venta por mayor', pasos:'Cómo comprar', pedido:'Mi pedido', cinta2:'Cinta de abajo', pie:'Pie de página' };
+const TXT_GROUPS = { hero:'Portada', cinta1:'Cinta de arriba', tienda:'Tienda', packs:'Packs y combos', dest:'Producto destacado', val:'Valores', mv:'Misión y visión', pres:'Presentaciones por mayor', may:'Venta por mayor', pasos:'Cómo comprar', pedido:'Mi pedido', cinta2:'Cinta de abajo', pie:'Pie de página' };
 const TXT_NAMES = { boton:'Botón', etiqueta:'Texto pequeño sobre el título', titulo:'Título', texto:'Texto', extra:'Frase', palabra:'Palabra grande de fondo', nota:'Nota debajo del botón', ideal_t:'“Ideal para” (título)', ideal:'“Ideal para” (texto)', mision_t:'Título de la misión', mision:'Misión', vision_t:'Título de la visión', vision:'Visión', lugar:'Ubicación', derechos:'Derechos' };
-const TXT_ITEM = { val:'Valor', pasos:'Paso', dest:'Beneficio' };
+const TXT_ITEM = { val:'Valor', pasos:'Paso', dest:'Beneficio', pres:'Presentación' };
 function txtLabel(key){
   const [g, s] = key.split('.');
   if (TXT_NAMES[s]) return TXT_NAMES[s];
-  let m = s.match(/^b?(\d+)_t$/); if (m) return `${TXT_ITEM[g] || 'Elemento'} ${m[1]}: título`;
+  let m = s.match(/^(\d+)_tag$/); if (m) return `${TXT_ITEM[g] || 'Elemento'} ${m[1]}: etiqueta (peso)`;
+  m = s.match(/^b?(\d+)_t$/); if (m) return `${TXT_ITEM[g] || 'Elemento'} ${m[1]}: título`;
   m = s.match(/^b?(\d+)$/); if (m) return g.startsWith('cinta') ? `Frase ${m[1]}` : `${TXT_ITEM[g] || 'Elemento'} ${m[1]}: texto`;
   return s;
 }

@@ -196,6 +196,7 @@ $('#oform').addEventListener('submit', e => {
   toast('Pedido enviado. Te responderemos por WhatsApp.');
 });
 $('#customLink').href = waLink("Hola Reyna's Superfoods, quiero armar un pack con estos productos: ");
+document.querySelectorAll('[data-wa]').forEach(a => { a.href = waLink(a.dataset.wa); });
 $('#wholeLink').href = waLink("Hola Reyna's Superfoods, quiero cotizar productos por mayor. Necesito: ");
 $('#featImg').src = IMG.maca_main.src;
 $('#featAdd').addEventListener('click', () => {
