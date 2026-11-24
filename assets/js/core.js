@@ -1,7 +1,9 @@
 /* Reyna's Superfoods · core.js
    Utilidades compartidas y conexión con Supabase (REST, Auth y Storage). Se carga primero. */
 const WA = window.REYNAS.whatsapp;
-const photoUrl = key => `/assets/products/${key}.webp`;
+const V = window.REYNAS.version || '1';
+const withV = url => `${url}?v=${V}`;
+const photoUrl = key => withV(`/assets/products/${key}.webp`);
 const $ = s => document.querySelector(s);
 const RM = matchMedia('(prefers-reduced-motion: reduce)');
 const FINE = matchMedia('(hover: hover) and (pointer: fine)');

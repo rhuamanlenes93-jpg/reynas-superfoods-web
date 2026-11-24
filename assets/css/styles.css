@@ -485,5 +485,7 @@ img{display:block;max-width:100%}
 @keyframes waPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.35);opacity:0}}
 .satc.show ~ .wafloat{bottom:100px}
 body:has(.drawer.open) .wafloat,body:has(.admin:not([hidden])) .wafloat{opacity:0;pointer-events:none}
+/* en la portada no aparece (taparía la flecha); sale junto con la barra superior */
+body:has(#topbar:not(.show)) .wafloat{opacity:0;pointer-events:none;transform:translateY(16px)}
 @media (max-width:640px){.wafloat{width:56px;height:56px;padding:0;justify-content:center;right:14px;bottom:14px}.wafloat span{display:none}}
 @media (prefers-reduced-motion:reduce){.wafloat::before{animation:none}.wafloat:hover{transform:none}}

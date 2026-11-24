@@ -1,6 +1,7 @@
 /* Reyna's Superfoods · portada.js
    Slider de la portada con capas en paralaje, pestañas y barra fija con mega menú. */
-const IMG = {"maca_main": {"src": "/assets/hero/maca_main.webp", "w": 620, "h": 269}, "maca_amar": {"src": "/assets/hero/maca_amar.webp", "w": 299, "h": 350}, "maca_negra_r": {"src": "/assets/hero/maca_negra_r.webp", "w": 278, "h": 248}, "maca_roja_h": {"src": "/assets/hero/maca_roja_h.webp", "w": 309, "h": 235}, "lucuma_main": {"src": "/assets/hero/lucuma_main.webp", "w": 620, "h": 283}, "lucuma_half": {"src": "/assets/hero/lucuma_half.webp", "w": 232, "h": 234}, "lucuma_whole": {"src": "/assets/hero/lucuma_whole.webp", "w": 211, "h": 248}, "lucuma_pow": {"src": "/assets/hero/lucuma_pow.webp", "w": 360, "h": 158}, "maiz_main": {"src": "/assets/hero/maiz_main.webp", "w": 620, "h": 290}, "maiz_cob": {"src": "/assets/hero/maiz_cob.webp", "w": 381, "h": 215}, "maiz_pow": {"src": "/assets/hero/maiz_pow.webp", "w": 360, "h": 161}, "camu_main": {"src": "/assets/hero/camu_main.webp", "w": 620, "h": 284}, "camu_ber": {"src": "/assets/hero/camu_ber.webp", "w": 244, "h": 237}, "camu_bowl": {"src": "/assets/hero/camu_bowl.webp", "w": 360, "h": 155}, "camu_x_ber": {"src": "/assets/hero/camu_x_ber.webp", "w": 152, "h": 212}};
+const IMG = {"maca_main": {"src": "/assets/hero/maca_main.webp", "w": 716, "h": 345}, "maca_amar": {"src": "/assets/hero/maca_amar.webp", "w": 415, "h": 420}, "maca_negra_r": {"src": "/assets/hero/maca_negra_r.webp", "w": 420, "h": 415}, "maca_roja_h": {"src": "/assets/hero/maca_roja_h.webp", "w": 402, "h": 420}, "lucuma_main": {"src": "/assets/hero/lucuma_main.webp", "w": 723, "h": 322}, "lucuma_half": {"src": "/assets/hero/lucuma_half.webp", "w": 402, "h": 257}, "lucuma_whole": {"src": "/assets/hero/lucuma_whole.webp", "w": 318, "h": 391}, "maiz_main": {"src": "/assets/hero/maiz_main.webp", "w": 758, "h": 346}, "maiz_cob": {"src": "/assets/hero/maiz_cob.webp", "w": 420, "h": 310}, "camu_main": {"src": "/assets/hero/camu_main.webp", "w": 716, "h": 320}, "camu_ber": {"src": "/assets/hero/camu_ber.webp", "w": 420, "h": 360}, "camu_x_ber": {"src": "/assets/hero/camu_x_ber.webp", "w": 271, "h": 219}};
+Object.values(IMG).forEach(o => { o.src = withV(o.src); });
 /* =========================================================
    PORTADA (sin cambios respecto de la v6)
    ========================================================= */
@@ -8,13 +9,13 @@ const SLIDES = [
   { word:'Maca', bg:'#D39F78', search:'maca', main:'maca_main',
     pieces:[['maca_amar',355,150,160,0,0,'fruit'],['maca_negra_r',1035,220,170,-8,0,'fruit'],['maca_roja_h',245,470,185,-8,0,'fruit'],['maca_amar',1215,440,165,14,1,'fruit'],['maca_roja_h',1040,605,165,20,1,'fruit'],['maca_amar',-30,600,300,0,0,'corner'],['maca_negra_r',1250,25,245,0,0,'corner']]},
   { word:'Lúcuma', bg:'#EDC27A', search:'lúcuma', main:'lucuma_main',
-    pieces:[['lucuma_whole',360,140,150,-12,0,'fruit'],['lucuma_half',1035,215,170,10,0,'fruit'],['lucuma_pow',230,480,200,0,0,'fruit'],['lucuma_half',1215,430,170,-20,1,'fruit'],['lucuma_whole',1050,600,150,16,1,'fruit'],['lucuma_half',-20,590,290,0,0,'corner'],['lucuma_whole',1260,20,230,20,0,'corner']]},
+    pieces:[['lucuma_whole',360,140,150,-12,0,'fruit'],['lucuma_half',1035,215,170,10,0,'fruit'],['lucuma_whole',230,480,200,0,0,'fruit'],['lucuma_half',1215,430,170,-20,1,'fruit'],['lucuma_whole',1050,600,150,16,1,'fruit'],['lucuma_half',-20,590,290,0,0,'corner'],['lucuma_whole',1260,20,230,20,0,'corner']]},
   { word:'Maíz morado', bg:'#B79DD4', search:'maíz morado', main:'maiz_main',
-    pieces:[['maiz_pow',350,150,170,0,0,'fruit'],['maiz_cob',1030,225,190,-12,0,'fruit'],['maiz_cob',220,480,210,18,1,'fruit'],['maiz_pow',1215,440,175,0,1,'fruit'],['maiz_cob',1045,610,180,-6,0,'fruit'],['maiz_pow',-30,595,300,0,0,'corner'],['maiz_cob',1240,30,260,25,0,'corner']]},
+    pieces:[['maiz_cob',350,150,170,0,0,'fruit'],['maiz_cob',1030,225,190,-12,0,'fruit'],['maiz_cob',220,480,210,18,1,'fruit'],['maiz_cob',1215,440,175,0,1,'fruit'],['maiz_cob',1045,610,180,-6,0,'fruit'],['maiz_cob',-30,595,300,0,0,'corner'],['maiz_cob',1240,30,260,25,0,'corner']]},
   { word:'Camu camu', bg:'#EDA0B2', search:'camu camu', main:'camu_main',
-    pieces:[['camu_x_ber',370,135,130,-10,0,'fruit'],['camu_ber',1035,215,170,8,0,'fruit'],['camu_bowl',220,480,200,-6,0,'fruit'],['camu_x_ber',1225,425,145,15,1,'fruit'],['camu_ber',1045,605,165,-14,1,'fruit'],['camu_ber',-30,590,300,0,0,'corner'],['camu_x_ber',1270,15,210,20,0,'corner']]},
+    pieces:[['camu_x_ber',370,135,130,-10,0,'fruit'],['camu_ber',1035,215,170,8,0,'fruit'],['camu_x_ber',220,480,200,-6,0,'fruit'],['camu_x_ber',1225,425,145,15,1,'fruit'],['camu_ber',1045,605,165,-14,1,'fruit'],['camu_ber',-30,590,300,0,0,'corner'],['camu_x_ber',1270,15,210,20,0,'corner']]},
 ];
-const MAIN_W = 680, MAIN_BOTTOM = 760;
+const MAIN_W = 700, MAIN_BOTTOM = 760;
 const SHADOWS = [[340,662,190,26],[720,758,430,38],[1300,632,170,24],[1120,780,160,22]];
 const LAYERS = ['word','shadow','bottle','fruit','corner'];
 const FACT = {word:.40, shadow:.30, bottle:.15, fruit:.55, corner:.75};

@@ -5,8 +5,8 @@ const isAdminOpen = () => { const a = document.getElementById('admin'); return !
 let adminReady = null;
 function loadAdmin(){
   if (!adminReady){
-    const css = new Promise((ok, fail) => { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/css/admin.css'; l.onload = ok; l.onerror = fail; document.head.appendChild(l); });
-    const js = new Promise((ok, fail) => { const s = document.createElement('script'); s.src = '/assets/js/admin.js'; s.onload = ok; s.onerror = fail; document.body.appendChild(s); });
+    const css = new Promise((ok, fail) => { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = withV('/assets/css/admin.css'); l.onload = ok; l.onerror = fail; document.head.appendChild(l); });
+    const js = new Promise((ok, fail) => { const s = document.createElement('script'); s.src = withV('/assets/js/admin.js'); s.onload = ok; s.onerror = fail; document.body.appendChild(s); });
     adminReady = Promise.all([css, js]).catch(err => { adminReady = null; throw err; });
   }
   return adminReady;
