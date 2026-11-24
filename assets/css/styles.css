@@ -573,3 +573,15 @@ main>.sec,.foot{content-visibility:auto;contain-intrinsic-size:auto 900px}
 .f-bot .libro:hover{background:rgba(255,255,255,.08);text-decoration:none}
 #empLine:not(:empty)::before{content:"RUC: "}
 @media (prefers-reduced-motion:reduce){.f-soc a{transition:none}}
+
+/* pedido dentro del carrito */
+.dfoot{gap:10px}
+.dfoot[hidden]{display:none}
+.dfields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dfld{display:grid;gap:4px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.dfld input{height:42px;border:1px solid var(--line);border-radius:12px;padding:0 12px;font:inherit;font-size:14.5px;font-weight:400;background:#fff;color:var(--ink);width:100%;min-width:0;transition:border-color .2s,box-shadow .2s}
+.dfld input:focus{border-color:var(--green-2);box-shadow:0 0 0 3px rgba(47,107,59,.12);outline:none}
+.dfoot .consent{margin:0;font-size:12.5px}
+.dnote{font-size:12px;color:var(--muted);text-align:center;margin:-2px 0 0}
+@media (max-width:420px){.dfields{grid-template-columns:minmax(0,1fr)}}
+body:has(.drawer.open) .toast{opacity:0;pointer-events:none}

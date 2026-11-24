@@ -260,30 +260,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
   </div>
 </section>
 
-<!-- =================== PEDIDO =================== -->
-<section class="sec order-sec" id="pedido">
-  <div class="wrap">
-    <div class="s-head rv"><div><p class="eyebrow" data-edit="pedido.etiqueta">Mi pedido</p><h2 class="h2" data-edit="pedido.titulo">Revisa y envía tu pedido</h2></div></div>
-    <div class="ord">
-      <div class="box rv">
-        <h3>Productos</h3>
-        <div id="lines"></div>
-        <div class="tot" id="tot" hidden><span>Total de productos</span><span id="totV"></span></div>
-      </div>
-      <form class="box rv" id="oform">
-        <h3>Tus datos</h3>
-        <label class="fld">Nombre<input id="fName" autocomplete="name" placeholder="¿Cómo te llamas?"></label>
-        <label class="fld">Distrito o provincia<input id="fDist" placeholder="Ej.: Surco, Arequipa…"></label>
-        <label class="fld">Nota (opcional)<textarea id="fNote" placeholder="Presentación que prefieres, horario de entrega…"></textarea></label>
-        <p class="fld" style="margin-bottom:6px">Así llegará tu mensaje</p>
-        <div class="preview" id="preview" aria-live="polite"></div>
-        <label class="consent"><input type="checkbox" id="fOk" required><span>Acepto la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a> y los <a href="/terminos" target="_blank" rel="noopener">términos de compra</a>.</span></label>
-        <button class="bt bt-lime full" id="send" type="submit" disabled>Enviar pedido por WhatsApp</button>
-        <p class="note" data-edit="pedido.nota">No se cobra nada aquí. Reyna's te responde para coordinar el pago, la boleta y el envío.</p>
-      </form>
-    </div>
-  </div>
-</section>
+
 </main>
 
 <div class="marquee alt" data-speed="-0.45" aria-hidden="true"><div class="mq-track"><span data-edit="cinta2.1">Envíos a todo Lima y provincias</span><i></i><span data-edit="cinta2.2">Venta por mayor y menor</span><i></i><span data-edit="cinta2.3">Productos reales, resultados reales</span><i></i><span data-edit="cinta2.4">Lo mejor de la naturaleza para ti</span><i></i></div></div>
@@ -379,11 +356,17 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
   <aside class="dpanel" role="dialog" aria-modal="true" aria-labelledby="dTitle">
     <div class="dhead"><h2 id="dTitle">Tu pedido</h2><button class="x" type="button" data-dclose aria-label="Cerrar"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button></div>
     <div class="dlist" id="dlist"></div>
-    <div class="dfoot">
+    <form class="dfoot" id="oform">
       <div class="tot" id="dtot" hidden><span>Total de productos</span><span id="dtotV"></span></div>
-      <button class="bt bt-ink full" type="button" id="dgo">Continuar con mi pedido</button>
+      <div class="dfields">
+        <label class="dfld"><span>Tu nombre</span><input id="fName" autocomplete="name" placeholder="¿Cómo te llamas?" maxlength="120"></label>
+        <label class="dfld"><span>¿A dónde lo enviamos?</span><input id="fDist" placeholder="Distrito o ciudad" maxlength="120"></label>
+      </div>
+      <label class="consent"><input type="checkbox" id="fOk" required><span>Acepto la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a> y los <a href="/terminos" target="_blank" rel="noopener">términos</a>.</span></label>
+      <button class="bt bt-lime full" id="send" type="submit" disabled>Enviar pedido por WhatsApp</button>
+      <p class="dnote" data-edit="pedido.nota">No se cobra nada aquí. Te respondemos por WhatsApp para coordinar el pago y el envío.</p>
       <button class="keep" type="button" data-dclose>Seguir comprando</button>
-    </div>
+    </form>
   </aside>
 </div>
 

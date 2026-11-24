@@ -55,7 +55,6 @@ function closeDrawer(){
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-cart]')){ e.preventDefault(); openDrawer(); } });
 drawer.querySelectorAll('[data-dclose]').forEach(b => b.addEventListener('click', closeDrawer));
-$('#dgo').addEventListener('click', () => { closeDrawer(); if (pdpId !== null) closePDP(); setTimeout(() => $('#pedido').scrollIntoView(), 60); });
 
 /* =========================================================
    FICHA DE PRODUCTO + STICKY ADD TO CART
@@ -107,6 +106,7 @@ function closePDP(){
   closePDPUI();
 }
 function route(){
+  if (location.hash === '#pedido'){ history.replaceState(null, '', location.pathname + location.search); openDrawer(); return; }
   const m = location.hash.match(/^#producto\/(.+)$/);
   if (m) openPDP(decodeURIComponent(m[1]));
   else if (pdpId !== null){
@@ -146,7 +146,7 @@ $('#featSee').addEventListener('click', () => { const p = products.find(x => x.i
 /* =========================================================
    PEDIDO
    ========================================================= */
-const fName = $('#fName'), fDist = $('#fDist'), fNote = $('#fNote');
+const fName = $('#fName'), fDist = $('#fDist');
 const cartItems = () => Object.entries(cart).map(([id, n]) => ({ p: byId(id), n })).filter(x => x.p && !x.p.hidden);
 // código corto del pedido: va en el mensaje de WhatsApp y en el historial del panel
 const CODE_ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -159,12 +159,11 @@ function orderCode(){
   return c;
 }
 function buildMsg(items){
-  const nm = fName.value.trim(), ds = fDist.value.trim(), nt = fNote.value.trim();
+  const nm = fName.value.trim(), ds = fDist.value.trim();
   let m = `Hola Reyna's Superfoods, quiero hacer un pedido (${orderCode()}):\n`;
   m += items.length ? items.map(({p, n}) => `• ${n} × ${fullName(p)}${p.size ? ` (${p.size})` : ''}${p.price !== '' ? ` – ${money(p.price * n)}` : ''}`).join('\n') : '• (elige productos en la tienda)';
   if (nm) m += `\n\nNombre: ${nm}`;
   if (ds) m += `${nm ? '\n' : '\n\n'}Envío a: ${ds}`;
-  if (nt) m += `\nNota: ${nt}`;
   m += items.some(({p}) => p.price === '') ? '\n\n¿Me indican el total y el costo de envío?' : '\n\n¿Me confirman el total con el envío?';
   return m;
 }
@@ -187,30 +186,26 @@ function renderDrawer(animate){
   list.innerHTML = items.length ? items.map(lineHTML).join('') : '<p class="empty">Todavía no agregas productos. Explora la tienda y toca “Agregar”.</p>';
   if (!animate) list.querySelectorAll('.line').forEach(l => l.style.animation = 'none');
   const t = totals(items); $('#dtot').hidden = !t; if (t) $('#dtotV').textContent = t;
-  $('#dgo').disabled = !items.length;
+  $('#send').disabled = !items.length;
+  $('#send').textContent = items.length ? 'Enviar pedido por WhatsApp' : 'Agrega productos para enviar';
+  $('#oform').hidden = !items.length;
 }
 function renderOrder(){
   const items = cartItems();
   const totalN = items.reduce((s, x) => s + x.n, 0);
   document.querySelectorAll('[data-count]').forEach(el => { el.textContent = totalN; if (el.classList.contains('hcount')) el.hidden = !totalN; });
-  $('#lines').innerHTML = items.length ? items.map(lineHTML).join('') : '<p class="empty">Tu pedido está vacío. <a class="ulink" href="#tienda">Ve a la tienda</a> y agrega productos o packs.</p>';
-  const t = totals(items); $('#tot').hidden = !t; if (t) $('#totV').textContent = t;
-  $('#preview').textContent = buildMsg(items);
-  $('#send').disabled = !items.length;
-  $('#send').textContent = items.length ? `Enviar pedido por WhatsApp (${totalN})` : 'Agrega productos para enviar';
   if (drawerOpen) renderDrawer(false);
 }
-[fName, fDist, fNote].forEach(el => el.addEventListener('input', renderOrder));
 $('#oform').addEventListener('submit', e => {
   e.preventDefault();
   const items = cartItems(); if (!items.length) return;
   const msg = buildMsg(items);
   sb('/rest/v1/orders', { method:'POST', prefer:'return=minimal', keepalive:true, body:{
-    code: orderCode(), customer_name: fName.value.trim() || null, customer_city: fDist.value.trim() || null, customer_note: fNote.value.trim() || null,
+    code: orderCode(), customer_name: fName.value.trim() || null, customer_city: fDist.value.trim() || null, customer_note: null,
     items: items.map(({p, n}) => ({ name: fullName(p), size: p.size, price: p.price, qty: n })) } }).catch(() => {});
   window.open(waLink(msg), '_blank', 'noopener');
   try { sessionStorage.removeItem('reynas.code'); } catch {}
-  cart = {}; saveC(); renderAll();
+  cart = {}; saveC(); renderAll(); closeDrawer();
   toast('Pedido enviado. Te responderemos por WhatsApp.');
 });
 $('#customLink').href = waLink("Hola Reyna's Superfoods, quiero armar un pack con estos productos: ");
