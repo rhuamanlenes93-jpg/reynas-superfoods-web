@@ -12,11 +12,11 @@ function load(k){ try { return JSON.parse(localStorage.getItem(k)); } catch { re
 function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
 const G = {
   andinos:'Superalimentos andinos', granos:'Granos, semillas y menestras', raices:'Raíces, frutas y verduras',
-  hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', packs:'Packs y combos'
+  hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', doypacks:'Doypacks', packs:'Packs y combos'
 };
 const HARINA_GROUPS = [G.andinos, G.granos, G.raices, G.hierbas];
-const BASE_GROUPS = [G.andinos, G.granos, G.raices, G.hierbas, G.extractos, G.packs];
-const COLORS = { [G.andinos]:'#D39F78', [G.granos]:'#EBC46F', [G.raices]:'#EDA0B2', [G.hierbas]:'#9CC98A', [G.extractos]:'#B79DD4', [G.packs]:'#8FC9C2' };
+const BASE_GROUPS = [G.andinos, G.granos, G.raices, G.hierbas, G.extractos, G.doypacks, G.packs];
+const COLORS = { [G.andinos]:'#D39F78', [G.granos]:'#EBC46F', [G.raices]:'#EDA0B2', [G.hierbas]:'#9CC98A', [G.extractos]:'#B79DD4', [G.doypacks]:'#E3B65E', [G.packs]:'#8FC9C2' };
 const EXTRA = ['#E8B48C','#A9CFE0','#D8C27A','#C9A6D8'];
 const colorOf = g => COLORS[g] || EXTRA[[...g].reduce((s,c) => s + c.charCodeAt(0), 0) % EXTRA.length];
 const USES = {
@@ -24,6 +24,7 @@ const USES = {
   [G.granos]:'Ideal para panes, galletas, papillas, batidos y recetas caseras.',
   [G.raices]:'Ideal para sopas, cremas, masas, postres y batidos.',
   [G.hierbas]:'Ideal para infusiones, aderezos y mezclas naturales.',
+  [G.doypacks]:'Doypack con cierre zip de 250 g, 500 g o 1 kg, listo para tu despensa o para vender en tu tienda.',
   [G.extractos]:'Ideal para jugos, smoothies, helados y repostería.'
 };
 let products = [], catalogLoaded = false;
@@ -49,6 +50,7 @@ const urlSlug = s => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function fullName(p){
   if (HARINA_GROUPS.includes(p.group)) return 'Harina de ' + lc(p.name);
   if (p.group === G.extractos) return 'Extracto en polvo de ' + lc(p.name);
+  if (p.group === G.doypacks) return p.name + ' en doypack';
   return p.name;
 }
 const money = v => v === '' || v == null ? '' : 'S/ ' + Number(v).toFixed(2);
@@ -70,7 +72,7 @@ const priceHTML = p => `<span class="pr">${money(p.price)}</span>`;
 document.querySelectorAll('[data-edit]').forEach(el => { el.dataset.def = el.textContent.trim(); });
 let siteTexts = {};
 const TXT_GROUPS = { hero:'Portada', cinta1:'Cinta de arriba', tienda:'Tienda', packs:'Packs y combos', dest:'Producto destacado', val:'Valores', mv:'Misión y visión', pres:'Presentaciones por mayor', may:'Venta por mayor', pasos:'Cómo comprar', pedido:'Mi pedido', faq:'Preguntas frecuentes', cinta2:'Cinta de abajo', pie:'Pie de página' };
-const TXT_NAMES = { boton:'Botón', etiqueta:'Texto pequeño sobre el título', titulo:'Título', texto:'Texto', extra:'Frase', palabra:'Palabra grande de fondo', nota:'Nota debajo del botón', ideal_t:'“Ideal para” (título)', ideal:'“Ideal para” (texto)', mision_t:'Título de la misión', mision:'Misión', vision_t:'Título de la visión', vision:'Visión', lugar:'Ubicación', derechos:'Derechos' };
+const TXT_NAMES = { boton:'Botón', etiqueta:'Texto pequeño sobre el título', titulo:'Título', texto:'Texto', extra:'Frase', palabra:'Palabra grande de fondo', nota:'Nota debajo del botón', ideal_t:'“Ideal para” (título)', ideal:'“Ideal para” (texto)', mision_t:'Título de la misión', mision:'Misión', vision_t:'Título de la visión', vision:'Visión', lugar:'Ubicación', horario:'Horario de atención', derechos:'Derechos' };
 const TXT_ITEM = { val:'Valor', pasos:'Paso', dest:'Beneficio', pres:'Presentación', faq:'Pregunta' };
 function txtLabel(key){
   const [g, s] = key.split('.');

@@ -9,16 +9,17 @@ const SB_KEY = 'sb_publishable_gpHao0azXWKB31UoQrRt-w_pFBnE3bY'; // clave public
 const WA = '51918515262';
 const SITE = "Reyna's Superfoods";
 
-const G = { andinos:'Superalimentos andinos', granos:'Granos, semillas y menestras', raices:'Raíces, frutas y verduras', hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', packs:'Packs y combos' };
+const G = { andinos:'Superalimentos andinos', granos:'Granos, semillas y menestras', raices:'Raíces, frutas y verduras', hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', doypacks:'Doypacks', packs:'Packs y combos' };
 const HARINA = [G.andinos, G.granos, G.raices, G.hierbas];
-const ORDER = [G.andinos, G.granos, G.raices, G.hierbas, G.extractos, G.packs];
-const COLORS = { [G.andinos]:'#D39F78', [G.granos]:'#EBC46F', [G.raices]:'#EDA0B2', [G.hierbas]:'#9CC98A', [G.extractos]:'#B79DD4', [G.packs]:'#8FC9C2' };
+const ORDER = [G.andinos, G.granos, G.raices, G.hierbas, G.extractos, G.doypacks, G.packs];
+const COLORS = { [G.andinos]:'#D39F78', [G.granos]:'#EBC46F', [G.raices]:'#EDA0B2', [G.hierbas]:'#9CC98A', [G.extractos]:'#B79DD4', [G.doypacks]:'#E3B65E', [G.packs]:'#8FC9C2' };
 const INTRO = {
   [G.andinos]:'Maca, lúcuma, quinua, kiwicha, cañihua, camu camu y más superalimentos de los Andes y la Amazonía, molidos y listos para usar en batidos, postres, panadería y desayunos.',
   [G.granos]:'Harinas de granos, semillas y menestras para panes, galletas, papillas, batidos y la cocina de todos los días.',
   [G.raices]:'Raíces, frutas y verduras deshidratadas y molidas para sopas, cremas, masas, postres y batidos.',
   [G.hierbas]:'Hierbas andinas y del mundo en polvo para infusiones, aderezos y mezclas naturales.',
   [G.extractos]:'Frutas atomizadas: el sabor y el color de la fruta en un polvo fino para jugos, helados, yogures y repostería.',
+  [G.doypacks]:'Maca gelatinizada (negra, roja y amarilla) y lúcuma en doypack con cierre zip de 250 g, 500 g o 1 kg, listos para tu despensa o para vender en bodegas y tiendas naturistas.',
   [G.packs]:'Combinaciones de productos que se usan juntos, en un solo pedido.'
 };
 
@@ -29,6 +30,7 @@ const lc = n => n.charAt(0).toLowerCase() + n.slice(1);
 export function fullName(p){
   if (HARINA.includes(p.category)) return 'Harina de ' + lc(p.name);
   if (p.category === G.extractos) return 'Extracto en polvo de ' + lc(p.name);
+  if (p.category === G.doypacks) return p.name + ' en doypack';
   return p.name;
 }
 const money = v => 'S/ ' + Number(v).toFixed(2);
@@ -120,7 +122,8 @@ export function productPage({ origin, data, slug }){
   const { products, empresa } = data;
   const p = products.find(x => x.slug === slug);
   if (!p) return notFound({ origin, data, path: '/producto/' + slug });
-  const catSlug = urlSlug(p.category), n = NUTRI[p.image_url] || null;
+  const ALIAS = { d_lucuma:'h_lucuma', d_maca_negra:'feat_maca', d_maca_roja:'feat_maca', d_maca_amarilla:'feat_maca' };
+  const catSlug = urlSlug(p.category), n = NUTRI[ALIAS[p.image_url] || p.image_url] || null;
   const joinY = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1] : (a[0] || '');
   const desc = p.description || [
     p.category === G.extractos ? `${p.full}: fruta atomizada en polvo fino, lista para usar.` : `${p.full}, molida y lista para usar.`,

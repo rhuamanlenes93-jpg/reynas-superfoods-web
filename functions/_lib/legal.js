@@ -15,7 +15,8 @@ function emp(e = {}){
     horario: e.horario || '',
     zona: e.zona || 'Lima y provincias',
     libro: /^https:\/\//.test(e.libro_url || '') ? e.libro_url : '',
-    cambios: e.dias_cambio || '7'
+    cambios: e.dias_cambio || '7',
+    pagos: e.pagos || ''
   };
 }
 const contacto = d => d.correo ? `al correo <a href="mailto:${esc(d.correo)}">${esc(d.correo)}</a> o por <a href="${WA_URL}" rel="noopener">${WA_TXT}</a>` : `por <a href="${WA_URL}" rel="noopener">${WA_TXT}</a>`;
@@ -96,7 +97,7 @@ ${ficha(d)}
 <ul>
   <li>Los precios están en soles (S/). Cuando un producto no muestra precio, te lo indicamos por WhatsApp antes de que pagues.</li>
   <li>El costo de envío se suma al total y te lo decimos antes del pago.</li>
-  <li>Los medios de pago disponibles (transferencia, Yape, Plin u otros) se coordinan por WhatsApp.</li>
+  <li>${d.pagos ? `Medios de pago: ${esc(d.pagos)}. Te enviamos los datos de pago por WhatsApp.` : 'Te indicamos los medios de pago por WhatsApp.'}</li>
   <li>Emitimos boleta o factura electrónica por cada venta.</li>
 </ul>
 <h2>4. Envíos</h2>
