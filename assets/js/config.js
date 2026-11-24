@@ -7,5 +7,5 @@ window.REYNAS = {
   whatsapp: '51918515262',
   // Súbelo (2, 3, 4…) cada vez que cambies fotos, CSS o JS: obliga a los navegadores a bajar la versión nueva.
   // Cambia también el mismo número en index.html (preload, styles.css y los scripts).
-  version: '2'
+  version: '3'
 };
