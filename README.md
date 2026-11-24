@@ -9,15 +9,21 @@ Catálogo de Reyna’s Superfoods S.A.C. con pedidos y cotizaciones por WhatsApp
 ## Estructura
 
 ```
-index.html                 página única
-assets/css/styles.css      estilos (todos los colores y medidas en tokens)
+index.html                 página única (sin el panel: el panel se carga aparte)
+assets/css/styles.css      estilos de la tienda (colores y medidas en tokens)
+assets/css/admin.css       estilos del panel (solo se descargan al abrir el panel)
 assets/js/config.js        URL y clave publicable de Supabase, número de WhatsApp
-assets/js/app.js           portada, tienda, ficha, carrito, pedido y panel (conectado a Supabase)
+assets/js/core.js          utilidades y conexión con Supabase (REST, Auth, Storage)
+assets/js/portada.js       slider de la portada y barra superior
+assets/js/tienda.js        catálogo, animaciones, textos editables, mega menú, tienda y packs
+assets/js/pedido.js        carrito, ficha de producto, pedido por WhatsApp y arranque
+assets/js/acceso.js        acceso oculto al panel (5 toques o 5 s en el logo); descarga admin.js
+assets/js/admin.js         panel de administración (productos, textos, pedidos)
 assets/hero/               imágenes de la portada (maca, lúcuma, maíz morado, camu camu)
 assets/products/           fotos de los productos del catálogo PDF (la clave va en products.image_url)
-assets/img/og.jpg          imagen al compartir el enlace
-supabase/migrations/       esquema de la base de datos, en orden
-supabase/seed/seed.sql     catálogo inicial del PDF (79 productos y 4 packs de ejemplo)
+assets/img/                logo, imagen al compartir el enlace (og.jpg)
+favicon.ico, favicon-32.png, apple-touch-icon.png   ícono de la pestaña
+reynas-superfoods-web.sql  toda la base de datos en un solo archivo (tablas, seguridad, textos y catálogo inicial)
 _headers                   caché y cabeceras de seguridad para Cloudflare Pages
 robots.txt, sitemap.xml    para Google
 ```

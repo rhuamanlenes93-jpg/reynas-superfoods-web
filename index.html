@@ -237,7 +237,7 @@
       <div>
         <h3>Contacto</h3>
         <ul>
-          <li><a href="https://wa.me/51918515262" target="_blank" rel="noopener">WhatsApp 918 515 262</a></li>
+          <li><a href="https://wa.me/51918515262" target="_blank" rel="noopener">WhatsApp +51 918 515 262</a></li>
           <li><a href="https://wa.me/51992595837" target="_blank" rel="noopener">WhatsApp 992 595 837</a></li>
           <li data-edit="pie.lugar">Lima, Perú. Envíos a todo Lima y provincias.</li>
         </ul>
@@ -309,82 +309,19 @@
   </aside>
 </div>
 
+<!-- WhatsApp flotante -->
+<a class="wafloat" id="waFloat" href="https://wa.me/51918515262?text=Hola%20Reyna%27s%20Superfoods%2C%20quiero%20informaci%C3%B3n%20de%20sus%20productos" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp al +51 918 515 262">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.2A12.7 12.7 0 0 0 5.1 22.4L3.3 28.8l6.6-1.7A12.7 12.7 0 1 0 16 3.2zm0 23.2c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.5 10.5 0 1 1 16 26.4zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.6 8.6 0 0 1-4.3-3.7c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.6.7.6-.1 1.9-.8 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.3z"/></svg>
+  <span>¿Dudas? Escríbenos</span>
+</a>
 <div class="toast" id="toast" role="status"><span id="toastT"></span><button type="button" data-cart>Ver pedido</button></div>
 
 
-<div class="admin" id="admin" hidden role="dialog" aria-modal="true" aria-labelledby="aTitle">
-  <div class="a-login" id="aLogin">
-    <form class="a-card" id="aLoginForm">
-      <h2 id="aTitle">Panel de Reyna's</h2>
-      <p>Acceso solo para la tienda.</p>
-      <input class="a-in" id="aEmail" type="email" placeholder="Correo" aria-label="Correo" autocomplete="username" required>
-      <input class="a-in" id="aPass" type="password" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password" required>
-      <p class="a-err" id="aErr" role="alert"></p>
-      <button class="btn pri" type="submit">Entrar</button>
-      <button class="btn sec" type="button" data-aclose>Volver a la tienda</button>
-    </form>
-  </div>
-
-  <div class="a-wrap" id="aApp" hidden>
-    <div class="a-top">
-      <h1>Panel de Reyna's</h1>
-      <button class="btn sec" type="button" data-aclose>Ver tienda</button>
-      <button class="btn sec" type="button" id="aOut">Salir</button>
-    </div>
-    <div class="a-tabs" role="tablist">
-      <button type="button" role="tab" aria-selected="true" data-view="prod" id="tProd">Productos</button>
-      <button type="button" role="tab" aria-selected="false" data-view="txt" id="tTxt">Textos de la página</button>
-      <button type="button" role="tab" aria-selected="false" data-view="ord" id="tOrd">Pedidos</button>
-    </div>
-
-    <section id="vProd">
-      <div class="a-bar">
-        <input class="a-in" id="aQ" type="search" placeholder="Buscar producto" aria-label="Buscar producto">
-        <select class="a-in" id="aG" aria-label="Filtrar por categoría"></select>
-        <button class="btn pri" type="button" id="aAdd">Agregar producto</button>
-      </div>
-      <label class="a-check" style="margin:0 0 12px"><input type="checkbox" id="aPrices"> Mostrar precios en la tienda</label>
-      <p class="a-err" id="aMsg" role="status" aria-live="polite"></p>
-
-      <form class="a-form" id="aForm" hidden>
-        <h3 id="aFormT">Nuevo producto</h3>
-        <div class="a-grid">
-          <label>Nombre<input class="a-in" id="pName" required placeholder="Ej.: Maca negra"></label>
-          <label>Categoría<select class="a-in" id="pGroup"></select></label>
-          <label>Presentación<input class="a-in" id="pSize" placeholder="Ej.: 500 g"></label>
-          <label>Precio (S/)<input class="a-in" id="pPrice" inputmode="decimal" placeholder="Opcional"></label>
-        </div>
-        <label id="pNewWrap" hidden>Nombre de la nueva categoría<input class="a-in" id="pNew" placeholder="Ej.: Condimentos en polvo"></label>
-        <div class="a-photo"><img id="pImgPrev" alt="Vista previa de la foto"><label>Foto del producto<input class="a-in" id="pImg" type="file" accept="image/*" style="padding-top:9px"></label><button class="btn sec sm" type="button" id="pImgClear">Quitar foto</button></div>
-        <label>Descripción (se ve en la ficha del producto y en packs y combos)<textarea class="a-in" id="pDesc" placeholder="Qué incluye, para qué sirve…"></textarea></label>
-        <label class="a-check"><input type="checkbox" id="pVis" checked> Visible en la tienda</label>
-        <label class="a-check"><input type="checkbox" id="pShowPrice" checked> Mostrar el precio de este producto (cuando los precios estén activados)</label>
-        <p class="a-err" id="pErr" role="alert"></p>
-        <div class="a-actions">
-          <button class="btn pri" type="submit">Guardar</button>
-          <button class="btn sec" type="button" id="aCancel">Cancelar</button>
-        </div>
-      </form>
-
-      <div class="a-list" id="aList"></div>
-      <p class="a-note">Los cambios se guardan en la base de datos y se ven en la tienda al instante. Si un producto no tiene precio, la tienda muestra “Precio por confirmar”.</p>
-    </section>
-
-    <section id="vTxt" hidden>
-      <p class="a-note" style="margin:0 0 14px">Aquí cambias lo que dice la página: títulos, frases, misión y visión, pasos y el pie. El diseño no cambia. Escribe, presiona <b>Guardar cambios</b> y se ve en la tienda al instante. <b>Restaurar</b> vuelve al texto original.</p>
-      <div class="a-bar"><input class="a-in" id="tQ" type="search" placeholder="Buscar texto" aria-label="Buscar texto"><button class="btn pri" type="button" id="tSave" disabled>Guardar cambios</button></div>
-      <p class="a-err" id="tMsg" role="status" aria-live="polite"></p>
-      <div id="tList"></div>
-    </section>
-
-    <section id="vOrd" hidden>
-      <div id="oList"></div>
-      <p class="a-note">Cada pedido que el cliente envía por WhatsApp queda registrado aquí. La boleta se emitirá desde aquí cuando el facturador entregue el acceso a su API, siempre después de confirmar el pago.</p>
-    </section>
-  </div>
-</div>
-
-<script src="/assets/js/config.js"></script>
-<script src="/assets/js/app.js"></script>
+<script defer src="/assets/js/config.js"></script>
+<script defer src="/assets/js/core.js"></script>
+<script defer src="/assets/js/portada.js"></script>
+<script defer src="/assets/js/tienda.js"></script>
+<script defer src="/assets/js/pedido.js"></script>
+<script defer src="/assets/js/acceso.js"></script>
 </body>
 </html>
