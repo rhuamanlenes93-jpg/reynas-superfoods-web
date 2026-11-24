@@ -38,7 +38,7 @@ python -m http.server 8080
 2. Framework preset: **None**. Build command: vacío. Output directory: `/`.
 3. Cada `git push` a `main` publica solo.
 
-Cuando tengan dominio, reemplazar `reynas-superfoods-web.pages.dev` en `index.html`, `robots.txt` y `sitemap.xml`.
+Cuando tengan dominio, reemplazar `reynasuperfoods.pages.dev` en `index.html`, `robots.txt` y `sitemap.xml`.
 
 ## Crear la cuenta de administración
 
