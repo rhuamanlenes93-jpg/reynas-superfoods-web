@@ -52,7 +52,7 @@ Cuando tengan dominio, reemplazar `reynasuperfoods.pages.dev` en `index.html`, `
 
 3. Supabase → Authentication → Sign In / Providers → desactivar **Allow new users to sign up** (nadie más debe poder registrarse).
 
-El panel se abre con el enlace **Administrar** al pie de la página o con Ctrl + Shift + A.
+El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segundos** o **tocándolo 5 veces seguidas** (arriba, en la ficha del producto o en el pie). En computadora también con Ctrl + Shift + A o entrando a `/#admin`.
 
 ## Seguridad
 

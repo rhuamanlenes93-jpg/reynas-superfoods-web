@@ -730,7 +730,8 @@ loadCatalog().then(() => { renderAll(); route(); }).catch(() => {
 
 /* =========================================================
    PANEL DE ADMINISTRACIÓN (oculto)
-   Acceso: Ctrl + Shift + A, la dirección #admin o "Administrar" en el pie.
+   Acceso oculto: mantener presionado el logo "Reyna's" 5 segundos o tocarlo
+   5 veces seguidas (arriba, en la ficha o en el pie). También Ctrl + Shift + A o #admin.
    Usuario de Supabase Auth que figure en la tabla admins.
    ========================================================= */
 const admin = $('#admin'), aLogin = $('#aLogin'), aApp = $('#aApp');
@@ -768,7 +769,28 @@ $('#aOut').addEventListener('click', () => {
   dropSession(); closeAdmin();
 });
 admin.querySelectorAll('[data-aclose]').forEach(b => b.addEventListener('click', closeAdmin));
-$('#admLink').addEventListener('click', openAdmin);
+// Acceso oculto desde el logo: 5 s presionado o 5 toques seguidos
+(() => {
+  const SEL = '.hlogo, .tb-logo, .f-logo';
+  let taps = 0, lastTap = 0, holdT = null, held = false, x0 = 0, y0 = 0;
+  const cancel = () => { clearTimeout(holdT); holdT = null; };
+  document.addEventListener('pointerdown', e => {
+    if (!e.target.closest(SEL)) return;
+    held = false; x0 = e.clientX; y0 = e.clientY; cancel();
+    holdT = setTimeout(() => { held = true; holdT = null; navigator.vibrate?.(40); openAdmin(); }, 5000);
+  });
+  document.addEventListener('pointermove', e => { if (holdT && Math.hypot(e.clientX - x0, e.clientY - y0) > 12) cancel(); });
+  document.addEventListener('pointerup', cancel);
+  document.addEventListener('pointercancel', cancel);
+  document.addEventListener('contextmenu', e => { if (e.target.closest(SEL)) e.preventDefault(); });
+  document.addEventListener('click', e => {
+    if (!e.target.closest(SEL)) return;
+    if (held){ held = false; e.preventDefault(); e.stopPropagation(); return; }
+    const now = Date.now();
+    taps = now - lastTap < 700 ? taps + 1 : 1; lastTap = now;
+    if (taps >= 5){ taps = 0; e.preventDefault(); e.stopPropagation(); openAdmin(); }
+  }, true);
+})();
 addEventListener('hashchange', () => { if (location.hash === '#admin') openAdmin(); });
 if (location.hash === '#admin') openAdmin();
 

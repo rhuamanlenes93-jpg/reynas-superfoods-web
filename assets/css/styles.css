@@ -522,3 +522,6 @@ textarea.a-in{height:72px;padding:10px 12px;resize:vertical}
 .admin .adm-link{color:var(--green-2);text-decoration:underline;text-underline-offset:2px;font-size:13px}
 
 .admin{z-index:80}
+
+/* acceso oculto: que mantener presionado el logo no abra menús ni seleccione texto */
+.hlogo,.tb-logo,.f-logo{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
