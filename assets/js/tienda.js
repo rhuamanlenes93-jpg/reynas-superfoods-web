@@ -44,6 +44,8 @@ async function loadCatalog(){
 }
 const groups = () => [...new Set([...BASE_GROUPS, ...products.map(p => p.group)])];
 const lc = n => n.charAt(0).toLowerCase() + n.slice(1);
+// dirección propia de cada producto para Google: /producto/harina-de-maca-negra
+const urlSlug = s => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function fullName(p){
   if (HARINA_GROUPS.includes(p.group)) return 'Harina de ' + lc(p.name);
   if (p.group === G.extractos) return 'Extracto en polvo de ' + lc(p.name);
@@ -67,9 +69,9 @@ const priceHTML = p => `<span class="pr">${money(p.price)}</span>`;
    ========================================================= */
 document.querySelectorAll('[data-edit]').forEach(el => { el.dataset.def = el.textContent.trim(); });
 let siteTexts = {};
-const TXT_GROUPS = { hero:'Portada', cinta1:'Cinta de arriba', tienda:'Tienda', packs:'Packs y combos', dest:'Producto destacado', val:'Valores', mv:'Misión y visión', pres:'Presentaciones por mayor', may:'Venta por mayor', pasos:'Cómo comprar', pedido:'Mi pedido', cinta2:'Cinta de abajo', pie:'Pie de página' };
+const TXT_GROUPS = { hero:'Portada', cinta1:'Cinta de arriba', tienda:'Tienda', packs:'Packs y combos', dest:'Producto destacado', val:'Valores', mv:'Misión y visión', pres:'Presentaciones por mayor', may:'Venta por mayor', pasos:'Cómo comprar', pedido:'Mi pedido', faq:'Preguntas frecuentes', cinta2:'Cinta de abajo', pie:'Pie de página' };
 const TXT_NAMES = { boton:'Botón', etiqueta:'Texto pequeño sobre el título', titulo:'Título', texto:'Texto', extra:'Frase', palabra:'Palabra grande de fondo', nota:'Nota debajo del botón', ideal_t:'“Ideal para” (título)', ideal:'“Ideal para” (texto)', mision_t:'Título de la misión', mision:'Misión', vision_t:'Título de la visión', vision:'Visión', lugar:'Ubicación', derechos:'Derechos' };
-const TXT_ITEM = { val:'Valor', pasos:'Paso', dest:'Beneficio', pres:'Presentación' };
+const TXT_ITEM = { val:'Valor', pasos:'Paso', dest:'Beneficio', pres:'Presentación', faq:'Pregunta' };
 function txtLabel(key){
   const [g, s] = key.split('.');
   if (TXT_NAMES[s]) return TXT_NAMES[s];
@@ -87,7 +89,27 @@ function applyTexts(){
     const cur = el.classList.contains('h2') ? el.getAttribute('aria-label') : el.textContent.trim();
     if (v !== cur) setTxt(el, v);
   });
+  faqLd();
 }
+// preguntas frecuentes en formato que Google puede mostrar en los resultados
+function faqLd(){
+  const items = [...document.querySelectorAll('#faqList details')].map(d => ({ q: d.querySelector('summary').textContent.trim(), a: d.querySelector('p').textContent.trim() })).filter(x => x.q && x.a);
+  let s = document.getElementById('faqLd');
+  if (!s){ s = document.createElement('script'); s.type = 'application/ld+json'; s.id = 'faqLd'; document.head.appendChild(s); }
+  s.textContent = JSON.stringify({ '@context':'https://schema.org', '@type':'FAQPage', mainEntity: items.map(x => ({ '@type':'Question', name: x.q, acceptedAnswer: { '@type':'Answer', text: x.a } })) });
+}
+// datos de la empresa (panel → Inicio → Datos de tu empresa): pie de página
+async function loadEmpresa(){
+  try {
+    const r = await sb('/rest/v1/settings?select=value&key=eq.empresa'); const e = (r[0] || {}).value || {};
+    const line = [e.ruc ? 'RUC ' + e.ruc : '', e.direccion || ''].filter(Boolean).join(' · ');
+    const el = document.getElementById('empLine'); if (el) el.textContent = line;
+    const fb = document.getElementById('fbLi');
+    if (fb && /^https:\/\//.test(e.facebook_url || '')){ fb.innerHTML = `<a href="${esc(e.facebook_url)}" target="_blank" rel="noopener">Facebook: Reyna's Superfoods</a>`; }
+  } catch {}
+}
+loadEmpresa();
+faqLd();
 async function loadTexts(){
   try { (await sb('/rest/v1/site_texts?select=key,value')).forEach(r => { siteTexts[r.key] = r.value; }); applyTexts(); }
   catch { /* si falla se quedan los textos originales */ }
@@ -270,10 +292,10 @@ function controlFor(p){
 }
 function cardHTML(p, i){
   return `<article class="card" style="--c:${colorOf(p.group)};--i:${i % 8}">
-    <button class="ph" type="button" data-open="${p.id}" aria-label="Ver ${esc(fullName(p))}"><img ${imgCard(p)} alt="" loading="lazy" decoding="async"><span class="qv" aria-hidden="true">Ver producto<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+    <button class="ph" type="button" data-open="${p.id}" aria-label="Ver ${esc(fullName(p))}"><img ${imgCard(p)} alt="${esc(fullName(p))}" loading="lazy" decoding="async"><span class="qv" aria-hidden="true">Ver producto<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
     <div class="bd">
       <span class="chip">${esc(p.group)}</span>
-      <h3><button type="button" data-open="${p.id}">${esc(fullName(p))}</button></h3>
+      <h3><a href="/producto/${urlSlug(fullName(p))}" data-open="${p.id}">${esc(fullName(p))}</a></h3>
       ${p.size ? `<span class="mt">${esc(p.size)}</span>` : ''}
       <div class="ft">${priceHTML(p)}<span data-ctl="${p.id}">${controlFor(p)}</span></div>
     </div></article>`;

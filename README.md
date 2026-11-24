@@ -69,6 +69,19 @@ El panel está oculto: se abre **manteniendo presionado el logo "Reyna's" 5 segu
   - Solo los usuarios de la tabla `admins` pueden editar, ver pedidos y subir fotos.
 - **Nunca** subir al repositorio la clave `service_role`, contraseñas ni el token de facturación. El token de facturación irá como secreto de una Supabase Edge Function.
 
+## Páginas para Google (Cloudflare Pages Functions)
+
+La carpeta `functions/` genera páginas con su propia dirección, con el texto ya escrito para que Google las lea.
+Se arman solas con los productos del panel (no hay que tocar nada al agregar o editar un producto):
+
+- `/producto/harina-de-maca-negra`: ficha con foto, descripción, valor nutricional, modo de uso y botón de WhatsApp.
+- `/categoria/superalimentos-andinos`: todos los productos de la categoría.
+- `/sitemap.xml`: lista de todas las páginas para Google (reemplaza al archivo fijo).
+- `/libro-de-reclamaciones`, `/privacidad`, `/terminos`: páginas legales con los datos de la empresa.
+
+Los datos de la empresa (RUC, dirección, correo, horario, enlace del Libro de Reclamaciones de Indecopi, Facebook)
+se llenan en el panel → Inicio → **Datos de tu empresa**.
+
 ## Panel de administración
 
 - **Inicio:** resumen y dashboard (pedidos recibidos, productos más pedidos por WhatsApp, más agregados al carrito, pedidos por día, categorías y productos que se agregan al carrito pero casi no se piden). Periodos: 7 días, 30 días y todo.

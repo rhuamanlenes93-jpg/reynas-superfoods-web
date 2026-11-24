@@ -84,6 +84,22 @@ document.body.insertAdjacentHTML('beforeend', `
           </div>
           <div class="dcol miss" id="dMissWrap" hidden><h4>Los ponen en el carrito pero casi no los piden</h4><p class="hint">Puede que el precio o la presentación no los convenza. Vale la pena preguntar.</p><ol class="rank" id="dMiss"></ol></div>
         </div>
+        <form class="box" id="eForm">
+          <h3>Datos de tu empresa</h3>
+          <p class="hint">Salen en el pie de la página, en el Libro de Reclamaciones, la política de privacidad y los términos. Llénalos una vez; lo que dejes vacío no se muestra.</p>
+          <div class="grid2">
+            <label class="af">Razón social<input class="a-in" id="eRs" placeholder="REYNA'S SUPERFOODS S.A.C."></label>
+            <label class="af">RUC<input class="a-in" id="eRuc" inputmode="numeric" maxlength="11" placeholder="20xxxxxxxxx"></label>
+            <label class="af span2">Dirección<input class="a-in" id="eDir" placeholder="Av. …, distrito, Lima"><small>La que figura en SUNAT.</small></label>
+            <label class="af">Correo de contacto<input class="a-in" id="eMail" type="email" placeholder="ventas@…"><small>Aquí llegan reclamos y pedidos de datos personales.</small></label>
+            <label class="af">Horario de atención<input class="a-in" id="eHor" placeholder="Lunes a sábado, 9 a. m. a 6 p. m."></label>
+            <label class="af">¿A dónde envían?<input class="a-in" id="eZona" placeholder="Lima y provincias"></label>
+            <label class="af">Días para avisar de un producto dañado<input class="a-in" id="eDias" inputmode="numeric" maxlength="2" placeholder="7"></label>
+            <label class="af span2">Enlace de tu Libro de Reclamaciones (Indecopi)<input class="a-in" id="eLibro" type="url" placeholder="https://consumidor.indecopi.gob.pe/tulibro/…"><small>Créalo gratis en consumidor.indecopi.gob.pe/tulibro y pega aquí el enlace que te dan.</small></label>
+            <label class="af span2">Página de Facebook<input class="a-in" id="eFb" type="url" placeholder="https://www.facebook.com/…"></label>
+          </div>
+          <div class="row-end"><span class="a-err" id="eMsg" role="status"></span><button class="btn pri" type="submit">Guardar datos</button></div>
+        </form>
         <div class="box">
           <h3>¿Qué hago en cada sección?</h3>
           <div class="guide">
@@ -224,6 +240,7 @@ document.body.insertAdjacentHTML('beforeend', `
 const admin = $('#admin'), aLogin = $('#aLogin'), aApp = $('#aApp'), aForm = $('#aForm'), bModal = $('#bModal');
 const aList = $('#aList'), aQ = $('#aQ');
 let editing = null, formImg = '', aProducts = [], aOrders = [], aInvoices = [], billing = {}, apiReady = null;
+let empresa = {};
 let view = 'home', catSel = 'Todas', ordSel = 'todos', txtSel = null, aCart = [], dRange = 30;
 const aById = id => aProducts.find(p => p.id === id);
 const CAT_C = { [G.andinos]:'#D39F78', [G.granos]:'#E8B85C', [G.raices]:'#E58EA4', [G.hierbas]:'#7FBF6E', [G.extractos]:'#A98BD0', [G.packs]:'#6DBFB8' };
@@ -309,6 +326,7 @@ async function renderAdmin(){
     ]);
     aProducts = rows.map(r => fromRow(r, true)); aOrders = os; aInvoices = inv; aCart = ce;
     billing = (st.find(s => s.key === 'billing') || {}).value || {};
+    empresa = (st.find(s => s.key === 'empresa') || {}).value || {}; fillEmpresa();
   } catch (err) { aMsg('No se pudo cargar el panel: ' + err.message, 'err'); }
   renderAll_();
   checkApi();
@@ -368,6 +386,24 @@ function renderHome(){
   $('#cOrd').title = hoy ? `${hoy} pedidos hoy` : '';
   renderDash();
 }
+
+/* ---------- datos de la empresa ---------- */
+const EF = { eRs:'razon_social', eRuc:'ruc', eDir:'direccion', eMail:'correo', eHor:'horario', eZona:'zona', eDias:'dias_cambio', eLibro:'libro_url', eFb:'facebook_url' };
+function fillEmpresa(){ Object.entries(EF).forEach(([id, k]) => { $('#' + id).value = empresa[k] || ''; }); }
+$('#eForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = {}; Object.entries(EF).forEach(([id, k]) => { const x = $('#' + id).value.trim(); if (x) v[k] = x; });
+  const msg = m => { $('#eMsg').textContent = m; };
+  if (v.ruc && !/^(10|20)\d{9}$/.test(v.ruc)) return msg('El RUC tiene 11 números y empieza con 10 o 20.');
+  if (v.dias_cambio && !/^\d{1,2}$/.test(v.dias_cambio)) return msg('Escribe solo el número de días, por ejemplo 7.');
+  for (const k of ['libro_url', 'facebook_url']) if (v[k] && !/^https:\/\//.test(v[k])) return msg('Los enlaces deben empezar con https://');
+  msg('Guardando…');
+  try {
+    await sb('/rest/v1/settings?on_conflict=key', { method:'POST', auth:true, prefer:'resolution=merge-duplicates,return=minimal', body:{ key:'empresa', value: v } });
+    empresa = v; msg(''); aMsg('Listo: los datos de tu empresa ya se ven en la página.');
+    if (!billing.ruc && v.ruc){ billing = { ...billing, ruc: v.ruc, razon_social: billing.razon_social || v.razon_social || '', direccion: billing.direccion || v.direccion || '' }; }
+  } catch (err) { msg('No se pudo guardar: ' + err.message); }
+});
 
 /* ---------- productos ---------- */
 const aGroups = () => [...new Set([...BASE_GROUPS, ...aProducts.map(p => p.group)])];
@@ -483,6 +519,7 @@ $('#pForm').addEventListener('submit', async e => {
 
 /* ---------- textos de la página ---------- */
 const TXT_WHERE = {
+  faq: 'Las preguntas frecuentes, encima de “Mi pedido”. Google también las puede mostrar en sus resultados.',
   hero: 'La pantalla grande de colores que se ve al abrir la página.',
   cinta1: 'La franja verde con palabras que se mueve, debajo de la portada.',
   tienda: 'El título que está encima del catálogo de productos.',

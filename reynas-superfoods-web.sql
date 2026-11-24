@@ -373,3 +373,12 @@ grant select, delete on public.cart_events to authenticated;
 create policy cart_events_public_insert on public.cart_events for insert to anon, authenticated with check (true);
 create policy cart_events_admin_read on public.cart_events for select to authenticated using ((select private.is_admin()));
 create policy cart_events_admin_delete on public.cart_events for delete to authenticated using ((select private.is_admin()));
+
+-- =========================================================
+-- 9. Datos de la empresa (panel → Inicio → Datos de tu empresa)
+--    Se muestran en el pie de página, el Libro de Reclamaciones,
+--    la política de privacidad y los términos. Lectura pública, sin secretos.
+-- =========================================================
+insert into public.settings (key, value) values
+  ('empresa', '{"razon_social":"Reyna''s Superfoods S.A.C.","zona":"Lima y provincias"}'::jsonb)
+on conflict (key) do nothing;

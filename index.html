@@ -52,6 +52,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
 
 <!-- =================== PORTADA =================== -->
 <section class="hero" id="inicio" aria-label="Productos destacados">
+  <h1 class="sr-only">Reyna's Superfoods: harinas, superalimentos andinos y extractos en polvo, por mayor y menor</h1>
   <div class="stage" id="stage" aria-live="polite"></div>
   <div class="hui">
     <header class="hhead">
@@ -243,6 +244,21 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
   </div>
 </section>
 
+<!-- =================== PREGUNTAS FRECUENTES =================== -->
+<section class="sec faq-sec" id="preguntas">
+  <div class="wrap">
+    <div class="s-head rv"><div><p class="eyebrow" data-edit="faq.etiqueta">Preguntas frecuentes</p><h2 class="h2" data-edit="faq.titulo">Lo que más nos preguntan</h2></div></div>
+    <div class="faq rv" id="faqList">
+      <details><summary data-edit="faq.1_t">¿Hacen envíos a provincias?</summary><p data-edit="faq.1">Sí. Enviamos a todo Lima y a provincias. El costo y el tiempo de entrega dependen del destino y te los decimos por WhatsApp antes de que pagues.</p></details>
+      <details><summary data-edit="faq.2_t">¿Venden por mayor?</summary><p data-edit="faq.2">Sí. Vendemos por kilo, en doypack de 1 kg y en sacos o tambores de 25 kg para panaderías, juguerías, restaurantes, tiendas naturistas y emprendimientos.</p></details>
+      <details><summary data-edit="faq.3_t">¿Cómo hago mi pedido?</summary><p data-edit="faq.3">Agrega los productos que quieras, escribe tu nombre y distrito y toca “Enviar pedido por WhatsApp”. Te respondemos para coordinar el pago y el envío.</p></details>
+      <details><summary data-edit="faq.4_t">¿Cómo pago?</summary><p data-edit="faq.4">Cuando te respondemos por WhatsApp te indicamos el total y los medios de pago disponibles. No se cobra nada en la página.</p></details>
+      <details><summary data-edit="faq.5_t">¿Entregan boleta o factura?</summary><p data-edit="faq.5">Sí. Emitimos boleta o factura electrónica por cada compra. Para factura solo necesitamos tu RUC.</p></details>
+      <details><summary data-edit="faq.6_t">¿Cómo se usan las harinas y superalimentos?</summary><p data-edit="faq.6">En batidos, jugos, avena, panes, postres, sopas y cremas. La ficha de cada producto dice cómo usarlo, la porción sugerida y su valor nutricional por 100 g.</p></details>
+    </div>
+  </div>
+</section>
+
 <!-- =================== PEDIDO =================== -->
 <section class="sec order-sec" id="pedido">
   <div class="wrap">
@@ -260,6 +276,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
         <label class="fld">Nota (opcional)<textarea id="fNote" placeholder="Presentación que prefieres, horario de entrega…"></textarea></label>
         <p class="fld" style="margin-bottom:6px">Así llegará tu mensaje</p>
         <div class="preview" id="preview" aria-live="polite"></div>
+        <label class="consent"><input type="checkbox" id="fOk" required><span>Acepto la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a> y los <a href="/terminos" target="_blank" rel="noopener">términos de compra</a>.</span></label>
         <button class="bt bt-lime full" id="send" type="submit" disabled>Enviar pedido por WhatsApp</button>
         <p class="note" data-edit="pedido.nota">No se cobra nada aquí. Reyna's te responde para coordinar el pago, la boleta y el envío.</p>
       </form>
@@ -287,16 +304,37 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
         </ul>
       </div>
       <div>
+        <h3>Categorías</h3>
+        <ul>
+          <li><a href="/categoria/superalimentos-andinos">Superalimentos andinos</a></li>
+          <li><a href="/categoria/granos-semillas-y-menestras">Granos, semillas y menestras</a></li>
+          <li><a href="/categoria/raices-frutas-y-verduras">Raíces, frutas y verduras</a></li>
+          <li><a href="/categoria/hierbas-e-infusiones">Hierbas e infusiones</a></li>
+          <li><a href="/categoria/extractos-en-polvo">Extractos en polvo</a></li>
+          <li><a href="/categoria/packs-y-combos">Packs y combos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ayuda</h3>
+        <ul>
+          <li><a class="libro" href="/libro-de-reclamaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M4 17a3 3 0 0 1 3-3h11"/></svg>Libro de Reclamaciones</a></li>
+          <li><a href="/privacidad">Política de privacidad</a></li>
+          <li><a href="/terminos">Términos, envíos y devoluciones</a></li>
+          <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ul>
+      </div>
+      <div>
         <h3>Síguenos</h3>
         <ul>
           <li><a href="https://www.instagram.com/reynassuperfoods" target="_blank" rel="noopener">Instagram: reynassuperfoods</a></li>
           <li><a href="https://www.tiktok.com/@reynas.superfoods" target="_blank" rel="noopener">TikTok: reynas.superfoods</a></li>
-          <li>Facebook: Reyna's Superfoods</li>
+          <li id="fbLi">Facebook: Reyna's Superfoods</li>
         </ul>
       </div>
     </div>
     <div class="f-bot">
       <span data-edit="pie.derechos">© 2026 Reyna's Superfoods S.A.C.</span>
+      <span id="empLine"></span>
     </div>
   </div>
 </footer>
