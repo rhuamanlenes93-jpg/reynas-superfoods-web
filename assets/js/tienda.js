@@ -56,6 +56,7 @@ function fullName(p){
 }
 const money = v => v === '' || v == null ? '' : 'S/ ' + Number(v).toFixed(2);
 const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F4EFE2"/><text x="200" y="160" font-family="Poppins,sans-serif" font-size="22" fill="#9A9F94" text-anchor="middle">Foto por subir</text></svg>');
+const imgCard = p => /^[a-z0-9_]+$/.test(p.img || '') ? `src="${withV(`/assets/products/sm/${p.img}.webp`)}" srcset="${withV(`/assets/products/sm/${p.img}.webp`)} 360w, ${photoUrl(p.img)} 640w" sizes="(max-width: 700px) 46vw, 300px"` : `src="${imgSrc(p)}"`;
 const imgSrc = p => !p.img ? PLACEHOLDER : /^(data:|https?:|\/)/.test(p.img) ? p.img : (/^[a-z0-9_]+$/.test(p.img) ? photoUrl(p.img) : PLACEHOLDER);
 const byId = id => products.find(p => p.id === id);
 const visible = () => products.filter(p => !p.hidden);
@@ -117,20 +118,29 @@ const marquees = [...document.querySelectorAll('.marquee')].map(m => {
 });
 let lastY = scrollY, vel = 0, dirSign = 1;
 addEventListener('scroll', () => { const d = scrollY - lastY; lastY = scrollY; if (d) dirSign = d > 0 ? 1 : -1; vel = Math.min(18, vel + Math.abs(d) * .08); }, {passive:true});
-(function mqLoop(){
-  if (!RM.matches){
+const LITE = document.documentElement.classList.contains('lite');
+let mqRunning = false;
+const mqIO = new IntersectionObserver(es => {
+  es.forEach(e => { const o = marquees.find(x => x.m === e.target); if (o) o.on = e.isIntersecting; });
+  if (!mqRunning && marquees.some(o => o.on)){ mqRunning = true; requestAnimationFrame(mqLoop); }
+}, {rootMargin:'50px 0px'});
+if (!LITE && !RM.matches) marquees.forEach(o => mqIO.observe(o.m));
+function mqLoop(){
+  if (!marquees.some(o => o.on)){ mqRunning = false; return; }
+  {
     vel *= .92;
     marquees.forEach(o => {
-      const r = o.m.getBoundingClientRect();
-      if (r.bottom < -50 || r.top > innerHeight + 50) return;
-      const half = o.t.scrollWidth / 2;
+      if (!o.on) return;
+      if (!o.half) o.half = o.t.scrollWidth / 2;
+      const half = o.half;
       o.x -= (o.base + Math.sign(o.base) * vel * .5) * dirSign;
       if (o.x <= -half) o.x += half; if (o.x > 0) o.x -= half;
       o.t.style.transform = `translate3d(${o.x}px,0,0)`;
     });
   }
   requestAnimationFrame(mqLoop);
-})();
+}
+addEventListener('resize', () => marquees.forEach(o => { o.half = 0; }), {passive:true});
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin:'0px 0px -6% 0px'});
 const hotIO = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('hot', e.isIntersecting && !FINE.matches)), {rootMargin:'-38% 0px -38% 0px'});
 const watch = root => {
@@ -206,7 +216,7 @@ function renderMega(){
     const list = vis.filter(p => p.group === g);
     return `<div class="mcol" style="--c:${colorOf(g)};--i:${i}">
       <h3><button type="button" data-mcat="${esc(g)}">${esc(g)}</button></h3>
-      <ul>${list.slice(0,6).map(p => `<li><button type="button" data-open="${p.id}"><img src="${imgSrc(p)}" alt="">${esc(p.name)}</button></li>`).join('')}</ul>
+      <ul>${list.slice(0,6).map(p => `<li><button type="button" data-open="${p.id}"><img src="${/^[a-z0-9_]+$/.test(p.img || '') ? withV(`/assets/products/sm/${p.img}.webp`) : imgSrc(p)}" alt="" loading="lazy" decoding="async">${esc(p.name)}</button></li>`).join('')}</ul>
       <button class="all" type="button" data-mcat="${esc(g)}">Ver los ${list.length}</button></div>`;
   }).join('');
   const pk = vis.find(p => p.group === G.packs);
@@ -265,7 +275,7 @@ function controlFor(p){
 }
 function cardHTML(p, i){
   return `<article class="card" style="--c:${colorOf(p.group)};--i:${i % 8}">
-    <button class="ph" type="button" data-open="${p.id}" aria-label="Ver ${esc(fullName(p))}"><img src="${imgSrc(p)}" alt="" loading="lazy" decoding="async"><span class="qv" aria-hidden="true">Ver producto<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+    <button class="ph" type="button" data-open="${p.id}" aria-label="Ver ${esc(fullName(p))}"><img ${imgCard(p)} alt="" loading="lazy" decoding="async"><span class="qv" aria-hidden="true">Ver producto<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
     <div class="bd">
       <span class="chip">${esc(p.group)}</span>
       <h3><button type="button" data-open="${p.id}">${esc(fullName(p))}</button></h3>
@@ -318,7 +328,7 @@ function renderPacks(){
   $('#pgrid').innerHTML = list.map((p, i) => `
     <article class="card pack" style="--c:${colorOf(G.packs)};--i:${i}">
       <div class="inner">
-        <button class="ph" type="button" data-open="${p.id}" aria-label="Ver ${esc(p.name)}"><img src="${imgSrc(p)}" alt="" loading="lazy" decoding="async">${p.example ? '<span class="ptag">Ejemplo</span>' : ''}<span class="qv" aria-hidden="true">Ver pack<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+        <button class="ph" type="button" data-open="${p.id}" aria-label="Ver ${esc(p.name)}"><img ${imgCard(p)} alt="" loading="lazy" decoding="async">${p.example ? '<span class="ptag">Ejemplo</span>' : ''}<span class="qv" aria-hidden="true">Ver pack<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
         <div class="bd">
           <h3><button type="button" data-open="${p.id}">${esc(p.name)}</button></h3>
           <p>${esc(p.desc)}</p>

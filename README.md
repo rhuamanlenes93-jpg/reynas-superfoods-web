@@ -88,3 +88,11 @@ Todo está listo y publicado; solo falta el acceso a la API.
    de `emitir-comprobante.ts` y vuelve a publicar la función.
 3. En el panel → Facturación, completa RUC, razón social, dirección y series (por defecto B002 y F002).
 4. Las boletas preparadas antes de tener la API quedan como "Pendiente": se emiten con el botón "Emitir ahora".
+
+## Rendimiento
+
+- Celulares básicos, ahorro de datos o "reducir movimiento" activan el **modo liviano** (clase `lite` en `<html>`):
+  mismo diseño, sin los efectos pesados (desenfoques, letras animadas, 3D, piezas borrosas de la portada).
+- Las tarjetas usan miniaturas de 360 px (`assets/products/sm/`); la foto grande solo se baja en la ficha del producto.
+  **Si cambias una foto en `assets/products/`, genera también su miniatura en `sm/`** (las que sube la dueña desde el panel no lo necesitan).
+- La portada carga solo la primera diapositiva; las demás se bajan después.

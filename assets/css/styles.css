@@ -217,7 +217,7 @@ img{display:block;max-width:100%}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at calc(50% + var(--px) * 50%) calc(50% + var(--py) * 50%),rgba(255,255,255,.6),transparent 55%);opacity:0;transition:opacity .3s;mix-blend-mode:soft-light}
 .card.tilting::after{opacity:1}
 .card .ph{position:relative;display:block;width:100%;aspect-ratio:4/3;background:#fff;transition:background .5s var(--ease);border-radius:calc(var(--r-card) - 1px) calc(var(--r-card) - 1px) 0 0;overflow:hidden}
-.card .ph img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;transform:translate(calc(var(--px) * -10px),calc(var(--py) * -10px)) scale(1.01);transition:transform .6s var(--ease)}
+.card .ph img{width:100%;height:100%;object-fit:contain;transform:translate(calc(var(--px) * -10px),calc(var(--py) * -10px)) scale(1.01);transition:transform .6s var(--ease)}
 .card:hover .ph img,.card.hot .ph img{transform:translate(calc(var(--px) * -12px),calc(var(--py) * -12px)) scale(1.1) rotate(-1.5deg)}
 /* el fondo de la foto se tiñe con el color de su categoría */
 .card:hover .ph,.card.hot .ph{background:radial-gradient(circle at 50% 60%,color-mix(in srgb,var(--c,#eee) 55%,#fff),#fff 75%)}
@@ -506,3 +506,26 @@ body:has(#topbar:not(.show)) .wafloat{opacity:0;pointer-events:none;transform:tr
 
 /* fotos de producto: llenan el recuadro para que no se vea un rectángulo gris dentro de la tarjeta */
 #grid .card .ph img,#relGrid .card .ph img{object-fit:cover}
+
+/* =================== RENDIMIENTO =================== */
+/* las secciones que no se ven no se dibujan hasta acercarse (todos los equipos) */
+main>.sec,.foot{content-visibility:auto;contain-intrinsic-size:auto 900px}
+/* modo liviano (celulares básicos, ahorro de datos o "reducir movimiento"):
+   mismo diseño, sin los efectos que más trabajo le dan al procesador */
+.lite .L-corner,.lite .hero .fshadow{display:none}
+.lite .hero .piece>i{animation:none}
+.lite .layer,.lite .mq-track{will-change:auto}
+.lite .topbar,.lite .pdp-top{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(251,246,234,.98)}
+.lite .h2 .ch{filter:none!important;transform:none!important;opacity:1!important;transition:none!important}
+.lite .h2 .w{perspective:none}
+.lite .rv .lead,.lite .rv .ideal,.lite .rv>p,.lite .rv .bens,.lite .rv .eyebrow{filter:none!important;opacity:1!important;translate:none!important;letter-spacing:0!important;transition:none!important}
+.lite .card,.lite .card.in{opacity:1!important;translate:none!important;rotate:none!important;transform:none!important;transition:box-shadow .2s!important}
+.lite .card::after,.lite .card .add::after{display:none}
+.lite .card .ph img,.lite .card:hover .ph img,.lite .card.hot .ph img{transform:none!important;transition:none}
+.lite .grid,.lite .pgrid,.lite .vals,.lite .steps,.lite .mv,.lite .pres{perspective:none}
+.lite .feat .obj img,.lite .plate,.lite .wafloat::before{animation:none}
+.lite .feat .big,.lite .s-head .h2,.lite .pdp-vis .bgw{animation:none!important}
+.lite .mq-track{animation:mqMove 38s linear infinite}
+.lite .marquee.alt .mq-track{animation-direction:reverse}
+@keyframes mqMove{to{transform:translate3d(-50%,0,0)}}
+@media (prefers-reduced-motion:reduce){.lite .mq-track{animation:none}}

@@ -1,6 +1,6 @@
 /* Reyna's Superfoods · portada.js
    Slider de la portada con capas en paralaje, pestañas y barra fija con mega menú. */
-const IMG = {"maca_main": {"src": "/assets/hero/maca_main.webp", "w": 716, "h": 345}, "maca_amar": {"src": "/assets/hero/maca_amar.webp", "w": 415, "h": 420}, "maca_negra_r": {"src": "/assets/hero/maca_negra_r.webp", "w": 420, "h": 415}, "maca_roja_h": {"src": "/assets/hero/maca_roja_h.webp", "w": 402, "h": 420}, "lucuma_main": {"src": "/assets/hero/lucuma_main.webp", "w": 723, "h": 322}, "lucuma_half": {"src": "/assets/hero/lucuma_half.webp", "w": 402, "h": 257}, "lucuma_whole": {"src": "/assets/hero/lucuma_whole.webp", "w": 318, "h": 391}, "maiz_main": {"src": "/assets/hero/maiz_main.webp", "w": 758, "h": 346}, "maiz_cob": {"src": "/assets/hero/maiz_cob.webp", "w": 420, "h": 310}, "camu_main": {"src": "/assets/hero/camu_main.webp", "w": 716, "h": 320}, "camu_ber": {"src": "/assets/hero/camu_ber.webp", "w": 420, "h": 360}, "camu_x_ber": {"src": "/assets/hero/camu_x_ber.webp", "w": 271, "h": 219}};
+const IMG = {"maca_main": {"src": "/assets/hero/maca_main.webp", "w": 680, "h": 325}, "maca_amar": {"src": "/assets/hero/maca_amar.webp", "w": 337, "h": 340}, "maca_negra_r": {"src": "/assets/hero/maca_negra_r.webp", "w": 340, "h": 335}, "maca_roja_h": {"src": "/assets/hero/maca_roja_h.webp", "w": 326, "h": 340}, "lucuma_main": {"src": "/assets/hero/lucuma_main.webp", "w": 680, "h": 301}, "lucuma_half": {"src": "/assets/hero/lucuma_half.webp", "w": 340, "h": 217}, "lucuma_whole": {"src": "/assets/hero/lucuma_whole.webp", "w": 275, "h": 340}, "maiz_main": {"src": "/assets/hero/maiz_main.webp", "w": 680, "h": 310}, "maiz_cob": {"src": "/assets/hero/maiz_cob.webp", "w": 340, "h": 251}, "camu_main": {"src": "/assets/hero/camu_main.webp", "w": 680, "h": 302}, "camu_ber": {"src": "/assets/hero/camu_ber.webp", "w": 340, "h": 291}, "camu_x_ber": {"src": "/assets/hero/camu_x_ber.webp", "w": 340, "h": 274}};
 Object.values(IMG).forEach(o => { o.src = withV(o.src); });
 /* =========================================================
    PORTADA (sin cambios respecto de la v6)
@@ -40,14 +40,15 @@ const slides = SLIDES.map((s,i) => {
   const m = IMG[s.main], mh = MAIN_W * m.h / m.w;
   const main = document.createElement('div'); main.className = 'mainimg';
   main.setAttribute('role','img'); main.setAttribute('aria-label', 'Harina de ' + s.word.toLowerCase());
-  Object.assign(main.style,{left:U(720-MAIN_W/2),top:U(MAIN_BOTTOM-mh),width:U(MAIN_W),height:U(mh),backgroundImage:`url(${m.src})`});
+  Object.assign(main.style,{left:U(720-MAIN_W/2),top:U(MAIN_BOTTOM-mh),width:U(MAIN_W),height:U(mh)});
+  main.dataset.bg = m.src;
   L.bottle.appendChild(main);
   s.pieces.forEach(([k,x,y,pw,r,mir,layer]) => {
     const a = IMG[k], ph = pw * a.h / a.w;
     const o = document.createElement('div'); o.className = 'piece' + (mir ? ' m' : '');
     o._g = {x, y, pw, ph, layer}; pieceEls.push(o);
     const inner = document.createElement('i');
-    inner.style.backgroundImage = `url(${a.src})`;
+    inner.dataset.bg = a.src;
     inner.style.setProperty('--r', r + 'deg');
     inner.style.setProperty('--d', rand(3.2,5).toFixed(2) + 's');
     inner.style.setProperty('--dl', (-rand(0,4)).toFixed(2) + 's');
@@ -97,6 +98,17 @@ function moveBar(instant){
   hero.style.backgroundColor = slides[cur].data.bg;
 }
 
+// las imágenes de cada diapositiva se cargan solo cuando hacen falta (la primera al inicio)
+function loadSlide(i){
+  const s = slides[i]; if (!s || s.loaded) return; s.loaded = true;
+  s.sec.querySelectorAll('[data-bg]').forEach(el => {
+    if (el.closest('.L-corner') && document.documentElement.classList.contains('lite')) return;
+    el.style.backgroundImage = `url(${el.dataset.bg})`;
+  });
+}
+loadSlide(0);
+addEventListener('load', () => setTimeout(() => loadSlide(1), 2500));
+
 const CT = [0,.031,.134,.206,.278,.34,.412,.485,.546,.583,.62,.69,.79,.85,.93,1];
 const CC = [0,.006,.012,.023,.047,.07,.105,.158,.246,.55,.825,.9,.94,.956,.975,1];
 function cover(t){
@@ -114,6 +126,7 @@ function finish(a, b){
 }
 function go(to, dir){
   if (busy || to === cur) return;
+  loadSlide(to);
   const A = slides[cur], B = slides[to];
   cur = to; moveBar(false);
   if (RM.matches){ finish(A,B); return; }

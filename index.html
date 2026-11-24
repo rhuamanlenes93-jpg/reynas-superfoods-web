@@ -26,9 +26,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cauphvgvqtcvmcsvbyry.supabase.co" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="/assets/hero/maca_main.webp?v=6">
-<link rel="stylesheet" href="/assets/css/styles.css?v=6">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"></noscript>
+<script>
+/* modo liviano: celulares con poco procesador o memoria, ahorro de datos o "reducir movimiento" */
+(function(){var n=navigator,c=n.connection||{},m=matchMedia;
+if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduce)').matches||(m('(max-width: 900px)').matches&&((n.hardwareConcurrency||8)<=6||(n.deviceMemory||8)<=4)))document.documentElement.classList.add('lite');})();
+</script>
+<link rel="preload" as="image" href="/assets/hero/maca_main.webp?v=7">
+<link rel="stylesheet" href="/assets/css/styles.css?v=7">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -49,7 +55,7 @@
   <div class="stage" id="stage" aria-live="polite"></div>
   <div class="hui">
     <header class="hhead">
-      <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></a>
+      <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
       <nav class="htabs rise" id="tabs" aria-label="Productos destacados"><span class="hbar" id="bar"></span></nav>
       <div class="hacct rise">
         <a href="#tienda">Tienda</a>
@@ -67,7 +73,7 @@
 <header class="topbar" id="topbar">
   <div class="tb-in">
     <button class="burger" type="button" id="burger" aria-label="Abrir menú de productos" aria-expanded="false" aria-controls="mega"><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
-    <a class="tb-logo" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></a>
+    <a class="tb-logo" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
     <nav class="tb-links" aria-label="Secciones">
       <button class="megabtn" type="button" id="megaBtn" aria-expanded="false" aria-controls="mega">Tienda <svg viewBox="0 0 14 14"><path d="M3 5l4 4 4-4"/></svg></button>
       <a href="#packs">Packs y combos</a><a href="#presentaciones">Por mayor</a><a href="#mision">Nosotros</a><a href="#como-comprar">Cómo comprar</a><a href="#contacto">Contacto</a>
@@ -181,7 +187,7 @@
     <div class="s-head rv"><div><p class="eyebrow" data-edit="pres.etiqueta">Presentaciones</p><h2 class="h2" data-edit="pres.titulo">Para tu negocio, por mayor</h2><p class="lead" data-edit="pres.texto">Atomizados en tambores de 25 kg, harinas en sacos de 25 kg y doypacks listos para tu tienda. Cotiza la cantidad que necesitas.</p></div></div>
     <div class="pres">
       <article class="pres-card card" style="--c:var(--pink);--i:0">
-        <div class="pres-ph"><img src="/assets/img/pres_tambor.webp?v=6" alt="Tambor de cartón de 25 kg con extracto de arándano atomizado" width="800" height="800" loading="lazy"></div>
+        <div class="pres-ph"><img src="/assets/img/pres_tambor.webp?v=7" alt="Tambor de cartón de 25 kg con extracto de arándano atomizado" width="800" height="800" loading="lazy"></div>
         <div class="pres-bd">
           <span class="pres-tag" data-edit="pres.1_tag">25 kg</span>
           <h3 data-edit="pres.1_t">Tambor de atomizados</h3>
@@ -190,7 +196,7 @@
         </div>
       </article>
       <article class="pres-card card" style="--c:var(--yellow);--i:1">
-        <div class="pres-ph"><img src="/assets/img/pres_saco.webp?v=6" alt="Saco de 25 kg con harina de maca" width="800" height="800" loading="lazy"></div>
+        <div class="pres-ph"><img src="/assets/img/pres_saco.webp?v=7" alt="Saco de 25 kg con harina de maca" width="800" height="800" loading="lazy"></div>
         <div class="pres-bd">
           <span class="pres-tag" data-edit="pres.2_tag">25 kg</span>
           <h3 data-edit="pres.2_t">Saco de harina</h3>
@@ -199,7 +205,7 @@
         </div>
       </article>
       <article class="pres-card card" style="--c:var(--green-v);--i:2">
-        <div class="pres-ph"><img src="/assets/img/pres_doypack.webp?v=6" alt="Doypack kraft de 1 kg con harina de lúcuma" width="800" height="800" loading="lazy"></div>
+        <div class="pres-ph"><img src="/assets/img/pres_doypack.webp?v=7" alt="Doypack kraft de 1 kg con harina de lúcuma" width="800" height="800" loading="lazy"></div>
         <div class="pres-bd">
           <span class="pres-tag" data-edit="pres.3_tag">1 kg</span>
           <h3 data-edit="pres.3_t">Doypack para tienda</h3>
@@ -267,7 +273,7 @@
   <div class="wrap">
     <div class="f-in">
       <div>
-        <div class="f-logo"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></div>
+        <div class="f-logo"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></div>
         <p data-edit="pie.texto">Reyna's Superfoods S.A.C. Harinas, superalimentos y extractos en polvo. Lo mejor de la naturaleza para ti.</p>
       </div>
       <div>
@@ -298,7 +304,7 @@
   <div class="pdp-top">
     <div class="tb-in">
       <button class="back" type="button" id="pdpBack"><svg viewBox="0 0 20 20"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>Volver</button>
-      <a class="tb-logo" href="#inicio" id="pdpLogo" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo.webp" alt="Reyna's Superfoods" width="375" height="395" draggable="false"></a>
+      <a class="tb-logo" href="#inicio" id="pdpLogo" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
       <button class="cartpill" type="button" data-cart id="pdpCart" aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
     </div>
   </div>
@@ -353,11 +359,11 @@
 <div class="toast" id="toast" role="status"><span id="toastT"></span><button type="button" data-cart>Ver pedido</button></div>
 
 
-<script defer src="/assets/js/config.js?v=6"></script>
-<script defer src="/assets/js/core.js?v=6"></script>
-<script defer src="/assets/js/portada.js?v=6"></script>
-<script defer src="/assets/js/tienda.js?v=6"></script>
-<script defer src="/assets/js/pedido.js?v=6"></script>
-<script defer src="/assets/js/acceso.js?v=6"></script>
+<script defer src="/assets/js/config.js?v=7"></script>
+<script defer src="/assets/js/core.js?v=7"></script>
+<script defer src="/assets/js/portada.js?v=7"></script>
+<script defer src="/assets/js/tienda.js?v=7"></script>
+<script defer src="/assets/js/pedido.js?v=7"></script>
+<script defer src="/assets/js/acceso.js?v=7"></script>
 </body>
 </html>

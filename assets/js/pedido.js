@@ -163,7 +163,7 @@ function buildMsg(items){
 }
 const lineHTML = ({p, n}, i) => `
   <div class="line" style="--i:${i}">
-    <img src="${imgSrc(p)}" alt="">
+    <img src="${/^[a-z0-9_]+$/.test(p.img || '') ? withV(`/assets/products/sm/${p.img}.webp`) : imgSrc(p)}" alt="" loading="lazy" decoding="async">
     <div><div class="nm">${esc(fullName(p))}</div>
       <div class="sb">${p.size ? esc(p.size) + ' · ' : ''}${p.price !== '' ? money(p.price) + ' c/u' : 'Precio por confirmar'}</div>
       <button class="rm" type="button" data-rm="${p.id}">Quitar</button></div>
