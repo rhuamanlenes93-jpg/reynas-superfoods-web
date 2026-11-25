@@ -19,7 +19,8 @@ function emp(e = {}){
     pagos: e.pagos || ''
   };
 }
-const contacto = d => d.correo ? `al correo <a href="mailto:${esc(d.correo)}">${esc(d.correo)}</a> o por <a href="${WA_URL}" rel="noopener">${WA_TXT}</a>` : `por <a href="${WA_URL}" rel="noopener">${WA_TXT}</a>`;
+const WA2 = ` o al <a href="https://wa.me/51992595837" rel="noopener">+51 992 595 837</a>`;
+const contacto = d => d.correo ? `al correo <a href="mailto:${esc(d.correo)}">${esc(d.correo)}</a> o por <a href="${WA_URL}" rel="noopener">${WA_TXT}</a>${WA2}` : `por <a href="${WA_URL}" rel="noopener">${WA_TXT}</a>${WA2}`;
 const ficha = d => `<div class="pg-card-legal"><p><b>${esc(d.rs)}</b></p>${d.ruc ? `<p>RUC ${esc(d.ruc)}</p>` : ''}<p>Domicilio: ${esc(d.dir)}</p><p>Contacto: ${contacto(d)}</p>${d.horario ? `<p>Horario de atención: ${esc(d.horario)}</p>` : ''}</div>`;
 
 export function libroPage({ origin, data }){

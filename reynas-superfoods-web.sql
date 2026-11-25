@@ -448,3 +448,50 @@ revoke insert on public.orders from anon, authenticated;
 revoke truncate, trigger, references on all tables in schema public from anon, authenticated;
 alter default privileges in schema public revoke truncate, trigger, references on tables from anon, authenticated;
 revoke all on public.admins, public.invoices, public.orders, public.cart_events from anon;
+
+-- =========================================================
+-- 12. Pedidos con unidades (kg, sacos, toneladas, tambores, doypacks, packs)
+--     Reemplaza a create_order de la sección 10: acepta cantidades con decimales,
+--     la unidad elegida y los kilos aproximados (para el dashboard).
+-- =========================================================
+create or replace function public.create_order(p_code text, p_name text, p_city text, p_items jsonb)
+returns void language plpgsql security definer set search_path = '' as $$
+declare it jsonb; clean jsonb := '[]'::jsonb; q numeric; k numeric;
+begin
+  if p_code is null or p_code !~ '^R-[A-Z0-9]{4}$' then raise exception 'pedido_invalido'; end if;
+  if char_length(coalesce(p_name, '')) > 120 or char_length(coalesce(p_city, '')) > 120 then raise exception 'pedido_invalido'; end if;
+  if p_items is null or jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) not between 1 and 100 then raise exception 'pedido_invalido'; end if;
+  if (select count(*) from public.orders where created_at > now() - interval '10 minutes') >= 30 then raise exception 'demasiados_pedidos'; end if;
+  for it in select * from jsonb_array_elements(p_items) loop
+    if jsonb_typeof(it) <> 'object' or jsonb_typeof(it->'name') <> 'string' or char_length(it->>'name') not between 1 and 160 then raise exception 'pedido_invalido'; end if;
+    q := case when (it->>'qty') ~ '^\d{1,5}(\.\d{1,2})?$' then (it->>'qty')::numeric else 0 end;
+    if q <= 0 or q > 99999 then raise exception 'pedido_invalido'; end if;
+    k := case when (it->>'kg') ~ '^\d{1,8}(\.\d{1,2})?$' then (it->>'kg')::numeric else null end;
+    clean := clean || jsonb_build_array(jsonb_strip_nulls(jsonb_build_object(
+      'name', it->>'name',
+      'unit', nullif(left(coalesce(it->>'unit', ''), 30), ''),
+      'size', nullif(left(coalesce(it->>'size', ''), 40), ''),
+      'price', case when (it->>'price') ~ '^\d{1,6}(\.\d{1,2})?$' then it->>'price' else '' end,
+      'qty', q,
+      'kg', k)));
+  end loop;
+  insert into public.orders (code, customer_name, customer_city, items)
+  values (p_code, nullif(btrim(p_name), ''), nullif(btrim(p_city), ''), clean);
+end; $$;
+revoke all on function public.create_order(text, text, text, jsonb) from public;
+grant execute on function public.create_order(text, text, text, jsonb) to anon, authenticated;
+
+-- =========================================================
+-- 13. Clasificación de la clienta (noviembre 2026)
+--     Categorías: Harinas naturales, Harinas gelatinizadas, Condimentos en polvo,
+--     Extractos atomizados, Frutos secos y semillas, Frutas deshidratadas (+ Packs y combos).
+--     Los productos que no están en su lista quedaron ocultos (active = false), no borrados.
+-- =========================================================
+create or replace function private.product_full_name(p public.products)
+returns text language sql immutable set search_path = '' as $$
+  select case
+    when p.category in ('Harinas naturales','Harinas gelatinizadas') then 'Harina de ' || lower(left(p.name, 1)) || substr(p.name, 2)
+    when p.category = 'Extractos atomizados' and p.name !~* 'atomizad' then 'Extracto en polvo de ' || lower(left(p.name, 1)) || substr(p.name, 2)
+    else p.name end;
+$$;
+revoke all on function private.product_full_name(public.products) from public, anon, authenticated;

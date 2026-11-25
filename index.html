@@ -31,9 +31,11 @@
 /* modo liviano: celulares con poco procesador o memoria, ahorro de datos o "reducir movimiento" */
 (function(){var n=navigator,c=n.connection||{},m=matchMedia;
 if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduce)').matches||(m('(max-width: 900px)').matches&&((n.hardwareConcurrency||8)<=6||(n.deviceMemory||8)<=4)))document.documentElement.classList.add('lite');})();
+/* bienvenida: solo una vez por visita */
+try{if(sessionStorage.getItem('reynas.splash'))document.documentElement.classList.add('seen');else sessionStorage.setItem('reynas.splash','1');}catch(e){}
 </script>
 <link rel="preload" as="image" href="/assets/hero/maca_main.webp?v=7">
-<link rel="stylesheet" href="/assets/css/styles.css?v=7">
+<link rel="stylesheet" href="/assets/css/styles.css?v=8">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -44,11 +46,20 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
   "slogan": "Lo mejor de la naturaleza para ti",
   "sameAs": ["https://www.instagram.com/reynassuperfoods", "https://www.tiktok.com/@reynas.superfoods", "https://www.facebook.com/profile.php?id=100087214472383"],
   "taxID": "20610672435",
-  "contactPoint": { "@type": "ContactPoint", "telephone": "+51-918-515-262", "contactType": "sales", "areaServed": "PE", "availableLanguage": "es" }
+  "contactPoint": [{ "@type": "ContactPoint", "telephone": "+51-918-515-262", "contactType": "sales", "areaServed": "PE", "availableLanguage": "es" },
+    { "@type": "ContactPoint", "telephone": "+51-992-595-837", "contactType": "sales", "areaServed": "PE", "availableLanguage": "es" }]
 }
 </script>
 </head>
 <body class="pre">
+<!-- bienvenida: el nombre de la empresa antes de abrir la página (solo la primera vez en cada visita) -->
+<div class="splash" aria-hidden="true">
+  <div class="sp-in">
+    <img src="/assets/img/logo-sm.webp" alt="" width="180" height="190" decoding="async">
+    <p class="sp-name"><svg class="sp-leaf" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg><span>Reyna's <b>Superfoods</b></span><svg class="sp-leaf r" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg></p>
+    <p class="sp-tag">Lo mejor de la naturaleza para ti</p>
+  </div>
+</div>
 
 <!-- =================== PORTADA =================== -->
 <section class="hero" id="inicio" aria-label="Productos destacados">
@@ -57,10 +68,8 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
   <div class="hui">
     <header class="hhead">
       <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
-      <nav class="htabs rise" id="tabs" aria-label="Productos destacados"><span class="hbar" id="bar"></span></nav>
+      <nav class="htabs hmenu rise" id="tabs" aria-label="Menú principal"><span class="hbar" id="bar" hidden></span><a href="#tienda">Productos</a><a href="#packs">Packs</a><a href="#presentaciones">Por mayor</a><a href="#mision">Nosotros</a><a href="#contacto">Contacto</a></nav>
       <div class="hacct rise">
-        <a href="#tienda">Tienda</a>
-        <span class="sep" aria-hidden="true">|</span>
         <button type="button" data-cart>Mi pedido<span class="hcount" data-count hidden>0</span></button>
       </div>
     </header>
@@ -75,12 +84,12 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
 <header class="topbar" id="topbar">
   <div class="tb-in">
     <button class="burger" type="button" id="burger" aria-label="Abrir menú de productos" aria-expanded="false" aria-controls="mega"><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
-    <a class="tb-logo" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
+    <a class="tb-logo tb-word" href="#inicio" aria-label="Reyna's Superfoods, inicio"><span class="tw"><svg class="tw-leaf" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg><span class="tw-txt">Reyna's <b>Superfoods</b></span><svg class="tw-leaf r" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg></span></a>
     <nav class="tb-links" aria-label="Secciones">
       <button class="megabtn" type="button" id="megaBtn" aria-expanded="false" aria-controls="mega">Tienda <svg viewBox="0 0 14 14"><path d="M3 5l4 4 4-4"/></svg></button>
       <a href="#packs">Packs y combos</a><a href="#presentaciones">Por mayor</a><a href="#mision">Nosotros</a><a href="#como-comprar">Cómo comprar</a><a href="#contacto">Contacto</a>
     </nav>
-    <button class="cartpill" type="button" data-cart aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
+    <button class="cartpill" type="button" data-cart aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg><span class="cp-t">Mi pedido</span> <b data-count>0</b></button>
   </div>
 </header>
 <div class="mega" id="mega" role="region" aria-label="Menú de productos"><div class="mega-in" id="megaIn"></div></div>
@@ -95,8 +104,8 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
       <div class="s-head rv" style="margin-bottom:0">
         <div>
           <p class="eyebrow" data-edit="tienda.etiqueta">Catálogo 2026</p>
-          <h2 class="h2" data-edit="tienda.titulo">Harinas y superalimentos andinos</h2>
-          <p class="lead" data-edit="tienda.texto">Elige lo que necesitas y lo agregamos a tu pedido. Venta al por mayor y menor, con envíos a todo Lima y provincias.</p>
+          <h2 class="h2" data-edit="tienda.titulo">Nuestros productos</h2>
+          <p class="lead" data-edit="tienda.texto">Elige una categoría, añade a tu pedido y envíalo por WhatsApp. Venta al por mayor y menor, con envíos a todo Lima y provincias.</p>
         </div>
       </div>
     </div>
@@ -106,7 +115,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
         <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
         <input id="q" type="search" placeholder="Buscar: maca, cacao, quinua…" aria-label="Buscar producto" autocomplete="off">
       </label>
-      <a class="catpdf" href="/assets/docs/catalogo-reynas-superfoods.pdf?v=4" target="_blank" rel="noopener" download="Catalogo-Reynas-Superfoods-2026.pdf" title="Todos los productos en un PDF con valor nutricional y recomendaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>Catálogo PDF</a>
+      <a class="catpdf" href="/assets/docs/catalogo-reynas-superfoods.pdf?v=5" target="_blank" rel="noopener" download="Catalogo-Reynas-Superfoods-2026.pdf" title="Todos los productos en un PDF con valor nutricional y recomendaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>Catálogo PDF</a>
     </div>
     <div class="grid" id="grid"><p class="none" style="grid-column:1/-1">Cargando el catálogo…</p></div>
     <p class="none" id="none" hidden>No encontramos ese producto. <a class="ulink" id="askLink" href="#" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a>.</p>
@@ -135,7 +144,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
 <!-- =================== DESTACADO =================== -->
 <section class="sec feat" id="destacado">
   <div class="wrap feat-in">
-    <div class="vis rv" aria-hidden="true"><span class="big" data-edit="dest.palabra">Maca</span><div class="obj"><img id="featImg" alt=""></div></div>
+    <div class="vis rv" aria-hidden="true"><div class="dp"><img src="/assets/img/feat_doypack.webp?v=2" alt="" width="591" height="900" loading="lazy" decoding="async"></div><div class="obj"><img id="featImg" alt=""></div><span class="big" data-edit="dest.palabra">Maca</span></div>
     <div class="rv">
       <p class="eyebrow" data-edit="dest.etiqueta">Producto destacado</p>
       <h2 class="h2" data-edit="dest.titulo">Maca negra gelatinizada</h2>
@@ -208,7 +217,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
         </div>
       </article>
       <article class="pres-card card" style="--c:var(--green-v);--i:2">
-        <div class="pres-ph"><img src="/assets/img/pres_doypack.webp?v=8" alt="Doypacks Reyna's de harina de maca negra, roja y amarilla gelatinizada y de lúcuma" width="800" height="800" loading="lazy"></div>
+        <div class="pres-ph"><img src="/assets/img/pres_doypack.webp?v=9" alt="Doypacks Reyna's de harina de maca negra, roja y amarilla gelatinizada y de lúcuma" width="800" height="800" loading="lazy"></div>
         <div class="pres-bd">
           <span class="pres-tag" data-edit="pres.3_tag">250 g · 500 g · 1 kg</span>
           <h3 data-edit="pres.3_t">Doypack para tienda</h3>
@@ -263,7 +272,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
 
 </main>
 
-<div class="marquee alt" data-speed="-0.45" aria-hidden="true"><div class="mq-track"><span data-edit="cinta2.1">Envíos a todo Lima y provincias</span><i></i><span data-edit="cinta2.2">Venta por mayor y menor</span><i></i><span data-edit="cinta2.3">Productos reales, resultados reales</span><i></i><span data-edit="cinta2.4">Lo mejor de la naturaleza para ti</span><i></i></div></div>
+<div class="marquee alt" data-speed="-0.45" aria-hidden="true"><div class="mq-track"><span data-edit="cinta2.1">Envíos a todo Lima y provincias</span><i></i><span data-edit="cinta2.2">Venta por mayor y menor</span><i></i><span data-edit="cinta2.3">Insumos para la industria alimentaria</span><i></i><span data-edit="cinta2.4">Lo mejor de la naturaleza para ti</span><i></i></div></div>
 <!-- =================== PIE =================== -->
 <footer class="foot" id="contacto">
   <div class="wrap">
@@ -283,6 +292,7 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
         <h3>Contacto</h3>
         <ul>
           <li><a class="f-wa" href="https://wa.me/51918515262" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 19z"/></svg>918 515 262</a></li>
+          <li><a class="f-wa" href="https://wa.me/51992595837" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 19z"/></svg>992 595 837</a></li>
           <li data-edit="pie.horario">De 8:00 a. m. a 5:00 p. m.</li>
           <li data-edit="pie.lugar">Lima, Perú. Envíos a todo el país.</li>
         </ul>
@@ -291,9 +301,9 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
         <h3>Tienda</h3>
         <ul>
           <li><a href="#tienda">Productos</a></li>
-          <li><a href="/categoria/doypacks">Doypacks</a></li>
+          <li><a href="/categoria/harinas-gelatinizadas">Harinas instantáneas</a></li>
           <li><a href="#packs">Packs y combos</a></li>
-          <li><a href="/assets/docs/catalogo-reynas-superfoods.pdf?v=4" target="_blank" rel="noopener" download="Catalogo-Reynas-Superfoods-2026.pdf">Catálogo PDF</a></li>
+          <li><a href="/assets/docs/catalogo-reynas-superfoods.pdf?v=5" target="_blank" rel="noopener" download="Catalogo-Reynas-Superfoods-2026.pdf">Catálogo PDF</a></li>
         </ul>
       </div>
       <div>
@@ -317,8 +327,8 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
   <div class="pdp-top">
     <div class="tb-in">
       <button class="back" type="button" id="pdpBack"><svg viewBox="0 0 20 20"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>Volver</button>
-      <a class="tb-logo" href="#inicio" id="pdpLogo" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
-      <button class="cartpill" type="button" data-cart id="pdpCart" aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Mi pedido <b data-count>0</b></button>
+      <a class="tb-logo tb-word" href="#inicio" id="pdpLogo" aria-label="Reyna's Superfoods, inicio"><span class="tw"><svg class="tw-leaf" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg><span class="tw-txt">Reyna's <b>Superfoods</b></span><svg class="tw-leaf r" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg></span></a>
+      <button class="cartpill" type="button" data-cart id="pdpCart" aria-label="Abrir mi pedido"><svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 11.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg><span class="cp-t">Mi pedido</span> <b data-count>0</b></button>
     </div>
   </div>
   <div class="wrap">
@@ -378,11 +388,11 @@ if(c.saveData||/2g/.test(c.effectiveType||'')||m('(prefers-reduced-motion: reduc
 <div class="toast" id="toast" role="status"><span id="toastT"></span><button type="button" data-cart>Ver pedido</button></div>
 
 
-<script defer src="/assets/js/config.js?v=7"></script>
-<script defer src="/assets/js/core.js?v=7"></script>
-<script defer src="/assets/js/portada.js?v=7"></script>
-<script defer src="/assets/js/tienda.js?v=7"></script>
-<script defer src="/assets/js/pedido.js?v=7"></script>
-<script defer src="/assets/js/acceso.js?v=7"></script>
+<script defer src="/assets/js/config.js?v=8"></script>
+<script defer src="/assets/js/core.js?v=8"></script>
+<script defer src="/assets/js/portada.js?v=8"></script>
+<script defer src="/assets/js/tienda.js?v=8"></script>
+<script defer src="/assets/js/pedido.js?v=8"></script>
+<script defer src="/assets/js/acceso.js?v=8"></script>
 </body>
 </html>

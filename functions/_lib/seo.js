@@ -19,17 +19,17 @@ export const SECURITY = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
 };
 
-const G = { andinos:'Superalimentos andinos', granos:'Granos, semillas y menestras', raices:'Raíces, frutas y verduras', hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', doypacks:'Doypacks', packs:'Packs y combos' };
-const HARINA = [G.andinos, G.granos, G.raices, G.hierbas];
-const ORDER = [G.andinos, G.granos, G.raices, G.hierbas, G.extractos, G.doypacks, G.packs];
-const COLORS = { [G.andinos]:'#D39F78', [G.granos]:'#EBC46F', [G.raices]:'#EDA0B2', [G.hierbas]:'#9CC98A', [G.extractos]:'#B79DD4', [G.doypacks]:'#E3B65E', [G.packs]:'#8FC9C2' };
+const G = { naturales:'Harinas naturales', gelatinizadas:'Harinas gelatinizadas', condimentos:'Condimentos en polvo', extractos:'Extractos atomizados', frutos:'Frutos secos y semillas', frutas:'Frutas deshidratadas', packs:'Packs y combos' };
+const HARINA = [G.naturales, G.gelatinizadas];
+const ORDER = [G.naturales, G.gelatinizadas, G.condimentos, G.extractos, G.frutos, G.frutas, G.packs];
+const COLORS = { [G.naturales]:'#D39F78', [G.gelatinizadas]:'#C9962F', [G.condimentos]:'#D9603B', [G.extractos]:'#9473C7', [G.frutos]:'#9C7A54', [G.frutas]:'#E8913A', [G.packs]:'#4FA9A2' };
 const INTRO = {
-  [G.andinos]:'Maca, lúcuma, quinua, kiwicha, cañihua, camu camu y más superalimentos de los Andes y la Amazonía, molidos y listos para usar en batidos, postres, panadería y desayunos.',
-  [G.granos]:'Harinas de granos, semillas y menestras para panes, galletas, papillas, batidos y la cocina de todos los días.',
-  [G.raices]:'Raíces, frutas y verduras deshidratadas y molidas para sopas, cremas, masas, postres y batidos.',
-  [G.hierbas]:'Hierbas andinas y del mundo en polvo para infusiones, aderezos y mezclas naturales.',
-  [G.extractos]:'Frutas atomizadas: el sabor y el color de la fruta en un polvo fino para jugos, helados, yogures y repostería.',
-  [G.doypacks]:'Maca gelatinizada (negra, roja y amarilla) y lúcuma en doypack con cierre zip de 250 g, 500 g o 1 kg, listos para tu despensa o para vender en bodegas y tiendas naturistas.',
+  [G.naturales]:'Harinas de maca, lúcuma, quinua, kiwicha, cañihua, cacao, camu camu, plátano, avena y más, molidas y listas para batidos, panadería, postres y la industria alimentaria.',
+  [G.gelatinizadas]:'Harinas gelatinizadas o instantáneas de maca (amarilla, negra y roja), quinua, kiwicha y cañihua: se disuelven fácil en bebidas, batidos y yogures sin cocción.',
+  [G.condimentos]:'Cúrcuma, jengibre, paprika, ají panca, ají amarillo, cebolla, ajo, canela, pimienta, comino y achiote en polvo para sazonar en casa o en tu negocio.',
+  [G.extractos]:'Extractos atomizados de frutas (maracuyá, arándano, fresa, uva, pitahaya, granada, camu camu, açaí y más): el sabor y el color de la fruta en un polvo fino para jugos, helados, yogures y repostería.',
+  [G.frutos]:'Nibs de cacao, almendras, pecanas, maní, nueces, pistachos, castaña, chía y ajonjolí para snacks, granolas, panadería y repostería.',
+  [G.frutas]:'Aguaymanto, naranja, manzana, arándano rojo, piña y coco deshidratados para snacks, granolas, cereales e infusiones.',
   [G.packs]:'Combinaciones de productos que se usan juntos, en un solo pedido.'
 };
 
@@ -39,8 +39,7 @@ export const urlSlug = s => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g
 const lc = n => n.charAt(0).toLowerCase() + n.slice(1);
 export function fullName(p){
   if (HARINA.includes(p.category)) return 'Harina de ' + lc(p.name);
-  if (p.category === G.extractos) return 'Extracto en polvo de ' + lc(p.name);
-  if (p.category === G.doypacks) return p.name + ' en doypack';
+  if (p.category === G.extractos && !/atomizad/i.test(p.name)) return 'Extracto en polvo de ' + lc(p.name);
   return p.name;
 }
 const money = v => 'S/ ' + Number(v).toFixed(2);
@@ -111,7 +110,7 @@ ${jsonld.map(j => `<script type="application/ld+json">${JSON.stringify(j).replac
 <footer class="pg-foot"><div class="pg-wrap">
   <div class="pg-fcols">
     <div><b>${SITE}</b><p>Harinas, superalimentos y extractos en polvo. Venta por mayor y menor, envíos a todo Lima y provincias.</p></div>
-    <div><b>Contacto</b><p><a href="https://wa.me/${WA}" rel="noopener">WhatsApp +51 918 515 262</a>${e.correo ? `<br><a href="mailto:${esc(e.correo)}">${esc(e.correo)}</a>` : ''}${e.horario ? `<br>${esc(e.horario)}` : ''}</p></div>
+    <div><b>Contacto</b><p><a href="https://wa.me/${WA}" rel="noopener">WhatsApp +51 918 515 262</a><br><a href="https://wa.me/51992595837" rel="noopener">WhatsApp +51 992 595 837</a>${e.correo ? `<br><a href="mailto:${esc(e.correo)}">${esc(e.correo)}</a>` : ''}${e.horario ? `<br>${esc(e.horario)}` : ''}</p></div>
     <div><b>Ayuda</b><p><a href="/libro-de-reclamaciones" class="pg-libro">Libro de Reclamaciones</a><br><a href="/privacidad">Política de privacidad</a><br><a href="/terminos">Términos, envíos y devoluciones</a></p></div>
   </div>
   <p class="pg-legal">${legal}</p>
@@ -133,10 +132,12 @@ export function productPage({ origin, data, slug }){
   const p = products.find(x => x.slug === slug);
   if (!p) return notFound({ origin, data, path: '/producto/' + slug });
   const ALIAS = { d_lucuma:'h_lucuma', d_maca_negra:'feat_maca', d_maca_roja:'feat_maca', d_maca_amarilla:'feat_maca' };
-  const catSlug = urlSlug(p.category), n = NUTRI[ALIAS[p.image_url] || p.image_url] || null;
+  // la foto puede ser compartida (p. ej. té verde para el matcha): en extractos solo se usa el dato si la foto es del extracto
+  const nk = ALIAS[p.image_url] || p.image_url;
+  const catSlug = urlSlug(p.category), n = (p.category === G.extractos && !/^x_/.test(p.image_url || '')) ? null : (NUTRI[nk] || null);
   const joinY = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1] : (a[0] || '');
   const desc = p.description || [
-    p.category === G.extractos ? `${p.full}: fruta atomizada en polvo fino, lista para usar.` : `${p.full}, molida y lista para usar.`,
+    p.category === G.extractos ? `${p.full}: atomizado en polvo fino, listo para usar.` : HARINA.includes(p.category) ? `${p.full}, molida y lista para usar.` : `${p.full}.`,
     n ? n.u : '',
     n && n.d ? `Lo que más aporta: ${joinY(n.d.map(x => x.toLowerCase()))}.` : ''
   ].filter(Boolean).join(' ');
@@ -180,7 +181,7 @@ export function categoryPage({ origin, data, slug }){
 <header class="pg-cat" style="--c:${COLORS[cat] || '#D39F78'}"><p class="pg-k">${list.length} productos</p><h1>${esc(cat)}</h1><p>${esc(INTRO[cat] || '')} Venta por mayor y menor, con envíos a todo Lima y provincias.</p></header>
 <div class="pg-grid">${list.map(card).join('')}</div>
 <section class="pg-rel"><h2>Otras categorías</h2><div class="pg-cats">${others.map(o => `<a href="/categoria/${urlSlug(o)}" style="--c:${COLORS[o] || '#D39F78'}">${esc(o)}</a>`).join('')}</div></section>`;
-  return layout({ origin, path: '/categoria/' + slug, title: `${cat}: harinas y polvos naturales | ${SITE}`, description: `${cat} de ${SITE}: ${list.slice(0, 5).map(p => p.full.toLowerCase()).join(', ')} y más. Venta por mayor y menor, envíos a todo Lima y provincias.`, jsonld: [ld, c.ld], body, empresa });
+  return layout({ origin, path: '/categoria/' + slug, title: `${cat} | ${SITE}`, description: `${cat} de ${SITE}: ${list.slice(0, 5).map(p => p.full.toLowerCase()).join(', ')} y más. Venta por mayor y menor, envíos a todo Lima y provincias.`, jsonld: [ld, c.ld], body, empresa });
 }
 
 export function notFound({ origin, data, path }){

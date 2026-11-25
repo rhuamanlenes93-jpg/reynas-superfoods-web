@@ -13,15 +13,44 @@ function trackCart(p, q){
   if (session) return; // no contar las pruebas del administrador
   sb('/rest/v1/rpc/track_cart', { method:'POST', keepalive:true, body:{ p_product: p.id, p_qty: Math.min(Math.max(1, q), 50) } }).catch(() => {});
 }
+/* ---------- unidades: cada producto se pide por kg, saco, tonelada, tambor, doypack o pack ---------- */
+const UNITS = {
+  kg:     { opt:'kg',             one:'kg',               many:'kg',                kg:1 },
+  saco:   { opt:'Saco de 25 kg',  one:'saco de 25 kg',    many:'sacos de 25 kg',    kg:25 },
+  t:      { opt:'Tonelada',       one:'tonelada',         many:'toneladas',         kg:1000 },
+  tambor: { opt:'Tambor de 25 kg',one:'tambor de 25 kg',  many:'tambores de 25 kg', kg:25 },
+  d250:   { opt:'Doypack 250 g',  one:'doypack de 250 g', many:'doypacks de 250 g', kg:.25 },
+  d500:   { opt:'Doypack 500 g',  one:'doypack de 500 g', many:'doypacks de 500 g', kg:.5 },
+  d1000:  { opt:'Doypack 1 kg',   one:'doypack de 1 kg',  many:'doypacks de 1 kg',  kg:1 },
+  pack:   { opt:'Pack',           one:'pack',             many:'packs',             kg:0 },
+  u:      { opt:'Unidad',         one:'unidad',           many:'unidades',          kg:0 }
+};
+function unitsFor(p){
+  if (p.group === G.packs) return ['pack'];
+  if (p.group === G.extractos) return ['kg', 'tambor', 't'];
+  // la maca gelatinizada y la lúcuma también vienen en doypack (250 g, 500 g y 1 kg)
+  const doy = /^d_/.test(p.img || '') || norm(p.name) === 'lucuma';
+  if (BASE_GROUPS.includes(p.group)) return doy ? ['kg', 'saco', 't', 'd250', 'd500', 'd1000'] : ['kg', 'saco', 't'];
+  return ['kg', 'u'];
+}
+const KEY_U = 'reynas.units.v1';
+let units = load(KEY_U) || {};
+const saveU = () => save(KEY_U, units);
+const unitOf = p => { const list = unitsFor(p); return list.includes(units[p.id]) ? units[p.id] : list[0]; };
+const isBaseUnit = p => unitOf(p) === unitsFor(p)[0];
+const fmtN = n => String(Math.round(n * 100) / 100).replace('.', ',');
+const unitText = (p, n) => { const u = UNITS[unitOf(p)]; return n === 1 ? u.one : u.many; };
+const linePrice = (p, n) => p.price !== '' && isBaseUnit(p) ? p.price * n : null;
 function setQty(id, n, opts = {}){
   const p = byId(id); if (!p) return;
   const before = cart[id] || 0;
-  if (n <= 0) delete cart[id]; else cart[id] = Math.min(n, 999);
+  n = Math.round(n * 100) / 100;
+  if (n <= 0){ delete cart[id]; delete units[id]; saveU(); } else cart[id] = Math.min(n, 99999);
   saveC();
   document.querySelectorAll(`[data-ctl="${id}"]`).forEach(el => el.innerHTML = controlFor(p));
   renderOrder();
   if (n > before){
-    trackCart(p, n - before);
+    trackCart(p, Math.ceil(n - before));
     fly(opts.img);
     if (!opts.silent) toast((before ? 'Sumaste otro: ' : 'Agregado: ') + fullName(p));
   }
@@ -33,7 +62,7 @@ document.addEventListener('click', e => {
   const inDrawer = !!a.closest('.drawer,#lines');
   if (a.dataset.add) setQty(id, 1, { img: imgNear(a) });
   if (a.dataset.inc) setQty(id, (cart[id] || 0) + 1, { img: inDrawer ? null : imgNear(a), silent: inDrawer });
-  if (a.dataset.dec) setQty(id, (cart[id] || 0) - 1);
+  if (a.dataset.dec){ const c = cart[id] || 0; setQty(id, c > 1 ? c - 1 : c - Math.min(c, 1)); }
   if (a.dataset.rm) setQty(id, 0);
 });
 
@@ -130,7 +159,7 @@ function pdpAdd(fromImg){
   if (pdpId === null) return;
   const n = (cart[pdpId] || 0) + pdpQty;
   setQty(pdpId, n, { img: fromImg, silent: true });
-  toast(`Agregaste ${pdpQty} × ${fullName(byId(pdpId))}`);
+  { const pp = byId(pdpId); toast(`Agregaste ${fmtN(pdpQty)} ${unitText(pp, pdpQty)} de ${fullName(pp)}`); }
   setTimeout(openDrawer, RM.matches ? 0 : 900);
 }
 $('#pdpAdd').addEventListener('click', () => pdpAdd($('#pdpImg')));
@@ -140,7 +169,8 @@ new IntersectionObserver(([e]) => {
   const show = pdpId !== null && !e.isIntersecting && e.boundingClientRect.top < 0;
   satc.classList.toggle('show', show); satc.setAttribute('aria-hidden', !show);
 }, { root: pdp, threshold: 0 }).observe($('#pdpAdd'));
-$('#featSee').addEventListener('click', () => { const p = products.find(x => x.img === 'feat_maca' && !x.hidden); if (p){ pdpPushed = true; location.hash = 'producto/' + p.id; } });
+const featProduct = () => products.find(x => (x.img === 'd_maca_negra' || x.img === 'feat_maca') && !x.hidden) || products.find(x => norm(x.name).startsWith('maca negra') && !x.hidden);
+$('#featSee').addEventListener('click', () => { const p = featProduct(); if (p){ pdpPushed = true; location.hash = 'producto/' + p.id; } });
 
 /* =========================================================
    PEDIDO
@@ -160,27 +190,61 @@ function orderCode(){
 function buildMsg(items){
   const nm = fName.value.trim(), ds = fDist.value.trim();
   let m = `Hola Reyna's Superfoods, quiero hacer un pedido (${orderCode()}):\n`;
-  m += items.length ? items.map(({p, n}) => `• ${n} × ${fullName(p)}${p.size ? ` (${p.size})` : ''}${p.price !== '' ? ` – ${money(p.price * n)}` : ''}`).join('\n') : '• (elige productos en la tienda)';
+  m += items.length ? items.map(({p, n}) => { const lp = linePrice(p, n); return `• ${fmtN(n)} ${unitText(p, n)} de ${fullName(p)}${lp !== null ? ` – ${money(lp)}` : ''}`; }).join('\n') : '• (elige productos en la tienda)';
   if (nm) m += `\n\nNombre: ${nm}`;
   if (ds) m += `${nm ? '\n' : '\n\n'}Envío a: ${ds}`;
-  m += items.some(({p}) => p.price === '') ? '\n\n¿Me indican el total y el costo de envío?' : '\n\n¿Me confirman el total con el envío?';
+  m += items.some(({p, n}) => linePrice(p, n) === null) ? '\n\n¿Me indican el total y el costo de envío?' : '\n\n¿Me confirman el total con el envío?';
   return m;
 }
-const lineHTML = ({p, n}, i) => `
-  <div class="line" style="--i:${i}">
+const lineSub = (p, n) => { const lp = linePrice(p, n); return lp !== null ? `${money(p.price)} por ${UNITS[unitOf(p)].one} · ${money(lp)}` : ''; };
+const lineHTML = ({p, n}, i) => {
+  const list = unitsFor(p), u = unitOf(p);
+  return `
+  <div class="line" style="--i:${i}" data-line="${p.id}">
     <img src="${/^[a-z0-9_]+$/.test(p.img || '') ? withV(`/assets/products/sm/${p.img}.webp`) : imgSrc(p)}" alt="" loading="lazy" decoding="async">
-    <div><div class="nm">${esc(fullName(p))}</div>
-      <div class="sb">${[p.size ? esc(p.size) : '', p.price !== '' ? money(p.price) + ' c/u' : ''].filter(Boolean).join(' · ')}</div>
+    <div class="lbd"><div class="nm">${esc(fullName(p))}</div>
+      <div class="lq">
+        <input class="qin" type="number" inputmode="decimal" min="0" max="99999" step="any" value="${n}" data-qin="${p.id}" aria-label="Cantidad de ${esc(fullName(p))}">
+        ${list.length > 1
+          ? `<select class="uin" data-uin="${p.id}" aria-label="Unidad de ${esc(fullName(p))}">${list.map(k => `<option value="${k}"${k === u ? ' selected' : ''}>${UNITS[k].opt}</option>`).join('')}</select>`
+          : `<span class="uone">${esc(UNITS[u].many)}</span>`}
+      </div>
+      <div class="sb" data-sub="${p.id}">${lineSub(p, n)}</div>
       <button class="rm" type="button" data-rm="${p.id}">Quitar</button></div>
-    <span data-ctl="${p.id}">${controlFor(p)}</span>
   </div>`;
+};
+// escribir la cantidad o cambiar la unidad no vuelve a dibujar el carrito (así no se pierde el cursor)
+function refreshMeta(){
+  const items = cartItems(), t = totals(items);
+  $('#dtot').hidden = !t; if (t) $('#dtotV').textContent = t;
+  $('#dTitle').textContent = items.length ? `Tu pedido (${items.length})` : 'Tu pedido';
+  document.querySelectorAll('[data-count]').forEach(el => { el.textContent = items.length; if (el.classList.contains('hcount')) el.hidden = !items.length; });
+}
+function refreshLine(id){
+  const p = byId(id); if (!p) return;
+  const sub = document.querySelector(`[data-sub="${id}"]`); if (sub) sub.textContent = lineSub(p, cart[id] || 0);
+  document.querySelectorAll(`[data-ctl="${id}"]`).forEach(el => el.innerHTML = controlFor(p));
+  refreshMeta();
+}
+$('#dlist').addEventListener('input', e => {
+  const i = e.target.closest('[data-qin]'); if (!i) return;
+  const v = Number(String(i.value).replace(',', '.'));
+  if (!(v > 0)) return; // vacío o 0: se decide al salir del campo
+  cart[i.dataset.qin] = Math.min(Math.round(v * 100) / 100, 99999); saveC(); refreshLine(i.dataset.qin);
+});
+$('#dlist').addEventListener('change', e => {
+  const i = e.target.closest('[data-qin]');
+  if (i){ const v = Number(String(i.value).replace(',', '.')); if (!(v > 0)) setQty(i.dataset.qin, 0); else { const id = i.dataset.qin; const before = cart[id] || 0; cart[id] = Math.min(Math.round(v * 100) / 100, 99999); saveC(); if (cart[id] > before) trackCart(byId(id), Math.ceil(cart[id] - before)); refreshLine(id); } return; }
+  const s = e.target.closest('[data-uin]');
+  if (s){ units[s.dataset.uin] = s.value; saveU(); refreshLine(s.dataset.uin); }
+});
 function totals(items){
-  const allPriced = items.length && items.every(({p}) => p.price !== '');
-  return allPriced ? money(items.reduce((s, {p, n}) => s + p.price * n, 0)) : null;
+  const ps = items.map(({p, n}) => linePrice(p, n));
+  return items.length && ps.every(x => x !== null) ? money(ps.reduce((s, x) => s + x, 0)) : null;
 }
 function renderDrawer(animate){
-  const items = cartItems(), n = items.reduce((s, x) => s + x.n, 0);
-  $('#dTitle').textContent = n ? `Tu pedido (${n})` : 'Tu pedido';
+  const items = cartItems();
+  $('#dTitle').textContent = items.length ? `Tu pedido (${items.length})` : 'Tu pedido';
   const list = $('#dlist');
   list.innerHTML = items.length ? items.map(lineHTML).join('') : '<p class="empty">Todavía no agregas productos. Explora la tienda y toca “Agregar”.</p>';
   list.classList.toggle('static', !animate); // al quitar o cambiar cantidades, sin animación de entrada
@@ -191,8 +255,8 @@ function renderDrawer(animate){
 }
 function renderOrder(){
   const items = cartItems();
-  const totalN = items.reduce((s, x) => s + x.n, 0);
-  document.querySelectorAll('[data-count]').forEach(el => { el.textContent = totalN; if (el.classList.contains('hcount')) el.hidden = !totalN; });
+  // el contador muestra cuántos productos distintos hay (las cantidades pueden ser kg, sacos, etc.)
+  document.querySelectorAll('[data-count]').forEach(el => { el.textContent = items.length; if (el.classList.contains('hcount')) el.hidden = !items.length; });
   if (drawerOpen) renderDrawer(false);
 }
 $('#oform').addEventListener('submit', e => {
@@ -202,10 +266,10 @@ $('#oform').addEventListener('submit', e => {
   // se guarda con una función que valida los datos en la base (no hay escritura directa a la tabla)
   sb('/rest/v1/rpc/create_order', { method:'POST', keepalive:true, body:{
     p_code: orderCode(), p_name: fName.value.trim(), p_city: fDist.value.trim(),
-    p_items: items.map(({p, n}) => ({ name: fullName(p), size: p.size || '', price: p.price === '' ? '' : String(p.price), qty: n })) } }).catch(() => {});
+    p_items: items.map(({p, n}) => ({ name: fullName(p), unit: unitText(p, n), qty: n, kg: Math.round(n * UNITS[unitOf(p)].kg * 100) / 100, price: linePrice(p, n) === null ? '' : String(p.price) })) } }).catch(() => {});
   window.open(waLink(msg), '_blank', 'noopener');
   try { sessionStorage.removeItem('reynas.code'); } catch {}
-  cart = {}; saveC(); renderAll(); closeDrawer();
+  cart = {}; saveC(); units = {}; saveU(); renderAll(); closeDrawer();
   toast('Pedido enviado. Te responderemos por WhatsApp.');
 });
 $('#customLink').href = waLink("Hola Reyna's Superfoods, quiero armar un pack con estos productos: ");
@@ -213,7 +277,7 @@ document.querySelectorAll('[data-wa]').forEach(a => { a.href = waLink(a.dataset.
 $('#wholeLink').href = waLink("Hola Reyna's Superfoods, quiero cotizar productos por mayor. Necesito: ");
 $('#featImg').src = IMG.maca_main.src;
 $('#featAdd').addEventListener('click', () => {
-  const p = products.find(x => x.img === 'feat_maca' && !x.hidden) || products.find(x => norm(x.name) === 'maca negra' && !x.hidden);
+  const p = featProduct();
   if (p) setQty(p.id, (cart[p.id] || 0) + 1, { img: $('#featImg') });
 });
 

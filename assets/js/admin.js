@@ -243,7 +243,7 @@ let editing = null, formImg = '', aProducts = [], aOrders = [], aInvoices = [], 
 let empresa = {};
 let view = 'home', catSel = 'Todas', ordSel = 'todos', txtSel = null, aCart = [], dRange = 30;
 const aById = id => aProducts.find(p => p.id === id);
-const CAT_C = { [G.andinos]:'#D39F78', [G.granos]:'#E8B85C', [G.raices]:'#E58EA4', [G.hierbas]:'#7FBF6E', [G.extractos]:'#A98BD0', [G.packs]:'#6DBFB8' };
+const CAT_C = COLORS;
 const catColor = g => CAT_C[g] || '#B9B1A0';
 const fmtDate = new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium', timeStyle: 'short' });
 let msgT;
@@ -359,21 +359,22 @@ const rankHTML = (list, unit, empty, max = 8) => {
 function renderDash(){
   const os = aOrders.filter(o => o.status !== 'anulado' && inRange(o.created_at, dRange));
   const ce = aCart.filter(c => inRange(c.created_at, dRange));
-  const ordRows = os.flatMap(o => (o.items || []).map(i => [i.name, Number(i.qty) || 1]));
+  // cada línea de pedido cuenta 1 vez (las cantidades pueden ser kg, sacos, doypacks…); los kilos se suman aparte
+  const ordRows = os.flatMap(o => (o.items || []).map(i => [i.name, 1]));
   const topOrd = tally(ordRows), topCart = tally(ce.map(c => [c.product_name, c.qty || 1]));
-  const units = ordRows.reduce((s, r) => s + r[1], 0), adds = ce.reduce((s, c) => s + (c.qty || 1), 0);
+  const kilos = Math.round(os.reduce((s, o) => s + (o.items || []).reduce((a, i) => a + (Number(i.kg) || 0), 0), 0) * 10) / 10, adds = ce.reduce((s, c) => s + (c.qty || 1), 0);
   buildGroupIdx();
   const cats = tally(ordRows.map(([n, q]) => [groupOfName(n) || 'Otros', q]));
   const lbl = dRange ? `en los últimos ${dRange} días` : 'desde el inicio';
   $('#dKpis').innerHTML = [
     ['Pedidos recibidos', os.length, lbl],
-    ['Productos pedidos', units, 'unidades en esos pedidos'],
+    ['Kilos pedidos', String(kilos).replace('.', ','), 'aprox., sumando kg, sacos y doypacks'],
     ['Agregados al carrito', adds, 'veces que tocaron “Agregar”'],
     ['Más pedido', topOrd[0] ? topOrd[0][0] : '—', topOrd[0] ? `${topOrd[0][1]} unidades` : 'Aún sin pedidos', 'txt']
   ].map(([l, v, s, c]) => `<div class="kpi${c ? ' t' : ''}"><span>${l}</span><b>${esc(v)}</b><small>${esc(s)}</small></div>`).join('');
-  $('#dTopOrd').innerHTML = rankHTML(topOrd, ['unidad', 'unidades'], 'Todavía no llegan pedidos en este periodo.');
+  $('#dTopOrd').innerHTML = rankHTML(topOrd, ['pedido', 'pedidos'], 'Todavía no llegan pedidos en este periodo.');
   $('#dTopCart').innerHTML = rankHTML(topCart, ['vez', 'veces'], 'Todavía no hay productos agregados al carrito en este periodo. Se empieza a contar desde hoy.');
-  $('#dCats').innerHTML = rankHTML(cats, ['unidad', 'unidades'], 'Sin pedidos en este periodo.', 6);
+  $('#dCats').innerHTML = rankHTML(cats, ['pedido', 'pedidos'], 'Sin pedidos en este periodo.', 6);
   // pedidos por día (máx. 30 barras)
   const n = Math.min(dRange || 30, 30), today = startOfDay(Date.now());
   const perDay = new Map(); aOrders.forEach(o => { if (o.status === 'anulado') return; const k = startOfDay(o.created_at).getTime(); perDay.set(k, (perDay.get(k) || 0) + 1); });
@@ -476,7 +477,7 @@ function openForm(p){
   editing = p || null; fillGroupSelect();
   $('#aFormT').textContent = p ? 'Editar producto' : 'Nuevo producto';
   $('#pName').value = p ? p.name : '';
-  $('#pGroup').value = p ? p.group : (catSel !== 'Todas' ? catSel : G.andinos);
+  $('#pGroup').value = p ? p.group : (catSel !== 'Todas' ? catSel : G.naturales);
   $('#pSize').value = p ? p.size : '';
   $('#pPrice').value = p ? p.price : '';
   $('#pDesc').value = p ? p.desc : '';
@@ -609,7 +610,8 @@ const FIL = [['todos','Todos', 0], ['hoy','Hoy', 1], ['sem','Últimos 7 días', 
 const filDays = k => (FIL.find(f => f[0] === k) || FIL[0])[2];
 const orderTotal = o => { const it = o.items || []; return it.length && it.every(i => i.price !== '' && i.price != null) ? it.reduce((s, i) => s + Number(i.price) * (i.qty || 1), 0) : null; };
 const oCode = o => o.code || ('#' + o.id);
-const orderMsg = o => [`Pedido ${oCode(o)}`, ...(o.items || []).map(i => `• ${i.qty || 1} × ${i.name}${i.size ? ' (' + i.size + ')' : ''}`), o.customer_name ? `Nombre: ${o.customer_name}` : '', o.customer_city ? `Envío a: ${o.customer_city}` : '', o.customer_note ? `Nota: ${o.customer_note}` : ''].filter(Boolean).join('\n');
+const qtyTxt = i => { const q = String(Math.round((Number(i.qty) || 1) * 100) / 100).replace('.', ','); return i.unit ? `${q} ${i.unit}` : `${q} ×`; };
+const orderMsg = o => [`Pedido ${oCode(o)}`, ...(o.items || []).map(i => `• ${qtyTxt(i)} ${i.unit ? 'de ' : ''}${i.name}${i.size ? ' (' + i.size + ')' : ''}`), o.customer_name ? `Nombre: ${o.customer_name}` : '', o.customer_city ? `Envío a: ${o.customer_city}` : '', o.customer_note ? `Nota: ${o.customer_note}` : ''].filter(Boolean).join('\n');
 function renderOrders(){
   $('#oFil').innerHTML = FIL.map(([k, l, d]) => `<button type="button" class="chip-a${ordSel === k ? ' on' : ''}" data-of="${k}">${l} <small>${aOrders.filter(o => inRange(o.created_at, d)).length}</small></button>`).join('');
   const q = norm($('#oQ').value.trim());
@@ -623,9 +625,9 @@ function renderOrders(){
     return `<article class="oc" data-id="${o.id}">
       <header>
         <div><span class="code">${esc(oCode(o))}</span><b>${o.customer_name ? esc(o.customer_name) : 'Cliente sin nombre'}</b><span class="meta">${fmtDate.format(new Date(o.created_at))}${o.customer_city ? ' · ' + esc(o.customer_city) : ''}</span></div>
-        <span class="oitems">${(o.items || []).reduce((s, i) => s + (Number(i.qty) || 1), 0)} productos</span>
+        <span class="oitems">${(o.items || []).length} ${(o.items || []).length === 1 ? 'producto' : 'productos'}</span>
       </header>
-      <ul>${(o.items || []).map(i => `<li><span>${i.qty || 1} ×</span> ${esc(i.name)}${i.size ? ` <em>(${esc(i.size)})</em>` : ''}${i.price !== '' && i.price != null ? `<b>${money(i.price * (i.qty || 1))}</b>` : ''}</li>`).join('')}</ul>
+      <ul>${(o.items || []).map(i => `<li><span>${esc(qtyTxt(i))}</span> ${esc(i.name)}${i.size ? ` <em>(${esc(i.size)})</em>` : ''}${i.price !== '' && i.price != null ? `<b>${money(i.price * (i.qty || 1))}</b>` : ''}</li>`).join('')}</ul>
       ${o.customer_note ? `<p class="onote">Nota del cliente: ${esc(o.customer_note)}</p>` : ''}
       <footer>
         <span class="otot">${t !== null ? `Total de productos: <b>${money(t)}</b>` : ''}</span>
@@ -726,7 +728,7 @@ function renderBillFrom(sel){
 function fillFromOrder(o){
   billOrder = o || null;
   $('#bName').value = o?.customer_name || '';
-  const items = o ? (o.items || []).map(i => ({ name: i.name + (i.size ? ` (${i.size})` : ''), qty: i.qty || 1, price: i.price !== '' && i.price != null ? i.price : '' })) : [{ name:'', qty:1, price:'' }];
+  const items = o ? (o.items || []).map(i => ({ name: i.name + (i.unit ? ` (${i.unit})` : '') + (i.size ? ` (${i.size})` : ''), qty: i.qty || 1, price: i.price !== '' && i.price != null ? i.price : '' })) : [{ name:'', qty:1, price:'' }];
   $('#bLines').innerHTML = `<div class="ln lh"><span>Producto</span><span>Cant.</span><span>Precio c/u</span><span>Importe</span><span></span></div>` + items.map(lineRow).join('');
   setDocOptions(); calcTotals();
 }

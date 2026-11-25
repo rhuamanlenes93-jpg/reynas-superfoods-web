@@ -57,7 +57,7 @@ const slides = SLIDES.map((s,i) => {
   sec.appendChild(frame); stage.appendChild(sec);
   const b = document.createElement('button'); b.type = 'button'; b.textContent = s.word;
   b.addEventListener('click', () => { touch(); if (i !== cur) go(i, i > cur ? 1 : -1); });
-  tabsEl.appendChild(b);
+  // la barra superior ahora es el menú del sitio; los productos de la portada se cambian con las flechas o deslizando
   return { sec, L, word:w, tab:b, data:s, idx:i };
 });
 
@@ -89,12 +89,6 @@ function layout(){
 addEventListener('resize', layout);
 
 function moveBar(instant){
-  const t = slides[cur].tab;
-  if (instant) bar.style.transition = 'none';
-  bar.style.width = t.offsetWidth + 'px';
-  bar.style.transform = `translateX(${t.offsetLeft}px)`;
-  if (instant){ bar.offsetWidth; bar.style.transition = ''; }
-  slides.forEach((s,i) => s.tab.setAttribute('aria-current', i === cur ? 'true' : 'false'));
   hero.style.backgroundColor = slides[cur].data.bg;
 }
 

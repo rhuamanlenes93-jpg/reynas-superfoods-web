@@ -10,22 +10,23 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 const slug = s => norm(s).replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 function load(k){ try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }
 function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+// clasificación de la clienta (6 categorías) + packs
 const G = {
-  andinos:'Superalimentos andinos', granos:'Granos, semillas y menestras', raices:'Raíces, frutas y verduras',
-  hierbas:'Hierbas e infusiones', extractos:'Extractos en polvo', doypacks:'Doypacks', packs:'Packs y combos'
+  naturales:'Harinas naturales', gelatinizadas:'Harinas gelatinizadas', condimentos:'Condimentos en polvo',
+  extractos:'Extractos atomizados', frutos:'Frutos secos y semillas', frutas:'Frutas deshidratadas', packs:'Packs y combos'
 };
-const HARINA_GROUPS = [G.andinos, G.granos, G.raices, G.hierbas];
-const BASE_GROUPS = [G.andinos, G.granos, G.raices, G.hierbas, G.extractos, G.doypacks, G.packs];
-const COLORS = { [G.andinos]:'#D39F78', [G.granos]:'#EBC46F', [G.raices]:'#EDA0B2', [G.hierbas]:'#9CC98A', [G.extractos]:'#B79DD4', [G.doypacks]:'#E3B65E', [G.packs]:'#8FC9C2' };
+const HARINA_GROUPS = [G.naturales, G.gelatinizadas];
+const BASE_GROUPS = [G.naturales, G.gelatinizadas, G.condimentos, G.extractos, G.frutos, G.frutas, G.packs];
+const COLORS = { [G.naturales]:'#D39F78', [G.gelatinizadas]:'#C9962F', [G.condimentos]:'#D9603B', [G.extractos]:'#9473C7', [G.frutos]:'#9C7A54', [G.frutas]:'#E8913A', [G.packs]:'#4FA9A2' };
 const EXTRA = ['#E8B48C','#A9CFE0','#D8C27A','#C9A6D8'];
 const colorOf = g => COLORS[g] || EXTRA[[...g].reduce((s,c) => s + c.charCodeAt(0), 0) % EXTRA.length];
 const USES = {
-  [G.andinos]:'Ideal para batidos, recetas, yogures y panadería.',
-  [G.granos]:'Ideal para panes, galletas, papillas, batidos y recetas caseras.',
-  [G.raices]:'Ideal para sopas, cremas, masas, postres y batidos.',
-  [G.hierbas]:'Ideal para infusiones, aderezos y mezclas naturales.',
-  [G.doypacks]:'Doypack con cierre zip de 250 g, 500 g o 1 kg, listo para tu despensa o para vender en tu tienda.',
-  [G.extractos]:'Ideal para jugos, smoothies, helados y repostería.'
+  [G.naturales]:'Ideal para batidos, panadería, postres, papillas y recetas caseras.',
+  [G.gelatinizadas]:'Instantánea: se disuelve fácil en bebidas, batidos y yogures, sin cocción.',
+  [G.condimentos]:'Ideal para sazonar guisos, carnes, sopas, salsas y aderezos.',
+  [G.extractos]:'Ideal para jugos, smoothies, helados, yogures y repostería.',
+  [G.frutos]:'Ideal para snacks, granolas, ensaladas, panadería y repostería.',
+  [G.frutas]:'Ideal para snacks, granolas, cereales, infusiones y repostería.'
 };
 let products = [], catalogLoaded = false;
 let cart = load(KEY_C) || {};
@@ -49,9 +50,8 @@ const lc = n => n.charAt(0).toLowerCase() + n.slice(1);
 const urlSlug = s => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function fullName(p){
   if (HARINA_GROUPS.includes(p.group)) return 'Harina de ' + lc(p.name);
-  if (p.group === G.extractos) return 'Extracto en polvo de ' + lc(p.name);
-  if (p.group === G.doypacks) return p.name + ' en doypack';
-  return p.name;
+  if (p.group === G.extractos && !/atomizad/i.test(p.name)) return 'Extracto en polvo de ' + lc(p.name);
+  return p.name; // condimentos, frutos secos y frutas deshidratadas ya traen su nombre completo
 }
 const money = v => v === '' || v == null ? '' : 'S/ ' + Number(v).toFixed(2);
 const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F4EFE2"/><text x="200" y="160" font-family="Poppins,sans-serif" font-size="22" fill="#9A9F94" text-anchor="middle">Foto por subir</text></svg>');
@@ -315,13 +315,23 @@ function renderShopCrumbs(){
   if (term) items.push({label: `Búsqueda: “${term}”`});
   $('#shopCrumbs').innerHTML = crumbsHTML(items.length === 2 ? [items[0], {label:'Tienda'}] : items);
 }
+const CAT_ICONS = {
+  Todos:'<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>',
+  [G.naturales]:'<path d="M12 21V8"/><path d="M12 12c-3 0-5-2-5-5 3 0 5 2 5 5zM12 12c3 0 5-2 5-5-3 0-5 2-5 5zM12 17c-3 0-5-2-5-5 3 0 5 2 5 5zM12 17c3 0 5-2 5-5-3 0-5 2-5 5zM12 8c0-2 0-4 0-5"/>',
+  [G.gelatinizadas]:'<path d="M7 4h10l-1 16H8z"/><path d="M7.5 9h9"/><path d="M12 12v4M10 14h4"/>',
+  [G.condimentos]:'<path d="M14 6c3 0 5 2 5 5 0 5-6 9-11 9-2 0-3-1-3-2 4 0 6-4 6-8 0-2 1-4 3-4z"/><path d="M14 6c0-2 1-3 3-3"/>',
+  [G.extractos]:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/><path d="M9 14a3 3 0 0 0 3 3"/>',
+  [G.frutos]:'<path d="M12 4c4 0 7 3 7 8s-3 8-7 8-7-3-7-8 3-8 7-8z"/><path d="M12 4v16M8 8c2 1 6 1 8 0M8 16c2-1 6-1 8 0"/>',
+  [G.frutas]:'<circle cx="12" cy="13" r="7"/><path d="M12 6c0-2 1-3 3-3"/><path d="M12 9v8M8 13h8"/>'
+};
+const catIcon = g => `<svg viewBox="0 0 24 24">${CAT_ICONS[g] || CAT_ICONS.Todos}</svg>`;
 function renderCats(){
   const vis = visible().filter(p => p.group !== G.packs);
   const list = ['Todos', ...groups().filter(g => g !== G.packs && vis.some(p => p.group === g))];
   if (!list.includes(activeCat)) activeCat = 'Todos';
   cats.innerHTML = list.map(g => {
     const c = g === 'Todos' ? vis.length : vis.filter(p => p.group === g).length;
-    return `<button class="cat" type="button" style="--c:${g === 'Todos' ? 'var(--green)' : colorOf(g)}" data-cat="${esc(g)}" aria-pressed="${g === activeCat}">${esc(g)}<small>${c}</small></button>`;
+    return `<button class="cat" type="button" style="--c:${g === 'Todos' ? 'var(--green)' : colorOf(g)}" data-cat="${esc(g)}" aria-pressed="${g === activeCat}"><span class="cat-ic" aria-hidden="true">${catIcon(g)}</span><span class="cat-tx"><b>${esc(g === 'Todos' ? 'Todos' : g)}</b><small>${c} productos</small></span></button>`;
   }).join('');
 }
 function renderShop(){
