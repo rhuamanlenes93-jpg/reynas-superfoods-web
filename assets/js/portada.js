@@ -196,4 +196,6 @@ function reveal(){
 }
 slides[0].sec.classList.add('is-current');
 layout();
-(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(reveal);
+/* si se muestra la bienvenida, la portada entra justo cuando se levanta la cortina */
+const SPLASH_MS = (!document.documentElement.classList.contains('seen') && !RM.matches) ? 2100 : 0;
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(reveal, SPLASH_MS));
