@@ -34,8 +34,10 @@ function switcher(extra){
   w.querySelector('[data-lang]').addEventListener('click', e => {
     e.preventDefault();
     try { localStorage.setItem(KEY, other); } catch {}
+    // quita ?lang= de la dirección y recarga la página (cambiar solo la dirección con # no la recarga)
     const u = new URL(location.href); u.searchParams.delete('lang');
-    location.replace(u.pathname + u.search + u.hash);
+    history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+    location.reload();
   });
   return w;
 }
