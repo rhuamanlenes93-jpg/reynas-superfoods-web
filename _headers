@@ -23,7 +23,7 @@
 # Seguridad para todas las páginas.
 # OJO: si cambias el <script> pequeño del <head> de index.html (modo liviano), cambia también su sha256 en script-src.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-7UH6omxIGZR6CUdSd4sMJv+g48llvXL/carBwpgNYkg=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://cauphvgvqtcvmcsvbyry.supabase.co; connect-src 'self' https://cauphvgvqtcvmcsvbyry.supabase.co https://cloudflareinsights.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-uYgpy1/8S8uY8pXzoqE0wXfyEymAecmsHGKU5+Plp9s=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://cauphvgvqtcvmcsvbyry.supabase.co; connect-src 'self' https://cauphvgvqtcvmcsvbyry.supabase.co https://cloudflareinsights.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

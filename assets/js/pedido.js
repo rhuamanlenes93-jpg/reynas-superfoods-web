@@ -275,7 +275,7 @@ $('#oform').addEventListener('submit', e => {
 $('#customLink').href = waLink("Hola Reyna's Superfoods, quiero armar un pack con estos productos: ");
 document.querySelectorAll('[data-wa]').forEach(a => { a.href = waLink(a.dataset.wa); });
 $('#wholeLink').href = waLink("Hola Reyna's Superfoods, quiero cotizar productos por mayor. Necesito: ");
-$('#featImg').src = IMG.maca_main.src;
+$('#featImg').src = withV('/assets/hero/maca_negra_main.webp');
 $('#featAdd').addEventListener('click', () => {
   const p = featProduct();
   if (p) setQty(p.id, (cart[p.id] || 0) + 1, { img: $('#featImg') });

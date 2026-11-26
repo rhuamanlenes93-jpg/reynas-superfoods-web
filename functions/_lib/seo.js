@@ -19,10 +19,10 @@ export const SECURITY = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
 };
 
-const G = { naturales:'Harinas naturales', gelatinizadas:'Harinas gelatinizadas', condimentos:'Condimentos en polvo', extractos:'Extractos atomizados', frutos:'Frutos secos y semillas', frutas:'Frutas deshidratadas', packs:'Packs y combos' };
+const G = { naturales:'Harinas naturales', gelatinizadas:'Harinas gelatinizadas', condimentos:'Condimentos en polvo', extractos:'Extractos atomizados', frutos:'Frutos secos y semillas', frutas:'Frutas deshidratadas', otros:'Otros', packs:'Packs y combos' };
 const HARINA = [G.naturales, G.gelatinizadas];
-const ORDER = [G.naturales, G.gelatinizadas, G.condimentos, G.extractos, G.frutos, G.frutas, G.packs];
-const COLORS = { [G.naturales]:'#D39F78', [G.gelatinizadas]:'#C9962F', [G.condimentos]:'#D9603B', [G.extractos]:'#9473C7', [G.frutos]:'#9C7A54', [G.frutas]:'#E8913A', [G.packs]:'#4FA9A2' };
+const ORDER = [G.naturales, G.gelatinizadas, G.condimentos, G.extractos, G.frutos, G.frutas, G.otros, G.packs];
+const COLORS = { [G.naturales]:'#D39F78', [G.gelatinizadas]:'#C9962F', [G.condimentos]:'#D9603B', [G.extractos]:'#9473C7', [G.frutos]:'#9C7A54', [G.frutas]:'#E8913A', [G.otros]:'#6FA3B5', [G.packs]:'#4FA9A2' };
 const INTRO = {
   [G.naturales]:'Harinas de maca, lúcuma, quinua, kiwicha, cañihua, cacao, camu camu, plátano, avena y más, molidas y listas para batidos, panadería, postres y la industria alimentaria.',
   [G.gelatinizadas]:'Harinas gelatinizadas o instantáneas de maca (amarilla, negra y roja), quinua, kiwicha y cañihua: se disuelven fácil en bebidas, batidos y yogures sin cocción.',
@@ -30,6 +30,7 @@ const INTRO = {
   [G.extractos]:'Extractos atomizados de frutas (maracuyá, arándano, fresa, uva, pitahaya, granada, camu camu, açaí y más): el sabor y el color de la fruta en un polvo fino para jugos, helados, yogures y repostería.',
   [G.frutos]:'Nibs de cacao, almendras, pecanas, maní, nueces, pistachos, castaña, chía y ajonjolí para snacks, granolas, panadería y repostería.',
   [G.frutas]:'Aguaymanto, naranja, manzana, arándano rojo, piña y coco deshidratados para snacks, granolas, cereales e infusiones.',
+  [G.otros]:'Proteína de suero de leche, proteína aislada de soya, proteína de alverja, proteína de arroz, albúmina de huevo, inulina, goma guar y colágeno hidrolizado para batidos, suplementos, panadería y la industria alimentaria.',
   [G.packs]:'Combinaciones de productos que se usan juntos, en un solo pedido.'
 };
 

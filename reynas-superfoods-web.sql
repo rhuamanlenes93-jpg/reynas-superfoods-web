@@ -495,3 +495,16 @@ returns text language sql immutable set search_path = '' as $$
     else p.name end;
 $$;
 revoke all on function private.product_full_name(public.products) from public, anon, authenticated;
+
+-- =========================================================
+-- 14. Categoría "Otros" (proteínas, fibras y espesantes)
+-- =========================================================
+insert into public.products(name, category, sort, active, image_url) values
+('Proteína concentrada de suero de leche 80%','Otros',601,true,'o_whey'),
+('Proteína aislada de soya 90%','Otros',602,true,'o_soya'),
+('Proteína de alverja 80%','Otros',603,true,'o_alverja'),
+('Proteína de arroz','Otros',604,true,'o_arroz'),
+('Albúmina de huevo','Otros',605,true,'o_albumina'),
+('Inulina','Otros',606,true,'o_inulina'),
+('Goma guar','Otros',607,true,'o_guar'),
+('Colágeno hidrolizado','Otros',608,true,'o_colageno');

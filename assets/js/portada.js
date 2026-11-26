@@ -6,13 +6,13 @@ Object.values(IMG).forEach(o => { o.src = withV(o.src); });
    PORTADA (sin cambios respecto de la v6)
    ========================================================= */
 const SLIDES = [
-  { word:'Maca', bg:'#D39F78', search:'maca', main:'maca_main',
+  { word:'Maca', bg:'#D39F78', search:'maca', tag:['“El ginseng de los Andes”','Energía y vitalidad natural'], main:'maca_main',
     pieces:[['maca_amar',355,150,160,0,0,'fruit'],['maca_negra_r',1035,220,170,-8,0,'fruit'],['maca_roja_h',245,470,185,-8,0,'fruit'],['maca_amar',1215,440,165,14,1,'fruit'],['maca_roja_h',1040,605,165,20,1,'fruit'],['maca_amar',-30,600,300,0,0,'corner'],['maca_negra_r',1250,25,245,0,0,'corner']]},
-  { word:'Lúcuma', bg:'#EDC27A', search:'lúcuma', main:'lucuma_main',
+  { word:'Lúcuma', bg:'#EDC27A', search:'lúcuma', tag:['“El oro de los Incas”','Rica en antioxidantes'], main:'lucuma_main',
     pieces:[['lucuma_whole',360,140,150,-12,0,'fruit'],['lucuma_half',1035,215,170,10,0,'fruit'],['lucuma_whole',230,480,200,0,0,'fruit'],['lucuma_half',1215,430,170,-20,1,'fruit'],['lucuma_whole',1050,600,150,16,1,'fruit'],['lucuma_half',-20,590,290,0,0,'corner'],['lucuma_whole',1260,20,230,20,0,'corner']]},
-  { word:'Maíz morado', bg:'#B79DD4', search:'maíz morado', main:'maiz_main',
+  { word:'Maíz morado', bg:'#B79DD4', search:'maíz morado', tag:['“El color del Perú”','Rico en antocianinas'], main:'maiz_main',
     pieces:[['maiz_cob',350,150,170,0,0,'fruit'],['maiz_cob',1030,225,190,-12,0,'fruit'],['maiz_cob',220,480,210,18,1,'fruit'],['maiz_cob',1215,440,175,0,1,'fruit'],['maiz_cob',1045,610,180,-6,0,'fruit'],['maiz_cob',-30,595,300,0,0,'corner'],['maiz_cob',1240,30,260,25,0,'corner']]},
-  { word:'Camu camu', bg:'#EDA0B2', search:'camu camu', main:'camu_main',
+  { word:'Camu camu', bg:'#EDA0B2', search:'camu camu', tag:['“El tesoro de la Amazonía”','Fuente natural de vitamina C'], main:'camu_main',
     pieces:[['camu_x_ber',370,135,130,-10,0,'fruit'],['camu_ber',1035,215,170,8,0,'fruit'],['camu_x_ber',220,480,200,-6,0,'fruit'],['camu_x_ber',1225,425,145,15,1,'fruit'],['camu_ber',1045,605,165,-14,1,'fruit'],['camu_ber',-30,590,300,0,0,'corner'],['camu_x_ber',1270,15,210,20,0,'corner']]},
 ];
 const MAIN_W = 700, MAIN_BOTTOM = 760;
@@ -90,6 +90,17 @@ addEventListener('resize', layout);
 
 function moveBar(instant){
   hero.style.backgroundColor = slides[cur].data.bg;
+  setTag(instant);
+}
+// descripción breve de cada superalimento (debajo de la imagen, encima de "Comprar ahora")
+const tagEl = $('#htag');
+function setTag(instant){
+  if (!tagEl) return;
+  const [a, b] = slides[cur].data.tag;
+  const put = () => { tagEl.innerHTML = `<b>${a}</b><span>${b}</span>`; };
+  if (instant || RM.matches){ put(); return; }
+  tagEl.classList.add('out');
+  setTimeout(() => { put(); tagEl.classList.remove('out'); }, 380);
 }
 
 // las imágenes de cada diapositiva se cargan solo cuando hacen falta (la primera al inicio)

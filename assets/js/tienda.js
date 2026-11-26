@@ -13,11 +13,11 @@ function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return tr
 // clasificación de la clienta (6 categorías) + packs
 const G = {
   naturales:'Harinas naturales', gelatinizadas:'Harinas gelatinizadas', condimentos:'Condimentos en polvo',
-  extractos:'Extractos atomizados', frutos:'Frutos secos y semillas', frutas:'Frutas deshidratadas', packs:'Packs y combos'
+  extractos:'Extractos atomizados', frutos:'Frutos secos y semillas', frutas:'Frutas deshidratadas', otros:'Otros', packs:'Packs y combos'
 };
 const HARINA_GROUPS = [G.naturales, G.gelatinizadas];
-const BASE_GROUPS = [G.naturales, G.gelatinizadas, G.condimentos, G.extractos, G.frutos, G.frutas, G.packs];
-const COLORS = { [G.naturales]:'#D39F78', [G.gelatinizadas]:'#C9962F', [G.condimentos]:'#D9603B', [G.extractos]:'#9473C7', [G.frutos]:'#9C7A54', [G.frutas]:'#E8913A', [G.packs]:'#4FA9A2' };
+const BASE_GROUPS = [G.naturales, G.gelatinizadas, G.condimentos, G.extractos, G.frutos, G.frutas, G.otros, G.packs];
+const COLORS = { [G.naturales]:'#D39F78', [G.gelatinizadas]:'#C9962F', [G.condimentos]:'#D9603B', [G.extractos]:'#9473C7', [G.frutos]:'#9C7A54', [G.frutas]:'#E8913A', [G.otros]:'#6FA3B5', [G.packs]:'#4FA9A2' };
 const EXTRA = ['#E8B48C','#A9CFE0','#D8C27A','#C9A6D8'];
 const colorOf = g => COLORS[g] || EXTRA[[...g].reduce((s,c) => s + c.charCodeAt(0), 0) % EXTRA.length];
 const USES = {
@@ -26,7 +26,8 @@ const USES = {
   [G.condimentos]:'Ideal para sazonar guisos, carnes, sopas, salsas y aderezos.',
   [G.extractos]:'Ideal para jugos, smoothies, helados, yogures y repostería.',
   [G.frutos]:'Ideal para snacks, granolas, ensaladas, panadería y repostería.',
-  [G.frutas]:'Ideal para snacks, granolas, cereales, infusiones y repostería.'
+  [G.frutas]:'Ideal para snacks, granolas, cereales, infusiones y repostería.',
+  [G.otros]:'Proteínas, fibras y espesantes para batidos, suplementos, panadería y la industria alimentaria.'
 };
 let products = [], catalogLoaded = false;
 let cart = load(KEY_C) || {};
@@ -322,7 +323,8 @@ const CAT_ICONS = {
   [G.condimentos]:'<path d="M14 6c3 0 5 2 5 5 0 5-6 9-11 9-2 0-3-1-3-2 4 0 6-4 6-8 0-2 1-4 3-4z"/><path d="M14 6c0-2 1-3 3-3"/>',
   [G.extractos]:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/><path d="M9 14a3 3 0 0 0 3 3"/>',
   [G.frutos]:'<path d="M12 4c4 0 7 3 7 8s-3 8-7 8-7-3-7-8 3-8 7-8z"/><path d="M12 4v16M8 8c2 1 6 1 8 0M8 16c2-1 6-1 8 0"/>',
-  [G.frutas]:'<circle cx="12" cy="13" r="7"/><path d="M12 6c0-2 1-3 3-3"/><path d="M12 9v8M8 13h8"/>'
+  [G.frutas]:'<circle cx="12" cy="13" r="7"/><path d="M12 6c0-2 1-3 3-3"/><path d="M12 9v8M8 13h8"/>',
+  [G.otros]:'<path d="M9 3h6M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/>'
 };
 const catIcon = g => `<svg viewBox="0 0 24 24">${CAT_ICONS[g] || CAT_ICONS.Todos}</svg>`;
 function renderCats(){
