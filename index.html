@@ -37,7 +37,7 @@ try{if(sessionStorage.getItem('reynas.splash'))document.documentElement.classLis
 try{var L=(location.search.match(/[?&]lang=(en|es)/)||[])[1]||localStorage.getItem('reynas.lang');if(L==='en')document.documentElement.classList.add('en');}catch(e){}
 </script>
 <link rel="preload" as="image" href="/assets/hero/maca_main.webp?v=7">
-<link rel="stylesheet" href="/assets/css/styles.css?v=11">
+<link rel="stylesheet" href="/assets/css/styles.css?v=13">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -70,6 +70,7 @@ try{var L=(location.search.match(/[?&]lang=(en|es)/)||[])[1]||localStorage.getIt
   <div class="stage" id="stage" aria-live="polite"></div>
   <div class="hui">
     <header class="hhead">
+      <button class="hburger rise" type="button" data-navopen aria-label="Abrir menú" aria-controls="navd" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
       <a class="hlogo rise" href="#inicio" aria-label="Reyna's Superfoods, inicio"><img src="/assets/img/logo-sm.webp" alt="Reyna's Superfoods" width="180" height="190" draggable="false" decoding="async"></a>
       <nav class="htabs hmenu rise" id="tabs" aria-label="Menú principal"><span class="hbar" id="bar" hidden></span><a href="#tienda">Productos</a><a href="#packs">Packs</a><a href="#presentaciones">Por mayor</a><a href="#mision">Nosotros</a><a href="#contacto">Contacto</a></nav>
       <div class="hacct rise">
@@ -87,7 +88,7 @@ try{var L=(location.search.match(/[?&]lang=(en|es)/)||[])[1]||localStorage.getIt
 <!-- =================== BARRA FIJA + MEGA MENÚ =================== -->
 <header class="topbar" id="topbar">
   <div class="tb-in">
-    <button class="burger" type="button" id="burger" aria-label="Abrir menú de productos" aria-expanded="false" aria-controls="mega"><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
+    <button class="burger" type="button" id="burger" data-navopen aria-label="Abrir menú" aria-expanded="false" aria-controls="navd"><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
     <a class="tb-logo tb-word" href="#inicio" aria-label="Reyna's Superfoods, inicio"><span class="tw"><svg class="tw-leaf" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg><span class="tw-txt">Reyna's <b>Superfoods</b></span><svg class="tw-leaf r" viewBox="0 0 32 24" aria-hidden="true"><path class="st" d="M30 20C22 19 13 15 5 6"/><path d="M12 12.5c-4.6.6-7.8-1-9.4-4.4 3.9-1 7.4.4 9.4 4.4z"/><path d="M19 16.4c-3.3 2.6-6.9 3-10.4 1.3 2.4-3 6.2-3.6 10.4-1.3z"/><path d="M20 15.2c-.4-4.2 1.3-7.2 4.8-8.6.9 3.8-.8 7-4.8 8.6z"/></svg></span></a>
     <nav class="tb-links" aria-label="Secciones">
       <button class="megabtn" type="button" id="megaBtn" aria-expanded="false" aria-controls="mega">Tienda <svg viewBox="0 0 14 14"><path d="M3 5l4 4 4-4"/></svg></button>
@@ -97,6 +98,36 @@ try{var L=(location.search.match(/[?&]lang=(en|es)/)||[])[1]||localStorage.getIt
   </div>
 </header>
 <div class="mega" id="mega" role="region" aria-label="Menú de productos"><div class="mega-in" id="megaIn"></div></div>
+
+<!-- menú lateral (celular y tablet): hamburguesa a la izquierda -->
+<div class="navd" id="navd" hidden>
+  <div class="navd-ov" data-navclose></div>
+  <aside class="navd-p" tabindex="-1" role="dialog" aria-modal="true" aria-label="Menú">
+    <div class="navd-h">
+      <a class="navd-brand" href="#inicio" data-navgo><img src="/assets/img/logo-sm.webp" alt="" width="44" height="46" decoding="async"><span class="tw-txt">Reyna's <b>Superfoods</b></span></a>
+      <button type="button" class="navd-x" data-navclose aria-label="Cerrar menú"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    </div>
+    <form class="navd-s" id="navdSearch" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input type="search" id="navdQ" placeholder="Buscar productos" aria-label="Buscar productos" autocomplete="off">
+    </form>
+    <p class="navd-t">Productos</p>
+    <div class="navd-cats" id="navdCats"></div>
+    <nav class="navd-l" aria-label="Menú principal">
+      <a href="#inicio" data-navgo>Inicio</a>
+      <a href="#tienda" data-navgo>Toda la tienda</a>
+      <a href="#presentaciones" data-navgo>Por mayor</a>
+      <a href="#mision" data-navgo>Nosotros</a>
+      <a href="#como-comprar" data-navgo>Cómo comprar</a>
+      <a href="#preguntas" data-navgo>Preguntas frecuentes</a>
+      <a href="#contacto" data-navgo>Contacto</a>
+    </nav>
+    <div class="navd-f">
+      <a class="navd-wa" href="https://wa.me/51918515262" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 19z"/></svg>Escríbenos por WhatsApp</a>
+      <div class="navd-lang" id="navdLang"></div>
+    </div>
+  </aside>
+</div>
 
 <main>
 <div class="marquee" data-speed="0.6" aria-hidden="true"><div class="mq-track"><span data-edit="cinta1.1">Maca</span><i></i><span class="o" data-edit="cinta1.2">Lúcuma</span><i></i><span data-edit="cinta1.3">Maíz morado</span><i></i><span class="o" data-edit="cinta1.4">Camu camu</span><i></i><span data-edit="cinta1.5">Quinua</span><i></i><span class="o" data-edit="cinta1.6">Cacao</span><i></i><span data-edit="cinta1.7">Kiwicha</span><i></i><span class="o" data-edit="cinta1.8">Açaí</span><i></i><span data-edit="cinta1.9">Cañihua</span><i></i><span class="o" data-edit="cinta1.10">Aguaje</span><i></i></div></div>
@@ -394,10 +425,10 @@ try{var L=(location.search.match(/[?&]lang=(en|es)/)||[])[1]||localStorage.getIt
 
 <script defer src="/assets/js/config.js?v=10"></script>
 <script defer src="/assets/js/core.js?v=10"></script>
-<script defer src="/assets/js/portada.js?v=11"></script>
-<script defer src="/assets/js/tienda.js?v=10"></script>
+<script defer src="/assets/js/portada.js?v=12"></script>
+<script defer src="/assets/js/tienda.js?v=12"></script>
 <script defer src="/assets/js/pedido.js?v=10"></script>
 <script defer src="/assets/js/acceso.js?v=10"></script>
-<script defer src="/assets/js/i18n.js?v=3"></script>
+<script defer src="/assets/js/i18n.js?v=5"></script>
 </body>
 </html>

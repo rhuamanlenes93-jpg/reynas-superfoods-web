@@ -69,7 +69,7 @@ function layout(){
   mobile = W <= 820 || H > W;
   u = mobile ? Math.min(W/640, (H-200)/620) : Math.min(W/1440, H/900);
   hero.style.setProperty('--u', u + 'px');
-  hero.style.setProperty('--fy', mobile ? '8px' : '0px');
+  hero.style.setProperty('--fy', mobile ? -Math.round(H * 0.05) + 'px' : '0px');
   const visible = Math.min(1440, W/u) * 0.92;
   pieceEls.forEach(o => {
     const g = o._g, k = mobile && g.layer === 'fruit' ? 0.82 : 1, pull = mobile && g.layer === 'fruit' ? 0.6 : 1;

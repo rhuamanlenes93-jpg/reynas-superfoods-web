@@ -253,7 +253,6 @@ function setMega(open, focusBtn){
   if (!open && focusBtn) (getComputedStyle(burger).display !== 'none' ? burger : megaBtn).focus();
 }
 megaBtn.addEventListener('click', () => setMega(FINE.matches ? true : !megaOpen));
-burger.addEventListener('click', () => setMega(!megaOpen));
 [megaBtn, mega].forEach(el => {
   el.addEventListener('mouseenter', () => { if (!FINE.matches) return; clearTimeout(megaT); megaT = setTimeout(() => setMega(true), 90); });
   el.addEventListener('mouseleave', () => { if (!FINE.matches) return; clearTimeout(megaT); megaT = setTimeout(() => setMega(false), 220); });
@@ -372,3 +371,54 @@ function renderPacks(){
     </article>`).join('');
   watch($('#pgrid'));
 }
+
+/* =========================================================
+   MENÚ LATERAL (hamburguesa a la izquierda, en celular y tablet)
+   ========================================================= */
+const navd = $('#navd'), navdP = navd.querySelector('.navd-p'), navdCats = $('#navdCats');
+let navdFrom = null;
+function setNav(open){
+  if (open === !navd.hidden) return;
+  document.querySelectorAll('[data-navopen]').forEach(b => b.setAttribute('aria-expanded', open));
+  if (open){
+    setMega(false); navdFrom = document.activeElement;
+    renderNavCats(); navd.hidden = false; document.documentElement.classList.add('navd-open');
+    requestAnimationFrame(() => navd.classList.add('open'));
+    setTimeout(() => navdP.focus({preventScroll:true}), 60);
+  } else {
+    navd.classList.remove('open'); document.documentElement.classList.remove('navd-open');
+    setTimeout(() => { navd.hidden = true; }, RM.matches ? 0 : 280);
+    if (navdFrom && navdFrom.focus) navdFrom.focus();
+  }
+}
+function renderNavCats(){
+  const vis = visible();
+  navdCats.innerHTML = groups().filter(g => vis.some(p => p.group === g)).map(g =>
+    `<button type="button" data-navcat="${esc(g)}" style="--c:${colorOf(g)}"><span class="cat-ic">${catIcon(g)}</span><b>${esc(g)}</b><small>${vis.filter(p => p.group === g).length}</small></button>`).join('');
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-navopen]')){ e.preventDefault(); setNav(navd.hidden); return; }
+  if (e.target.closest('[data-navclose]')){ setNav(false); return; }
+  const go = e.target.closest('[data-navgo]');
+  if (go){ setNav(false); return; }
+  const c = e.target.closest('[data-navcat]');
+  if (c){
+    activeCat = c.dataset.navcat === G.packs ? 'Todos' : c.dataset.navcat; q.value = ''; shown = PAGE; renderShop(); setNav(false);
+    (c.dataset.navcat === G.packs ? $('#packs') : $('#tienda')).scrollIntoView();
+  }
+});
+
+$('#navdSearch').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#navdQ').value.trim();
+  activeCat = 'Todos'; q.value = v; shown = PAGE; renderShop(); setNav(false); $('#tienda').scrollIntoView();
+});
+navd.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ setNav(false); return; }
+  if (e.key !== 'Tab') return;
+  const f = [...navdP.querySelectorAll('a,button,input')].filter(x => x.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length-1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length-1]){ e.preventDefault(); f[0].focus(); }
+});
+matchMedia('(min-width:1101px) and (orientation:landscape)').addEventListener('change', m => { if (m.matches) setNav(false); });

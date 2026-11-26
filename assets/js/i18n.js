@@ -43,6 +43,7 @@ function switcher(extra){
 }
 const acct = document.querySelector('.hacct'); if (acct) acct.prepend(switcher('on-hero'));
 const tb = document.querySelector('.tb-in .cartpill'); if (tb) tb.before(switcher('on-bar'));
+const nl = document.getElementById('navdLang'); if (nl) nl.append(switcher('in-nav'));
 
 if (lang !== 'en'){ document.documentElement.classList.add('i18n-ready'); return; }
 
@@ -53,7 +54,7 @@ const EN = {
   'Tienda':'Shop','Packs y combos':'Packs & bundles','Cómo comprar':'How to buy','COMPRAR AHORA':'SHOP NOW','Comprar ahora':'Shop now',
   'Desliza hacia abajo':'Scroll down','Desliza hacia abajo para ver la tienda':'Scroll down to see the shop',
   'Producto anterior':'Previous product','Producto siguiente':'Next product','Productos destacados':'Featured products',
-  'Menú principal':'Main menu','Secciones':'Sections','Menú de productos':'Product menu','Abrir menú de productos':'Open product menu',
+  'Menú principal':'Main menu','Menú':'Menu','Abrir menú':'Open menu','Cerrar menú':'Close menu','Buscar productos':'Search products','Buscar':'Search','Ver categorías':'See categories','Escríbenos por WhatsApp':'Message us on WhatsApp','Secciones':'Sections','Menú de productos':'Product menu','Abrir menú de productos':'Open product menu',
   'Abrir mi pedido':'Open my order',"Reyna's Superfoods, inicio":"Reyna's Superfoods, home",'Estás en':'You are here',
   "Reyna's Superfoods: harinas, superalimentos andinos y extractos en polvo, por mayor y menor":"Reyna's Superfoods: flours, Andean superfoods and powdered extracts, wholesale and retail",
   'Lo mejor de la naturaleza para ti':'The best of nature for you',
@@ -63,7 +64,7 @@ const EN = {
   '“El tesoro de la Amazonía”':'“The treasure of the Amazon”','Fuente natural de vitamina C':'A natural source of vitamin C',
   'Maíz morado':'Purple corn','Quinua':'Quinoa','Cañihua':'Cañihua','Kiwicha':'Kiwicha (amaranth)','Cacao':'Cacao','Aguaje':'Aguaje',
   // tienda
-  'Catálogo 2026':'2026 Catalog','Nuestros productos':'Our products','Inicio':'Home','Todos':'All','Categorías':'Categories',
+  'Catálogo 2026':'2026 Catalog','Nuestros productos':'Our products','Inicio':'Home','Toda la tienda':'Whole shop','Todos':'All','Categorías':'Categories',
   'Elige una categoría, añade a tu pedido y envíalo por WhatsApp. Venta al por mayor y menor, con envíos a todo Lima y provincias.':'Choose a category, add to your order and send it via WhatsApp. Wholesale and retail, with delivery across Lima and the rest of Peru.',
   'Buscar: maca, cacao, quinua…':'Search: maca, cacao, quinoa…','Buscar producto':'Search product','Catálogo PDF':'PDF catalog',
   'Todos los productos en un PDF con valor nutricional y recomendaciones':'All products in one PDF, with nutrition facts and tips',
