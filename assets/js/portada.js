@@ -1,24 +1,27 @@
 /* Reyna's Superfoods · portada.js
    Slider de la portada con capas en paralaje, pestañas y barra fija con mega menú. */
-const IMG = {"maca_main": {"src": "/assets/hero/maca_main.webp", "w": 680, "h": 325}, "maca_amar": {"src": "/assets/hero/maca_amar.webp", "w": 337, "h": 340}, "maca_negra_r": {"src": "/assets/hero/maca_negra_r.webp", "w": 340, "h": 335}, "maca_roja_h": {"src": "/assets/hero/maca_roja_h.webp", "w": 326, "h": 340}, "lucuma_main": {"src": "/assets/hero/lucuma_main.webp", "w": 680, "h": 301}, "lucuma_half": {"src": "/assets/hero/lucuma_half.webp", "w": 340, "h": 217}, "lucuma_whole": {"src": "/assets/hero/lucuma_whole.webp", "w": 275, "h": 340}, "maiz_main": {"src": "/assets/hero/maiz_main.webp", "w": 680, "h": 310}, "maiz_cob": {"src": "/assets/hero/maiz_cob.webp", "w": 340, "h": 251}, "camu_main": {"src": "/assets/hero/camu_main.webp", "w": 680, "h": 302}, "camu_ber": {"src": "/assets/hero/camu_ber.webp", "w": 340, "h": 291}, "camu_x_ber": {"src": "/assets/hero/camu_x_ber.webp", "w": 340, "h": 274}};
+const IMG = {"maca_main": {"src": "/assets/hero/maca_main.webp", "w": 1200, "h": 571}, "maca_amar": {"src": "/assets/hero/maca_amar.webp", "w": 337, "h": 340}, "maca_negra_r": {"src": "/assets/hero/maca_negra_r.webp", "w": 340, "h": 335}, "maca_roja_h": {"src": "/assets/hero/maca_roja_h.webp", "w": 326, "h": 340}, "lucuma_main": {"src": "/assets/hero/lucuma_main.webp", "w": 1200, "h": 531}, "lucuma_half": {"src": "/assets/hero/lucuma_half.webp", "w": 340, "h": 217}, "lucuma_whole": {"src": "/assets/hero/lucuma_whole.webp", "w": 275, "h": 340}, "maiz_main": {"src": "/assets/hero/maiz_main.webp", "w": 1200, "h": 547}, "maiz_cob": {"src": "/assets/hero/maiz_cob.webp", "w": 340, "h": 251}, "camu_main": {"src": "/assets/hero/camu_main.webp", "w": 1200, "h": 533}, "camu_ber": {"src": "/assets/hero/camu_ber.webp", "w": 340, "h": 291}, "camu_x_ber": {"src": "/assets/hero/camu_x_ber.webp", "w": 340, "h": 274}, "leaf": {"src": "/assets/hero/leaf.webp", "w": 370, "h": 210}};
 Object.values(IMG).forEach(o => { o.src = withV(o.src); });
 /* =========================================================
    PORTADA (sin cambios respecto de la v6)
    ========================================================= */
 const SLIDES = [
-  { word:'Maca', bg:'#D39F78', search:'maca', tag:['“El ginseng de los Andes”','Energía y vitalidad natural'], main:'maca_main',
-    pieces:[['maca_amar',355,150,160,0,0,'fruit'],['maca_negra_r',1035,220,170,-8,0,'fruit'],['maca_roja_h',245,470,185,-8,0,'fruit'],['maca_amar',1215,440,165,14,1,'fruit'],['maca_roja_h',1040,605,165,20,1,'fruit'],['maca_amar',-30,600,300,0,0,'corner'],['maca_negra_r',1250,25,245,0,0,'corner']]},
-  { word:'Lúcuma', bg:'#EDC27A', search:'lúcuma', tag:['“El oro de los Incas”','Rica en antioxidantes'], main:'lucuma_main',
-    pieces:[['lucuma_whole',360,140,150,-12,0,'fruit'],['lucuma_half',1035,215,170,10,0,'fruit'],['lucuma_whole',230,480,200,0,0,'fruit'],['lucuma_half',1215,430,170,-20,1,'fruit'],['lucuma_whole',1050,600,150,16,1,'fruit'],['lucuma_half',-20,590,290,0,0,'corner'],['lucuma_whole',1260,20,230,20,0,'corner']]},
-  { word:'Maíz morado', bg:'#B79DD4', search:'maíz morado', tag:['“El color del Perú”','Rico en antocianinas'], main:'maiz_main',
-    pieces:[['maiz_cob',350,150,170,0,0,'fruit'],['maiz_cob',1030,225,190,-12,0,'fruit'],['maiz_cob',220,480,210,18,1,'fruit'],['maiz_cob',1215,440,175,0,1,'fruit'],['maiz_cob',1045,610,180,-6,0,'fruit'],['maiz_cob',-30,595,300,0,0,'corner'],['maiz_cob',1240,30,260,25,0,'corner']]},
-  { word:'Camu camu', bg:'#EDA0B2', search:'camu camu', tag:['“El tesoro de la Amazonía”','Fuente natural de vitamina C'], main:'camu_main',
-    pieces:[['camu_x_ber',370,135,130,-10,0,'fruit'],['camu_ber',1035,215,170,8,0,'fruit'],['camu_x_ber',220,480,200,-6,0,'fruit'],['camu_x_ber',1225,425,145,15,1,'fruit'],['camu_ber',1045,605,165,-14,1,'fruit'],['camu_ber',-30,590,300,0,0,'corner'],['camu_x_ber',1270,15,210,20,0,'corner']]},
+  { word:'Maca', bg:'#F7BD8C', search:'maca', tag:['“El ginseng de los Andes”','Energía y vitalidad natural'], main:'maca_main',
+    pieces:[['maca_amar',290,66,220,0,0,'fruit'],['maca_negra_r',1105,80,225,-4,0,'fruit'],['maca_amar',1300,318,210,8,1,'fruit'],['maca_roja_h',60,385,295,-4,0,'fruit'],['maca_roja_h',1195,565,245,6,1,'fruit']]},
+  { word:'Lúcuma', bg:'#F5C46E', search:'lúcuma', tag:['“El oro de los Incas”','Rica en antioxidantes'], main:'lucuma_main',
+    pieces:[['lucuma_whole',305,62,165,-12,0,'fruit'],['lucuma_half',1100,98,235,10,0,'fruit'],['lucuma_whole',1310,300,175,14,1,'fruit'],['lucuma_whole',60,410,215,-6,0,'fruit'],['lucuma_half',1180,600,240,-14,1,'fruit']]},
+  { word:'Maíz morado', bg:'#C3A2EC', search:'maíz morado', tag:['“El color del Perú”','Rico en antocianinas'], main:'maiz_main',
+    pieces:[['maiz_cob',290,78,220,-8,0,'fruit'],['maiz_cob',1100,88,235,14,0,'fruit'],['maiz_cob',1295,320,215,-20,1,'fruit'],['maiz_cob',40,440,260,22,1,'fruit'],['maiz_cob',1180,600,245,-6,0,'fruit']]},
+  { word:'Camu camu', bg:'#F6A3B8', search:'camu camu', tag:['“El tesoro de la Amazonía”','Fuente natural de vitamina C'], main:'camu_main',
+    pieces:[['camu_x_ber',300,68,185,-10,0,'fruit'],['camu_ber',1100,88,230,8,0,'fruit'],['camu_x_ber',1310,315,190,15,1,'fruit'],['camu_ber',50,410,250,-6,0,'fruit'],['camu_x_ber',1190,590,230,-14,1,'fruit']]},
 ];
-const MAIN_W = 700, MAIN_BOTTOM = 760;
-const SHADOWS = [[340,662,190,26],[720,758,430,38],[1300,632,170,24],[1120,780,160,22]];
-const LAYERS = ['word','shadow','bottle','fruit','corner'];
-const FACT = {word:.40, shadow:.30, bottle:.15, fruit:.55, corner:.75};
+// hojas verdes detrás del montículo (iguales en todas las diapositivas)
+const LEAVES = [['leaf',-40,548,190,4,0,'leaf'],['leaf',300,470,100,-28,1,'leaf',1],['leaf',875,402,125,-38,0,'leaf',1],['leaf',1165,478,160,12,1,'leaf'],['leaf',1225,548,125,34,0,'leaf']];
+SLIDES.forEach(s => { s.pieces = LEAVES.concat(s.pieces); });
+const MAIN_W = 900, MAIN_BOTTOM = 748, MAIN_W_M = 600, MAIN_BOTTOM_M = 770;
+const SHADOWS = [[200,700,240,26],[720,738,700,40],[1320,800,220,22],[1090,748,260,26]];
+const LAYERS = ['word','shadow','leaf','bottle','fruit','corner'];
+const FACT = {word:.40, shadow:.30, leaf:.2, bottle:.15, fruit:.55, corner:.75};
 
 const hero = $('#inicio'), stage = $('#stage'), tabsEl = $('#tabs'), bar = $('#bar');
 const U = v => `calc(${v} * var(--u))`;
@@ -26,7 +29,7 @@ const rand = (a,b) => a + Math.random()*(b-a);
 let lastTouch = 0;
 const touch = () => { lastTouch = Date.now(); };
 
-const pieceEls = [];
+const pieceEls = [], mainEls = [];
 const slides = SLIDES.map((s,i) => {
   const sec = document.createElement('div');
   sec.className = 'slide'; sec.style.background = s.bg;
@@ -37,16 +40,14 @@ const slides = SLIDES.map((s,i) => {
   const w = document.createElement('div'); w.className = 'word'; w.textContent = s.word; L.word.appendChild(w);
   SHADOWS.forEach(([cx,cy,sw,sh]) => { const d = document.createElement('div'); d.className = 'fshadow';
     Object.assign(d.style,{left:U(cx-sw/2),top:U(cy-sh/2),width:U(sw),height:U(sh)}); L.shadow.appendChild(d); });
-  const m = IMG[s.main], mh = MAIN_W * m.h / m.w;
-  const main = document.createElement('div'); main.className = 'mainimg';
+  const main = document.createElement('div'); main.className = 'mainimg'; main._m = IMG[s.main];
   main.setAttribute('role','img'); main.setAttribute('aria-label', 'Harina de ' + s.word.toLowerCase());
-  Object.assign(main.style,{left:U(720-MAIN_W/2),top:U(MAIN_BOTTOM-mh),width:U(MAIN_W),height:U(mh)});
-  main.dataset.bg = m.src;
+  main.dataset.bg = main._m.src; mainEls.push(main);
   L.bottle.appendChild(main);
-  s.pieces.forEach(([k,x,y,pw,r,mir,layer]) => {
+  s.pieces.forEach(([k,x,y,pw,r,mir,layer,hm]) => {
     const a = IMG[k], ph = pw * a.h / a.w;
     const o = document.createElement('div'); o.className = 'piece' + (mir ? ' m' : '');
-    o._g = {x, y, pw, ph, layer}; pieceEls.push(o);
+    o._g = {x, y, pw, ph, layer, hm}; pieceEls.push(o);
     const inner = document.createElement('i');
     inner.dataset.bg = a.src;
     inner.style.setProperty('--r', r + 'deg');
@@ -62,6 +63,7 @@ const slides = SLIDES.map((s,i) => {
 });
 
 let u = 1, mobile = false;
+const g0 = o => o._g.layer;
 const ctx = document.createElement('canvas').getContext('2d');
 function inkAt100(t){ ctx.font = '700 100px Poppins'; const m = ctx.measureText(t); return (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) || m.width; }
 function layout(){
@@ -72,12 +74,20 @@ function layout(){
   hero.style.setProperty('--fy', mobile ? -Math.round(H * 0.05) + 'px' : '0px');
   const visible = Math.min(1440, W/u) * 0.92;
   pieceEls.forEach(o => {
-    const g = o._g, k = mobile && g.layer === 'fruit' ? 0.82 : 1, pull = mobile && g.layer === 'fruit' ? 0.6 : 1;
+    const sm = mobile && g0(o) !== 'corner', g = o._g, k = sm ? (g.layer === 'leaf' ? 0.6 : 0.62) : 1, pull = sm ? 0.5 : 1;
     const w = g.pw * k, h = g.ph * k, cx = 720 + (g.x + g.pw/2 - 720) * pull, cy = g.y + g.ph/2;
-    Object.assign(o.style,{left:U(cx - w/2),top:U(cy - h/2),width:U(w),height:U(h)});
+    Object.assign(o.style,{left:U(cx - w/2),top:U(cy - h/2),width:U(w),height:U(h),display:mobile && g.hm ? 'none' : ''});
   });
+  const MW = mobile ? MAIN_W_M : MAIN_W, MB = mobile ? MAIN_BOTTOM_M : MAIN_BOTTOM;
+  mainEls.forEach(el => { const mh = MW * el._m.h / el._m.w;
+    Object.assign(el.style,{left:U(720-MW/2),top:U(MB-mh),width:U(MW),height:U(mh)}); });
   slides.forEach(s => {
     const ink = inkAt100(s.data.word);
+    if (!mobile){ // escritorio: palabra grande de borde a borde, como la referencia
+      const F = Math.min(480, Math.min(W/u, 1760) * 0.84 * 100 / ink), ls = -0.02;
+      Object.assign(s.word.style,{fontSize:U(F),letterSpacing:ls+'em',top:U(470 - 0.85*F)});
+      return;
+    }
     let F = 445, ls = 0.005;
     const limit = mobile ? visible : 1330, fit = mobile ? visible : 1400;
     if (ink * 4.45 > limit){ ls = -0.035; F = Math.min(445, fit * 100 / ink); }

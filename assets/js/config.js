@@ -7,5 +7,5 @@ window.REYNAS = {
   whatsapp: '51918515262',
   // Súbelo (5, 6, 7…) cuando reemplaces fotos con el mismo nombre: obliga a los navegadores a bajarlas de nuevo.
   // Cambia también el mismo número en index.html (preload, styles.css y los scripts).
-  version: '10'
+  version: '11'
 };
