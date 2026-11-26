@@ -163,7 +163,7 @@ new IntersectionObserver(([e]) => {
   heroVisible = e.intersectionRatio > 0.35;
   const show = e.intersectionRatio < 0.15;
   $('#topbar').classList.toggle('show', show);
-  if (!show) setMega(false);
+  if (!show && typeof setMega === "function") setMega(false);
 }, {threshold:[0, .15, .35, .6, 1]}).observe(hero);
 const typing = () => /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
 const overlayOpen = () => pdpId !== null || drawerOpen || isAdminOpen();

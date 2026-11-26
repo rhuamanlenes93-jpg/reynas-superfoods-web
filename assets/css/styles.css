@@ -710,3 +710,9 @@ html.en:not(.i18n-ready) body{opacity:0;animation:i18nShow 0s 1.2s forwards}
 .lang.on-bar .lang-btn:hover{background:var(--green-soft)}
 .hacct{display:flex;align-items:center}
 @media (max-width:400px){.lang-btn span{display:none}}
+/* barra: el nombre nunca se encoge ni tapa el menú; los enlaces que no caben pasan a una segunda línea oculta */
+.tb-in>.tb-word{flex:none}
+.tb-links{flex:1 1 auto;min-width:0;flex-wrap:wrap;height:40px;overflow:hidden;align-content:flex-start}
+.tb-in>.lang{flex:none}
+@media (min-width:1241px){.tb-links>a,.megabtn{padding:0 9px}.tb-links{gap:2px}.tb-in{gap:16px}}
+@media (min-width:1321px){.tw-txt{font-size:20px}.tw .tw-leaf{width:24px;height:18px}.tw{gap:5px}}
