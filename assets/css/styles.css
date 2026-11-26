@@ -831,3 +831,6 @@ html.navd-open{overflow:hidden}
   .hscroll{bottom:62px}
   .hcta::before,.hcta::after{content:none}
 }
+/* secciones un poco más juntas */
+.sec{padding:clamp(40px,5vw,76px) 0}
+@media (max-width:860px){.sec{padding:36px 0}}
